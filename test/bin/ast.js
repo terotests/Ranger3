@@ -909,13 +909,27 @@ class BasicAST  {
     };
     return ctx;
   };
+  testBlockAsReturn () {
+    const b = operatorsOf_14.rc46block_15([operatorsOfstring_11.rc46def_12("x", "int"), operatorsOf_11.rc46def_12("y", "int"), operatorsOf_14.rc46expr_15([operatorsOf_11.rc46op_13("+"), operatorsOf_11.rc46vref_13("x"), operatorsOf_11.rc46vref_13("y")])]);
+    return b;
+  };
   createBlock (testCtx) {
     testCtx.msg("Test Creating Blocks manually");
-    const b = operatorsOf_14.rc46block_15([operatorsOfstring_11.rc46def_12("x", "int"), operatorsOf_14.rc46expr_15([operatorsOf_11.rc46op_13("+"), operatorsOf_11.rc46vref_13("x"), operatorsOf_11.rc46vref_13("y")])]);
+    const b = operatorsOf_14.rc46block_15([operatorsOf_11.rc46def_12("x", "int"), operatorsOf_14.rc46expr_15([operatorsOf_11.rc46op_13("+"), operatorsOf_11.rc46vref_13("x"), operatorsOf_11.rc46vref_13("y")])]);
+    let case_cnt = 0;
     if( b instanceof RBlockNode ) /* union case */ {
       var bb = b;
       (testCtx).assert(operatorsOfVector.size_16(bb.children) == 2, "There should be two children for the block");
+      case_cnt = case_cnt + 1;
     };
+    const b2 = this.testBlockAsReturn();
+    if( b2 instanceof RBlockNode ) /* union case */ {
+      var bb_1 = b2;
+      (testCtx).assert(operatorsOfVector.size_16(bb_1.children) == 3, "There should be 3 children for the block");
+      testCtx.msg("The Second Block appeared to be OK");
+      case_cnt = case_cnt + 1;
+    };
+    (testCtx).assert(case_cnt == 2, "Two cases should be run");
   };
   blockCtxTest (testCtx) {
     testCtx.msg("Running the Basic Block Context testcase");
@@ -2156,6 +2170,12 @@ class operatorsOf_11  {
   constructor() {
   }
 }
+operatorsOf_11.rc46def_12 = function(name, typename) {
+  let vd_1 = new RDefVariable();
+  vd_1 = (vd_1).set_name(name);
+  vd_1 = (vd_1).set_typename("");
+  return vd_1;
+};
 operatorsOf_11.rc46op_13 = function(name) {
   let o = new ROperator();
   o = (o).set_name(name);

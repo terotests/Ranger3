@@ -105,16 +105,37 @@ class BasicAST {
     }
     return ctx
   }
+
+  ; simple test returnin a block, can be extended in future...
+  fn testBlockAsReturn:RNode () {
+    let b (r.block ([] 
+            (r.def 'x' 'int')
+            (r.def 'y' 'int')
+            (r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )
+          ))
+    return b
+  }
   
+  ; simple block creator test...
   fn createBlock ( testCtx:TestContext ) {
     testCtx.msg('Test Creating Blocks manually')
     let b (r.block ([] 
             (r.def 'x' 'int')
             (r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )
           ))
+    let case_cnt 0
     case b bb:RBlockNode {
       testCtx.assert( ( (size bb.children) == 2) 'There should be two children for the block')
+      case_cnt = case_cnt + 1
     }
+
+    let b2 (this.testBlockAsReturn())
+    case b2 bb:RBlockNode {
+      testCtx.assert( ( (size bb.children) == 3) 'There should be 3 children for the block')
+      testCtx.msg('The Second Block appeared to be OK')
+      case_cnt = case_cnt + 1
+    }
+    testCtx.assert( ( case_cnt == 2) 'Two cases should be run')
   }
 
 
