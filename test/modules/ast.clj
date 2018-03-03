@@ -107,12 +107,10 @@ class BasicAST {
   }
   
 
+  ; First proof oc concept test run
   fn blockCtxTest ( testCtx:TestContext ) {
 
     testCtx.msg('Running the Basic Block Context testcase')
-
-;    ctx.assert( true 'Testing basic AST funcs' )
-;     ctx.assert( false 'Did not work' )
 
     let ctx (new writerCtx)
     let block (new RBlockNode)
