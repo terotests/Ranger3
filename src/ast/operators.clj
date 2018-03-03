@@ -17,6 +17,35 @@ operator type:void all {
     return n
   }
 
+  fn r.param:RNode (name:string type_name:string) {
+    let p = (new RFunctionParam)
+    p.name = name
+    p.type_name = type_name
+    return p
+  }
+
+  fn r.fn:RNode (name:string params:[RNode] body:RNode ) {
+    let f = (new RFunction)
+    f.name = name
+    f.rvType = 'void'
+    forEach params {
+      f.params = (push f.params item)
+    }
+    f.body = body
+    return f    
+  }  
+
+  fn r.fn:RNode (name:string rvType:string params:[RNode] body:RNode ) {
+    let f = (new RFunction)
+    f.name = name
+    f.rvType = rvType
+    forEach params {
+      f.params = (push f.params item)
+    }
+    f.body = body
+    return f    
+  }
+
   fn r.op:RNode (name:string) {
     let o (new ROperator)
     o.name = name

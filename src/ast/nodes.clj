@@ -9,6 +9,8 @@ union RNode (
   RVRefNode
   RExpression
   ROperator
+  RFunction
+  RFunctionParam
 )
 
 union RValueType (
@@ -146,13 +148,13 @@ class ROperator@(immutable) {
   def name ""  ; operator name
 }
 
+; this is just for the proof of concept demo
 class RIncExpression@(immutable) {
   def ctx:writerCtx
   def name "xxx"  ; <-- variable to increment...
 }
 
 ; ------- create instance of class and getting some property -----
-
 class RObjectInstance@(immutable) {
   def ctx:writerCtx
   def objectType:RValueType
@@ -178,6 +180,24 @@ class RStaticFnCall@(immutable) {
   def ctx:writerCtx
   def calledClass:RType_Class
   def calledMethod:RType_Function
+}
+
+
+class RFunctionParam@(immutable) {
+  def name ""
+  def ctx:writerCtx
+  def type_name ""      ; [Vector:int]
+  def required true
+}
+
+class RFunction@(immutable) {
+  def name ""
+  def startCtx:writerCtx
+  def endCtx:writerCtx
+  def ctx:writerCtx
+  def params:[RNode]
+  def body:RNode
+  def rvType "void"
 }
 
 

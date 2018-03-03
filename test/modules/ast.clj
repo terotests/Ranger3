@@ -116,6 +116,14 @@ class BasicAST {
     return b
   }
   
+  fn testFnBlock:RNode () {
+    let body (r.block ([] 
+              (r.expr ([] (r.op 'return' ) (r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) ) ) )
+          ))
+    let params ([] (r.param 'x' 'int' ) (r.param 'x' 'int' ) )
+    let fnNode (r.fn 'add' params body )
+    return fnNode
+  }  
   ; simple block creator test...
   fn createBlock ( testCtx:TestContext ) {
     testCtx.msg('Test Creating Blocks manually')
@@ -136,6 +144,17 @@ class BasicAST {
       case_cnt = case_cnt + 1
     }
     testCtx.assert( ( case_cnt == 2) 'Two cases should be run')
+
+    let fnTest (this.testFnBlock())
+    case fnTest f:RFunction {
+      testCtx.assert( ( f.name == 'add') 'Function name should be Add')
+      testCtx.assert( ( (size f.params) == 2) 'Function has two params')
+      let fbody (unwrap f.body)
+      case fbody fnBody:RBlockNode {
+        testCtx.msg('Function has a body, good')
+      }
+    }
+    
   }
 
 
