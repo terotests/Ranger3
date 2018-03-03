@@ -8,7 +8,7 @@ operator type:void all {
     }
     return n
   }
-; RExpression
+
   fn r.expr:RNode (children:[RNode]) {
     let n = (new RExpression)
     forEach children {
@@ -33,9 +33,7 @@ operator type:void all {
     let vd (new RDefVariable)
     vd.name = name
     vd.typename = ''
-    ; vd.value = objRef   ; <-- reference to the obj
-    ; block.children = (push block.children vd)
+    ; vd.value could be set too
     return vd
-
   }
 }    
