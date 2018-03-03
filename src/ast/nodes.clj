@@ -168,6 +168,7 @@ class RStaticFnCall@(immutable) {
 
 
 class RBlockNode@(immutable) {
+  def name ""
   def startCtx:writerCtx
   def endCtx:writerCtx
   def ctx:writerCtx
