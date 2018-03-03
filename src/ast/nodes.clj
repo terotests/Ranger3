@@ -6,6 +6,9 @@ union RNode (
   RDefVariable
   RIncExpression
   RExpression
+  RVRefNode
+  RExpression
+  ROperator
 )
 
 union RValueType (
@@ -125,11 +128,22 @@ class RTextNode@(immutable) {
   def text "someTextValueHere"
 }
 
+class RVRefNode@(immutable) {
+  def ctx:writerCtx
+  def vref ""
+  def ns:[string]
+}
+
 class RDefVariable@(immutable) {
   def ctx:writerCtx
   def name "xxx"
   def typename "int"
   def value:RValueType
+}
+
+class ROperator@(immutable) {
+  def ctx:writerCtx
+  def name ""  ; operator name
 }
 
 class RIncExpression@(immutable) {

@@ -106,6 +106,17 @@ class BasicAST {
     return ctx
   }
   
+  fn createBlock ( testCtx:TestContext ) {
+    testCtx.msg('Test Creating Blocks manually')
+    let b (r.block ([] 
+            (r.def 'x' 'int')
+            (r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )
+          ))
+    case b bb:RBlockNode {
+      testCtx.assert( ( (size bb.children) == 2) 'There should be two children for the block')
+    }
+  }
+
 
   ; First proof oc concept test run
   fn blockCtxTest ( testCtx:TestContext ) {

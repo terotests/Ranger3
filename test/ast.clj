@@ -1,4 +1,5 @@
 Import "../src/ast/nodes.clj"
+Import "../src/ast/operators.clj"
 Import "../src/context/context.clj"
 
 Import "lib/asserts.clj"
@@ -11,6 +12,7 @@ class testrunner {
       
       let test = (new BasicAST)
       test.blockCtxTest(ctx)
+      test.createBlock(ctx)
 
       forEach ctx.messages {
         print '  * ' + item
