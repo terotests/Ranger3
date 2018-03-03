@@ -1004,7 +1004,7 @@ class BasicAST  {
   testFnBlock () {
     const body = operatorsOf_14.rc46block_15([operatorsOf_14.rc46expr_15([operatorsOf_11.rc46op_13("return"), operatorsOf_14.rc46expr_15([operatorsOf_11.rc46op_13("+"), operatorsOf_11.rc46vref_13("x"), operatorsOf_11.rc46vref_13("y")])])]);
     const params = [operatorsOf_11.rc46param_12("x", "int"), operatorsOf_11.rc46param_12("x", "int")];
-    const fnNode = operatorsOf_11.rc46fn_16("add", params, body);
+    const fnNode = operatorsOf_11.rc46fn_16("add", "int", params, body);
     return fnNode;
   };
   createBlock (testCtx) {
@@ -2297,10 +2297,10 @@ operatorsOf_11.rc46param_12 = function(name, type_name) {
   p = (p).set_type_name(type_name);
   return p;
 };
-operatorsOf_11.rc46fn_16 = function(name, params, body) {
+operatorsOf_11.rc46fn_16 = function(name, rvType, params, body) {
   let f = new RFunction();
   f = (f).set_name(name);
-  f = (f).set_rvType("void");
+  f = (f).set_rvType(rvType);
   operatorsOf_4.forEach_5(params, ((item, index) => { 
     f = (f).set_params(operatorsOfVector.push_6(f.params, item));
   }));

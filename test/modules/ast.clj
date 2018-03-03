@@ -121,9 +121,10 @@ class BasicAST {
               (r.expr ([] (r.op 'return' ) (r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) ) ) )
           ))
     let params ([] (r.param 'x' 'int' ) (r.param 'x' 'int' ) )
-    let fnNode (r.fn 'add' params body )
+    let fnNode (r.fn 'add' 'int' params body )
     return fnNode
   }  
+
   ; simple block creator test...
   fn createBlock ( testCtx:TestContext ) {
     testCtx.msg('Test Creating Blocks manually')
