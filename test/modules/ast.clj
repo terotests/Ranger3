@@ -167,6 +167,7 @@ class BasicAST {
     }
 
     testCtx.msg('Testing function op creation')
+    let ctx (new writerCtx)
     let opDef = (this.testOpBlock())
     let cnt = 0
     case opDef op:ROperatorCollection {
@@ -192,6 +193,10 @@ class BasicAST {
       }
     }
     testCtx.assert( ( cnt == 2) 'All op tests were not run')        
+
+    ctx.operators = (set ctx.operators opDef.name opDef)
+    let findOp = (get ctx.operators '+')
+    testCtx.assert( (!null? findOp) '+ OP was not found from ctx')        
     
   }
 
