@@ -36,6 +36,8 @@ class writerCtx@(immutable) {
   def variables:[string:RVariable]
   def errors:[RErrorType]
 
+  def operators:[string:ROpNode]
+
   ; registered plugins
   ; interfaces
   ; classes

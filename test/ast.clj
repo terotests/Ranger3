@@ -1,3 +1,7 @@
+
+Import "../src/operators/nodes.clj"
+Import "../src/operators/operators.clj"
+
 Import "../src/ast/nodes.clj"
 Import "../src/ast/operators.clj"
 Import "../src/context/context.clj"

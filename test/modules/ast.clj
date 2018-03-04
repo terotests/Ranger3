@@ -125,6 +125,16 @@ class BasicAST {
     return fnNode
   }  
 
+  fn testOpBlock:ROpNode () {
+    let plusop = (op.collection 
+        '+'
+        ([] (op.def 'js' ''  ; all versions -> empty string
+              ([] (op.param 'x' 'int') (op.param 'y' 'int'))
+              ([] (cmd.param 1) (cmd.text ' + ') (cmd.param 2)) )
+        ))
+    return plusop
+  }
+
   ; simple block creator test...
   fn createBlock ( testCtx:TestContext ) {
     testCtx.msg('Test Creating Blocks manually')
@@ -155,6 +165,33 @@ class BasicAST {
         testCtx.msg('Function has a body, good')
       }
     }
+
+    testCtx.msg('Testing function op creation')
+    let opDef = (this.testOpBlock())
+    let cnt = 0
+    case opDef op:ROperatorCollection {
+      cnt = cnt + 1
+      testCtx.assert( ( op.name == '+' ) 'Op name should be +')
+      let es6Op (get op.langs 'js')
+      if(!null? es6Op) {
+        let op = (unwrap es6Op)
+        cnt = cnt + 1
+        testCtx.assert( ( (size op.params) == 2) '+ Op has two params')        
+        testCtx.assert( ( (size op.cmds) == 3) '+ Op has three commands')  
+        let str = ""
+        forEach op.cmds {
+          case item writeTxt:ROpCmdWriteText {
+            str = str + writeTxt.text
+          }
+          case item fnParam:ROpCmdParam {
+            str = str + '<param ' + fnParam.index + '>'
+          }
+        }
+        testCtx.assert( (str == '<param 1> + <param 2>') 'Correct command output' )
+        testCtx.msg( 'code output ' + str)
+      }
+    }
+    testCtx.assert( ( cnt == 2) 'All op tests were not run')        
     
   }
 
