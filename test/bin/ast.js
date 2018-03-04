@@ -1144,53 +1144,18 @@ class BasicAST  {
     const fnNode = operatorsOf_11.rc46fn_16("add", "int", params, body);
     return fnNode;
   };
-  testOpBlock () {
-    const plusop = operatorsOf_11.opc46collection_24("+", [operatorsOf_11.opc46def_19("js", "", [operatorsOf_11.opc46param_12("x", "int"), operatorsOf_11.opc46param_12("y", "int")], [operatorsOfint_17.cmdc46param_18(1), operatorsOf_11.cmdc46text_13(" + "), operatorsOf_17.cmdc46param_18(2)])]);
+  testSimpleInfix (infixName) {
+    const plusop = operatorsOf_11.opc46collection_24(infixName, [operatorsOf_11.opc46def_19("js", "", [operatorsOf_11.opc46param_12("x", "int"), operatorsOf_11.opc46param_12("y", "int")], [operatorsOfint_17.cmdc46param_18(1), operatorsOf_11.cmdc46text_13(((" " + infixName) + " ")), operatorsOf_17.cmdc46param_18(2)])]);
     return plusop;
   };
-  createBlock (testCtx) {
-    testCtx.msg("Test Creating Blocks manually");
-    const b = operatorsOf_14.rc46block_15([operatorsOf_11.rc46def_12("x", "int"), operatorsOf_14.rc46expr_15([operatorsOf_11.rc46op_13("+"), operatorsOf_11.rc46vref_13("x"), operatorsOf_11.rc46vref_13("y")])]);
-    let case_cnt = 0;
-    if( b instanceof RBlockNode ) /* union case */ {
-      var bb = b;
-      (testCtx).assert(operatorsOfVector.size_27(bb.children) == 2, "There should be two children for the block");
-      case_cnt = case_cnt + 1;
-    };
-    const b2 = this.testBlockAsReturn();
-    if( b2 instanceof RBlockNode ) /* union case */ {
-      var bb_1 = b2;
-      (testCtx).assert(operatorsOfVector.size_27(bb_1.children) == 3, "There should be 3 children for the block");
-      testCtx.msg("The Second Block appeared to be OK");
-      case_cnt = case_cnt + 1;
-    };
-    (testCtx).assert(case_cnt == 2, "Two cases should be run");
-    const fnTest = this.testFnBlock();
-    if( fnTest instanceof RFunction ) /* union case */ {
-      var f = fnTest;
-      (testCtx).assert(f.name == "add", "Function name should be Add");
-      (testCtx).assert(operatorsOfVector.size_27(f.params) == 2, "Function has two params");
-      const fbody = f.body;
-      if( fbody instanceof RBlockNode ) /* union case */ {
-        var fnBody = fbody;
-        testCtx.msg("Function has a body, good");
-      };
-    };
-    testCtx.msg("Testing function op creation");
-    const opDef = this.testOpBlock();
-    let cnt = 0;
+  createJSString (opDef) {
+    let str = "";
     if( opDef instanceof ROperatorCollection ) /* union case */ {
       var op = opDef;
-      cnt = cnt + 1;
-      (testCtx).assert(op.name == "+", "Op name should be +");
-      const es6Op = operatorsOf_7.get_28(op.langs, "js");
+      const es6Op = operatorsOf_7.get_27(op.langs, "js");
       if ( (typeof(es6Op) !== "undefined" && es6Op != null )  ) {
         const op_1 = es6Op;
-        cnt = cnt + 1;
-        (testCtx).assert(operatorsOfVector.size_29(op_1.params) == 2, "+ Op has two params");
-        (testCtx).assert(operatorsOfVector.size_30(op_1.cmds) == 3, "+ Op has three commands");
-        let str = "";
-        operatorsOfVector.forEach_31(op_1.cmds, ((item) => { 
+        operatorsOfVector.forEach_28(op_1.cmds, ((item) => { 
           if( item instanceof ROpCmdWriteText ) /* union case */ {
             var writeTxt = item;
             str = str + writeTxt.text;
@@ -1200,11 +1165,86 @@ class BasicAST  {
             str = ((str + "<param ") + fnParam.index) + ">";
           };
         }));
-        (testCtx).assert(str == "<param 1> + <param 2>", "Correct command output");
+      }
+    };
+    return str;
+  };
+  createBlock (testCtx) {
+    testCtx.msg("Test Creating Blocks manually");
+    const b = operatorsOf_14.rc46block_15([operatorsOf_11.rc46def_12("x", "int"), operatorsOf_14.rc46expr_15([operatorsOf_11.rc46op_13("+"), operatorsOf_11.rc46vref_13("x"), operatorsOf_11.rc46vref_13("y")])]);
+    let case_cnt = 0;
+    if( b instanceof RBlockNode ) /* union case */ {
+      var bb = b;
+      (testCtx).assert(operatorsOfVector.size_30(bb.children) == 2, "There should be two children for the block");
+      case_cnt = case_cnt + 1;
+    };
+    const b2 = this.testBlockAsReturn();
+    if( b2 instanceof RBlockNode ) /* union case */ {
+      var bb_1 = b2;
+      (testCtx).assert(operatorsOfVector.size_30(bb_1.children) == 3, "There should be 3 children for the block");
+      testCtx.msg("The Second Block appeared to be OK");
+      case_cnt = case_cnt + 1;
+    };
+    (testCtx).assert(case_cnt == 2, "Two cases should be run");
+    const fnTest = this.testFnBlock();
+    if( fnTest instanceof RFunction ) /* union case */ {
+      var f = fnTest;
+      (testCtx).assert(f.name == "add", "Function name should be Add");
+      (testCtx).assert(operatorsOfVector.size_30(f.params) == 2, "Function has two params");
+      const fbody = f.body;
+      if( fbody instanceof RBlockNode ) /* union case */ {
+        var fnBody = fbody;
+        testCtx.msg("Function has a body, good");
+      };
+    };
+    testCtx.msg("Testing function op creation");
+    let ctx = new writerCtx();
+    const opDef = this.testSimpleInfix("+");
+    ctx = (ctx).set_operators(operatorsOf_7.set_31(ctx.operators, "-", this.testSimpleInfix("")));
+    ctx = (ctx).set_operators(operatorsOf_7.set_31(ctx.operators, "*", this.testSimpleInfix("*")));
+    ctx = (ctx).set_operators(operatorsOf_7.set_31(ctx.operators, "/", this.testSimpleInfix("/")));
+    let cnt = 0;
+    if( opDef instanceof ROperatorCollection ) /* union case */ {
+      var op = opDef;
+      cnt = cnt + 1;
+      (testCtx).assert(op.name == "+", "Op name should be +");
+      const es6Op = operatorsOf_7.get_27(op.langs, "js");
+      if ( (typeof(es6Op) !== "undefined" && es6Op != null )  ) {
+        const op_1 = es6Op;
+        cnt = cnt + 1;
+        (testCtx).assert(operatorsOfVector.size_32(op_1.params) == 2, "+ Op has two params");
+        (testCtx).assert(operatorsOfVector.size_33(op_1.cmds) == 3, "+ Op has three commands");
+        let str = "";
+        operatorsOfVector.forEach_28(op_1.cmds, ((item) => { 
+          if( item instanceof ROpCmdWriteText ) /* union case */ {
+            var writeTxt = item;
+            str = str + writeTxt.text;
+          };
+          if( item instanceof ROpCmdParam ) /* union case */ {
+            var fnParam = item;
+            str = ((str + "<param ") + fnParam.index) + ">";
+          };
+        }));
+        (testCtx).assert(str == "<param 1> + <param 2>", "incorrect command output for +");
         testCtx.msg("code output " + str);
       }
     };
     (testCtx).assert(cnt == 2, "All op tests were not run");
+    if( opDef instanceof ROperatorCollection ) /* union case */ {
+      var op_2 = opDef;
+      ctx = (ctx).set_operators(operatorsOf_7.set_31(ctx.operators, op_2.name, opDef));
+      const findOp = operatorsOf_7.get_34(ctx.operators, "+");
+      (testCtx).assert((typeof(findOp) !== "undefined" && findOp != null ) , "+ OP was not found from ctx");
+      if ( (typeof(findOp) !== "undefined" && findOp != null )  ) {
+        testCtx.msg("+ op was in context");
+      }
+      if ( (typeof(operatorsOf_7.get_34(ctx.operators, "-")) !== "undefined" && operatorsOf_7.get_34(ctx.operators, "-") != null )  ) {
+        testCtx.msg("- op was in context");
+        const minusStr = this.createJSString((operatorsOf_7.get_34(ctx.operators, "-")));
+        (testCtx).assert(minusStr == "<param 1> - <param 2>", "inorrect command output for -");
+        testCtx.msg(minusStr);
+      }
+    };
   };
   blockCtxTest (testCtx) {
     testCtx.msg("Running the Basic Block Context testcase");
@@ -1217,26 +1257,26 @@ class BasicAST  {
     block3 = (block3).set_name("block3");
     let genTrait1 = new RType_GenericTrait();
     genTrait1 = (genTrait1).set_name("Vector<T>");
-    ctx = (ctx).set_defined_types(operatorsOf_7.set_33(ctx.defined_types, "Vector<T>", (genTrait1)));
+    ctx = (ctx).set_defined_types(operatorsOf_7.set_35(ctx.defined_types, "Vector<T>", (genTrait1)));
     let intType = new RType_Scalar();
     intType = (intType).set_bits(64);
-    ctx = (ctx).set_defined_types(operatorsOf_7.set_33(ctx.defined_types, "int", (intType)));
+    ctx = (ctx).set_defined_types(operatorsOf_7.set_35(ctx.defined_types, "int", (intType)));
     let en = new RType_Enum();
     en = (en).set_name("RValueEnum");
-    en = (en).set_keys(operatorsOfVector.push_34(en.keys, "Int"));
-    en = (en).set_keys(operatorsOfVector.push_34(en.keys, "String"));
-    en = (en).set_keys(operatorsOfVector.push_34(en.keys, "Boolean"));
-    en = (en).set_keys(operatorsOfVector.push_34(en.keys, "Double"));
-    ctx = (ctx).set_defined_types(operatorsOf_7.set_33(ctx.defined_types, "RValueEnum", (en)));
+    en = (en).set_keys(operatorsOfVector.push_36(en.keys, "Int"));
+    en = (en).set_keys(operatorsOfVector.push_36(en.keys, "String"));
+    en = (en).set_keys(operatorsOfVector.push_36(en.keys, "Boolean"));
+    en = (en).set_keys(operatorsOfVector.push_36(en.keys, "Double"));
+    ctx = (ctx).set_defined_types(operatorsOf_7.set_35(ctx.defined_types, "RValueEnum", (en)));
     let someClass = new RType_Class();
     someClass = (someClass).set_name("MyClass");
     let xVal = new RType_Variable();
     xVal = (xVal).set_name("x");
-    xVal = (xVal).set_value_type((operatorsOf_7.get_35(ctx.defined_types, "int")));
-    someClass = (someClass).set_variables(operatorsOf_7.set_36(someClass.variables, "x", xVal));
-    ctx = (ctx).set_defined_types(operatorsOf_7.set_33(ctx.defined_types, "MyClass", (someClass)));
+    xVal = (xVal).set_value_type((operatorsOf_7.get_37(ctx.defined_types, "int")));
+    someClass = (someClass).set_variables(operatorsOf_7.set_38(someClass.variables, "x", xVal));
+    ctx = (ctx).set_defined_types(operatorsOf_7.set_35(ctx.defined_types, "MyClass", (someClass)));
     let objInstance = new RObjectInstance();
-    objInstance = (objInstance).set_objectType((operatorsOf_7.get_35(ctx.defined_types, "MyClass")));
+    objInstance = (objInstance).set_objectType((operatorsOf_7.get_37(ctx.defined_types, "MyClass")));
     let objRef = new RObjectReference();
     objRef = (objRef).set_objInstance(objInstance);
     let vd = new RDefVariable();
@@ -1291,8 +1331,8 @@ class BasicAST  {
     block = (block).set_children(operatorsOfVector.push_6(block.children, (block3)));
     ctx = (ctx).set_activeNode((block));
     ctx = this.walkNode(ctx);
-    (testCtx).assert((operatorsOf_7.keys_37(ctx.variables).length) == 6, "ctx should have definex 6 variables");
-    operatorsOf_7.forEach_38(ctx.variables, ((item, index) => { 
+    (testCtx).assert((operatorsOf_7.keys_39(ctx.variables).length) == 6, "ctx should have definex 6 variables");
+    operatorsOf_7.forEach_40(ctx.variables, ((item, index) => { 
       if ( index == "X" ) {
         (testCtx).assert(item.write_cnt == 1, "write_cnt count of X should be 1");
         (testCtx).assert(item.read_cnt == 1, "read_cnt count of X should be 1");
@@ -1315,7 +1355,7 @@ class BasicAST  {
           if ( (typeof(ob.outerBlock) !== "undefined" && ob.outerBlock != null )  ) {
           }
         }
-        operatorsOf_7.forEach_38(b.startCtx.variables, ((item, index) => { 
+        operatorsOf_7.forEach_40(b.startCtx.variables, ((item, index) => { 
           if ( (typeof(item.value) !== "undefined" && item.value != null )  ) {
             const v = item.value;
             if( Number.isInteger ? Number.isInteger(v) : (function(v) { return typeof v === 'number' &&  isFinite(v) && Math.floor(v) === v; })(v) ) /* union case for int */ {
@@ -1326,7 +1366,7 @@ class BasicAST  {
             };
           }
         }));
-        operatorsOf_7.forEach_38(b.endCtx.variables, ((item, index) => { 
+        operatorsOf_7.forEach_40(b.endCtx.variables, ((item, index) => { 
           if ( (typeof(item.value) !== "undefined" && item.value != null )  ) {
             const v_1 = item.value;
             if( v_1 instanceof RType_Literal ) /* union case */ {
@@ -1352,17 +1392,17 @@ class BasicAST  {
       };
     });
     walkFn(ctx.activeNode);
-    (testCtx).assert(operatorsOfVector.size_39(ctx.errors) == 1, "Error count should be one");
-    operatorsOfVector.forEach_40(ctx.errors, ((item) => { 
+    (testCtx).assert(operatorsOfVector.size_41(ctx.errors) == 1, "Error count should be one");
+    operatorsOfVector.forEach_42(ctx.errors, ((item) => { 
       if( item instanceof RError ) /* union case */ {
         var e_1 = item;
       };
     }));
-    operatorsOf_4.forEach_43(operatorsOf_7.keys_42(ctx.defined_types), ((item, index) => { 
-      const t = operatorsOf_7.get_35(ctx.defined_types, item);
+    operatorsOf_4.forEach_45(operatorsOf_7.keys_44(ctx.defined_types), ((item, index) => { 
+      const t = operatorsOf_7.get_37(ctx.defined_types, item);
       if( t instanceof RType_Class ) /* union case */ {
         var cl = t;
-        operatorsOf_4.forEach_43(operatorsOf_7.keys_44(cl.variables), ((item, index) => { 
+        operatorsOf_4.forEach_45(operatorsOf_7.keys_46(cl.variables), ((item, index) => { 
         }));
       };
     }));
@@ -2662,7 +2702,7 @@ class Vector_RErrorType  {
 }
 class Map_string_ROpNode  {
   constructor() {
-    this.elements = {};     /** note: unused */
+    this.elements = {};
   }
 }
 class operatorsOfVector  {
@@ -2694,44 +2734,44 @@ operatorsOfVector.push_21 = function(__self, item) {
 operatorsOfVector.push_23 = function(__self, item) {
   return __self.add(item);
 };
-operatorsOfVector.size_27 = function(__self) {
-  return (__self).count();
-};
-operatorsOfVector.size_29 = function(__self) {
-  return (__self).count();
-};
-operatorsOfVector.size_30 = function(__self) {
-  return (__self).count();
-};
-operatorsOfVector.forEach_31 = function(__self, cb) {
+operatorsOfVector.forEach_28 = function(__self, cb) {
   const cnt_1 = (__self).count();
   let i_7 = 0;
   while (i_7 < cnt_1) {
-    const item_1 = operatorsOfVector.itemAt_32(__self, i_7);
+    const item_1 = operatorsOfVector.itemAt_29(__self, i_7);
     cb(item_1);
     i_7 = i_7 + 1;
   };
 };
-operatorsOfVector.itemAt_32 = function(__self, idx) {
+operatorsOfVector.itemAt_29 = function(__self, idx) {
   const val_1 = (__self).get(idx);
   return val_1;
 };
-operatorsOfVector.push_34 = function(__self, item) {
-  return __self.add(item);
-};
-operatorsOfVector.size_39 = function(__self) {
+operatorsOfVector.size_30 = function(__self) {
   return (__self).count();
 };
-operatorsOfVector.forEach_40 = function(__self, cb) {
+operatorsOfVector.size_32 = function(__self) {
+  return (__self).count();
+};
+operatorsOfVector.size_33 = function(__self) {
+  return (__self).count();
+};
+operatorsOfVector.push_36 = function(__self, item) {
+  return __self.add(item);
+};
+operatorsOfVector.size_41 = function(__self) {
+  return (__self).count();
+};
+operatorsOfVector.forEach_42 = function(__self, cb) {
   const cnt_2 = (__self).count();
-  let i_11 = 0;
-  while (i_11 < cnt_2) {
-    const item_2 = operatorsOfVector.itemAt_41(__self, i_11);
+  let i_12 = 0;
+  while (i_12 < cnt_2) {
+    const item_2 = operatorsOfVector.itemAt_43(__self, i_12);
     cb(item_2);
-    i_11 = i_11 + 1;
+    i_12 = i_12 + 1;
   };
 };
-operatorsOfVector.itemAt_41 = function(__self, idx) {
+operatorsOfVector.itemAt_43 = function(__self, idx) {
   const val_2 = (__self).get(idx);
   return val_2;
 };
@@ -2763,10 +2803,10 @@ operatorsOf_4.forEach_25 = function(__self, cb) {
     cb(it_3, i_5);
   };
 };
-operatorsOf_4.forEach_43 = function(__self, cb) {
-  for ( let i_12 = 0; i_12 < __self.length; i_12++) {
-    var it_4 = __self[i_12];
-    cb(it_4, i_12);
+operatorsOf_4.forEach_45 = function(__self, cb) {
+  for ( let i_13 = 0; i_13 < __self.length; i_13++) {
+    var it_4 = __self[i_13];
+    cb(it_4, i_13);
   };
 };
 class operatorsOfMap_7  {
@@ -2809,11 +2849,11 @@ operatorsOf_7.set_26 = function(__self, key, value) {
   c_1.elements[key] = value;
   return c_1;
 };
-operatorsOf_7.get_28 = function(__self, key) {
+operatorsOf_7.get_27 = function(__self, key) {
   return __self.elements[key];
 };
-operatorsOf_7.set_33 = function(__self, key, value) {
-  const c_2 = new Map_string_RValueType();
+operatorsOf_7.set_31 = function(__self, key, value) {
+  const c_2 = new Map_string_ROpNode();
   const keys_2 = Object.keys(__self.elements);
   for ( let i_8 = 0; i_8 < keys_2.length; i_8++) {
     var k_2 = keys_2[i_8];
@@ -2825,11 +2865,11 @@ operatorsOf_7.set_33 = function(__self, key, value) {
   c_2.elements[key] = value;
   return c_2;
 };
-operatorsOf_7.get_35 = function(__self, key) {
+operatorsOf_7.get_34 = function(__self, key) {
   return __self.elements[key];
 };
-operatorsOf_7.set_36 = function(__self, key, value) {
-  const c_3 = new Map_string_RType_Variable();
+operatorsOf_7.set_35 = function(__self, key, value) {
+  const c_3 = new Map_string_RValueType();
   const keys_3 = Object.keys(__self.elements);
   for ( let i_9 = 0; i_9 < keys_3.length; i_9++) {
     var k_3 = keys_3[i_9];
@@ -2841,21 +2881,37 @@ operatorsOf_7.set_36 = function(__self, key, value) {
   c_3.elements[key] = value;
   return c_3;
 };
-operatorsOf_7.keys_37 = function(__self) {
-  return Object.keys(__self.elements);
+operatorsOf_7.get_37 = function(__self, key) {
+  return __self.elements[key];
 };
-operatorsOf_7.forEach_38 = function(__self, cb) {
+operatorsOf_7.set_38 = function(__self, key, value) {
+  const c_4 = new Map_string_RType_Variable();
   const keys_4 = Object.keys(__self.elements);
   for ( let i_10 = 0; i_10 < keys_4.length; i_10++) {
-    var key = keys_4[i_10];
+    var k_4 = keys_4[i_10];
+    if ( k_4 == key ) {
+    } else {
+      c_4.elements[k_4] = (__self.elements[k_4]);
+    }
+  };
+  c_4.elements[key] = value;
+  return c_4;
+};
+operatorsOf_7.keys_39 = function(__self) {
+  return Object.keys(__self.elements);
+};
+operatorsOf_7.forEach_40 = function(__self, cb) {
+  const keys_5 = Object.keys(__self.elements);
+  for ( let i_11 = 0; i_11 < keys_5.length; i_11++) {
+    var key = keys_5[i_11];
     cb((__self.elements[key]), key);
   };
   return __self;
 };
-operatorsOf_7.keys_42 = function(__self) {
+operatorsOf_7.keys_44 = function(__self) {
   return Object.keys(__self.elements);
 };
-operatorsOf_7.keys_44 = function(__self) {
+operatorsOf_7.keys_46 = function(__self) {
   return Object.keys(__self.elements);
 };
 class operatorsOfstring_11  {
@@ -2990,11 +3046,11 @@ function __js_main() {
     const test = new BasicAST();
     test.blockCtxTest(ctx);
     test.createBlock(ctx);
-    operatorsOf_4.forEach_43(ctx.messages, ((item, index) => { 
+    operatorsOf_4.forEach_45(ctx.messages, ((item, index) => { 
       console.log("  * " + item);
     }));
     if ( (ctx.errors.length) > 0 ) {
-      operatorsOf_4.forEach_43(ctx.errors, ((item, index) => { 
+      operatorsOf_4.forEach_45(ctx.errors, ((item, index) => { 
         console.log("ERROR: " + item);
       }));
     } else {

@@ -125,14 +125,33 @@ class BasicAST {
     return fnNode
   }  
 
-  fn testOpBlock:ROpNode () {
+  fn testSimpleInfix:ROpNode ( infixName:string ) {
     let plusop = (op.collection 
-        '+'
+        infixName
         ([] (op.def 'js' ''  ; all versions -> empty string
               ([] (op.param 'x' 'int') (op.param 'y' 'int'))
-              ([] (cmd.param 1) (cmd.text ' + ') (cmd.param 2)) )
+              ([] (cmd.param 1) (cmd.text (' ' + infixName + ' ')) (cmd.param 2)) )
         ))
     return plusop
+  }
+
+  fn createJSString:string (opDef:ROpNode) {
+    let str = ""
+    case opDef op:ROperatorCollection {
+      let es6Op (get op.langs 'js')
+      if(!null? es6Op) {
+        let op = (unwrap es6Op)
+        forEach op.cmds {
+          case item writeTxt:ROpCmdWriteText {
+            str = str + writeTxt.text
+          }
+          case item fnParam:ROpCmdParam {
+            str = str + '<param ' + fnParam.index + '>'
+          }
+        }
+      }
+    }
+    return str    
   }
 
   ; simple block creator test...
@@ -168,7 +187,12 @@ class BasicAST {
 
     testCtx.msg('Testing function op creation')
     let ctx (new writerCtx)
-    let opDef = (this.testOpBlock())
+    let opDef = (this.testSimpleInfix('+'))
+    
+    ctx.operators = (set ctx.operators '-' (this.testSimpleInfix('')))
+    ctx.operators = (set ctx.operators '*' (this.testSimpleInfix('*')))
+    ctx.operators = (set ctx.operators '/' (this.testSimpleInfix('/')))
+    
     let cnt = 0
     case opDef op:ROperatorCollection {
       cnt = cnt + 1
@@ -188,15 +212,25 @@ class BasicAST {
             str = str + '<param ' + fnParam.index + '>'
           }
         }
-        testCtx.assert( (str == '<param 1> + <param 2>') 'Correct command output' )
+        testCtx.assert( (str == '<param 1> + <param 2>') 'incorrect command output for +' )
         testCtx.msg( 'code output ' + str)
       }
     }
     testCtx.assert( ( cnt == 2) 'All op tests were not run')        
-
-    ctx.operators = (set ctx.operators opDef.name opDef)
-    let findOp = (get ctx.operators '+')
-    testCtx.assert( (!null? findOp) '+ OP was not found from ctx')        
+    case opDef op:ROperatorCollection {
+      ctx.operators = (set ctx.operators op.name opDef)
+      let findOp = (get ctx.operators '+')
+      testCtx.assert( (!null? findOp) '+ OP was not found from ctx')   
+      if(!null? findOp) {
+        testCtx.msg('+ op was in context')
+      }
+      if(!null? (get ctx.operators '-')) {
+        testCtx.msg('- op was in context')        
+        let minusStr = (this.createJSString((unwrap (get ctx.operators '-'))))
+        testCtx.assert( (minusStr == '<param 1> - <param 2>') 'inorrect command output for -' )
+        testCtx.msg(minusStr)        
+      }
+    }     
     
   }
 
