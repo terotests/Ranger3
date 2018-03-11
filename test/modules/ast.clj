@@ -2,6 +2,44 @@
 
 class BasicAST {
 
+  fn testCodeWriter ( testCtx:TestContext ) {
+    let slice = (new CodeSlice)
+
+    wr slice 'function foo() {'
+    wr slice '\n'
+    wr slice '  let x = 100\n'
+    wr slice '  let y = 200\n'
+    wr slice '}'
+
+    print "string now \n" + (join (map slice.tokens {
+      let str = item
+      return str
+    } _:[string]) '')
+
+    let out = (new CodeOutput)
+    out.slices = (push out.slices slice)
+
+    let slice = (new CodeSlice)
+
+    wr slice 'function helloWorld() {'
+    wr slice '\n'
+    wr slice '  // This is the Hello World -function\n'
+    wr slice '}'
+
+    out.slices = (push out.slices slice)
+
+    forEach out.slices {
+      case item s:CodeSlice {
+        print "--- slice --- \n" + (join (map s.tokens {
+          let str = item
+          return str
+        } _:[string]) '')        
+      }
+    }
+
+  }
+  
+
   fn walkNode@(weak):writerCtx (ctx:writerCtx) {
     let subCtx = ctx
 
@@ -189,7 +227,7 @@ class BasicAST {
     let ctx (new writerCtx)
     let opDef = (this.testSimpleInfix('+'))
     
-    ctx.operators = (set ctx.operators '-' (this.testSimpleInfix('')))
+    ctx.operators = (set ctx.operators '-' (this.testSimpleInfix('-')))
     ctx.operators = (set ctx.operators '*' (this.testSimpleInfix('*')))
     ctx.operators = (set ctx.operators '/' (this.testSimpleInfix('/')))
     
