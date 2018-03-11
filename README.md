@@ -2,6 +2,8 @@
 
 Third generation of Ranger compiler.
 
+The Project status is [Here]((ProjectStatus.md))
+
 Goals:
 
 - Immutable AST tree for code compiler
