@@ -14,10 +14,10 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 - example of Class and Enum definitions
 - basic AST nodes to define operators
 - simple test of walking operator AST and create output pseudocode
+- function AST creation
 
 # Next steps could be
 
-- try to create a function declaration using primitive types
 - try normalizing the types using perhaps only string index to Type Class
 - make simple operator matching algorithm
 - think about relationships between classes, Union `Number = int | double`, inheritance, traits
@@ -25,6 +25,15 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 - data structures which allow type groups
 - arbitary type groups, "Type Classes" - anything that can implement these ops or funcs
 
+## Creating a simple function AST using ops
+
+```
+    let body (r.block ([] 
+              (r.expr ([] (r.op 'return' ) (r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) ) ) )
+          ))
+    let params ([] (r.param 'x' 'int' ) (r.param 'x' 'int' ) )
+    let fnNode (r.fn 'add' 'int' params body )
+```
 
 ## Context basics
 
