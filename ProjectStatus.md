@@ -18,6 +18,7 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 
 # Next steps could be
 
+- create a JavaScript code generator which can output simple arrow function `const add = (x,y) => x + y`
 - try normalizing the types using perhaps only string index to Type Class
 - make simple operator matching algorithm
 - think about relationships between classes, Union `Number = int | double`, inheritance, traits
