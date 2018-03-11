@@ -31,6 +31,7 @@ class ROperatorParam  {
     res.name = this.name;
     res.ctx = this.ctx;
     res.type_name = this.type_name;
+    res.equation = this.equation;
     res.required = this.required;
     return res;
   };
@@ -47,6 +48,11 @@ class ROperatorParam  {
   set_type_name (new_value_of_type_name) {
     const res = this.__CopySelf();
     res.type_name = new_value_of_type_name;
+    return res;
+  };
+  set_equation (new_value_of_equation) {
+    const res = this.__CopySelf();
+    res.equation = new_value_of_equation;
     return res;
   };
   set_required (new_value_of_required) {
