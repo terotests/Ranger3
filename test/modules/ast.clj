@@ -2,41 +2,79 @@
 
 class BasicAST {
 
-  fn testCodeWriter ( testCtx:TestContext ) {
-    let slice = (new CodeSlice)
+  fn writeFunction2:CodeOutput ( inputWr:CodeOutput ) {
+    def wr = inputWr
+    wr = ( write wr 'const myFnXX = () => {')
+    wr = ( nl wr )
+    wr = ( indent wr )
+    wr = ( write wr `return x + 1 `)
+    wr = ( nl wr )
+    wr = ( unindent wr )
+    wr = ( write wr '}')
+    wr = ( nl wr )
+    return wr
+  }
+  fn writeFunctionBody:CodeOutput ( inputWr:CodeOutput ) {
+    def wr = inputWr
 
-    wr slice 'function foo() {'
-    wr slice '\n'
-    wr slice '  let x = 100\n'
-    wr slice '  let y = 200\n'
-    wr slice '}'
+    ; try to do a list
+    let items = ([] 1 2 3 4 5)
 
-    print "string now \n" + (join (map slice.tokens {
-      let str = item
-      return str
-    } _:[string]) '')
-
-    let out = (new CodeOutput)
-    out.slices = (push out.slices slice)
-
-    let slice = (new CodeSlice)
-
-    wr slice 'function helloWorld() {'
-    wr slice '\n'
-    wr slice '  // This is the Hello World -function\n'
-    wr slice '}'
-
-    out.slices = (push out.slices slice)
-
-    forEach out.slices {
-      case item s:CodeSlice {
-        print "--- slice --- \n" + (join (map s.tokens {
-          let str = item
-          return str
-        } _:[string]) '')        
-      }
+    forEach items {
+      wr = (write wr 'let x = ' + item)
+      wr = (nl wr)
+      wr = (this.writeFunction2(wr))
     }
 
+    wr = ( write wr `
+// The function body
+return x + 1 `)
+    return wr
+  }
+
+  fn testCodeWriter ( testCtx:TestContext ) {
+
+    let out = (new CodeOutput)
+    out.settings = (new WriterSettings)
+
+    ; create a reference to imports...
+    let importTag (fork out)
+    out.tags = (set out.tags 'imports' importTag)
+    let tagRef (new WriterTag)
+    tagRef.name = 'imports'
+    out.slices = (push out.slices tagRef)
+
+    out = ( write out `
+function foobar() {
+
+}   
+`)
+
+    out = ( write out 'const myFn = () => {')
+    out = ( nl out )
+    out = ( indent out )
+    out = (this.writeFunctionBody(out))
+    out = ( nl out )
+    out = ( unindent out )
+    out = ( write out '}')
+    out = ( nl out )
+    
+    ; using tags to write things in the context
+    let imp = (unwrap (get out.tags 'imports'))
+    imp = (write imp 'import xyz from foobardom')
+    imp = ( nl imp )
+    out.tags = (set out.tags 'imports' imp)
+
+    ; repeat...
+    ; using tags to write things in the context
+    let imp = (unwrap (get out.tags 'imports'))
+    imp = (write imp 'import foo from bar')
+    imp = ( nl imp )
+    out.tags = (set out.tags 'imports' imp)
+
+    let result (getString out 0 '')
+    print "--> got "
+    print result
   }
   
 

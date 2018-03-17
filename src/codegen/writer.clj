@@ -6,6 +6,10 @@ class CodeSlice@(immutable) {
 
 union WriterCmd (CodeSlice WriterCmdIndent WriterCmdUnIndent WriterCmdNewLine WriterTag CodeOutput)
 
+class WriterSettings@(immutable) {
+  def indentStr "  "
+  def newlineStr "\n"
+}
 class WriterCmdIndent@(immutable) {
 
 }
@@ -18,9 +22,8 @@ class WriterCmdNewLine@(immutable) {
 class WriterTag@(immutable) {
   def name ""
 }
-
-
 class CodeOutput@(immutable) {
   def tags:[string:CodeOutput]
   def slices:[WriterCmd]
+  def settings:WriterSettings
 }
