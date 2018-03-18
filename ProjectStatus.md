@@ -15,10 +15,32 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 - basic AST nodes to define operators
 - simple test of walking operator AST and create output pseudocode
 - function AST creation
+- CodeWriter is approximately OK
 
 # Next steps could be
 
-- Code Writer seems to be quite ready, with support to tags (forking)
+Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )` or `x + y` where the matcher code will 
+
+1. Walk Through the expression arguments, create a new Context if required
+2. Evaluate arguments if required, in the context for expression
+3. Expand arguments, if so defined
+4. Check possible flags from the operator, like noeval, namespaces, keyword, block, mutates, move, loop, async
+5. Test if the arguments of the operator can be matched in type system (generate types if required)
+6. If Arguments are to be evaluated multiple times, create registers for temp results `register_expressions`
+7. If operator is `async` mark the current function as `async`
+8. If operator `throws_exception` mark current function as `throws`
+9. If operator has block nodes, walk them too
+10. IF operator is defined as function operator, create static method and class for the OP.
+11. IF operator is a static method call, transform the node as static method call to that OP. (always?)
+12. If operator is a compiler plugin call, generate plugin call
+13. If operator is a Macro `is_macro` == `true`, build the macro and Walk it.
+14. If operator has a reference copy `moves`, move the reference to maintain weak/strong associations
+15. If operator is returning a value and value is of Lambda type, check that the return signature is valid
+16. If operator is returning a value, check that return value type matches the current fn return value
+17. If operator mutates arguments, increase the `set_cnt` of the references
+18. If op was solved, set the value type of the operator
+19. IF there were unsolved errors, add them to context
+
 - create a JavaScript code generator which can output simple arrow function `const add = (x,y) => x + y`
 - try normalizing the types using perhaps only string index to Type Class
 - make simple operator matching algorithm

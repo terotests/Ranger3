@@ -38,8 +38,7 @@ return x + 1 `)
     out.settings = (new WriterSettings)
 
     ; create a reference to imports...
-    let importTag (fork out)
-    out.tags = (set out.tags 'imports' importTag)
+    out.tags = (set out.tags 'imports' (fork out))
     let tagRef (new WriterTag)
     tagRef.name = 'imports'
     out.slices = (push out.slices tagRef)
@@ -303,7 +302,7 @@ function foobar() {
       if(!null? (get ctx.operators '-')) {
         testCtx.msg('- op was in context')        
         let minusStr = (this.createJSString((unwrap (get ctx.operators '-'))))
-        testCtx.assert( (minusStr == '<param 1> - <param 2>') 'inorrect command output for -' )
+        testCtx.assert( (minusStr == '<param 1> - <param 2>') 'incorrect command output for -' )
         testCtx.msg(minusStr)        
       }
     }     
