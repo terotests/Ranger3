@@ -91,7 +91,6 @@ operator type:void all {
         ; res = res + the_string
       }
       case item s:WriterTag {
-        print "Found a TAG!"
         let tag (get out.tags s.name)
         if(!null? tag) {
           let codeOutTag = (unwrap tag)
