@@ -32,6 +32,10 @@ Modify the existing text to AST generator to generate simplified token stream fo
 Or Scala style? `(Int, Int) => String`
 Kotlin `(T, T) -> Boolean` or `(x: T, y: T) -> Int`
 
+Ideas:
+https://github.com/lampepfl/dotty
+https://github.com/lampepfl/dotty/issues
+
 
 ## Op eval process
 
