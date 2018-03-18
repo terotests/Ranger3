@@ -19,7 +19,11 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 
 # Next steps could be
 
-Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )` or `x + y` where the matcher code will 
+Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )` or `x + y` where the matcher code will evaluating the operatorss
+
+## Op eval process
+
+A draft of the existing op eval process
 
 1. Walk Through the expression arguments, create a new Context if required
 2. Evaluate arguments if required, in the context for expression
@@ -40,6 +44,8 @@ Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref
 17. If operator mutates arguments, increase the `set_cnt` of the references
 18. If op was solved, set the value type of the operator
 19. IF there were unsolved errors, add them to context
+
+## More issues
 
 - create a JavaScript code generator which can output simple arrow function `const add = (x,y) => x + y`
 - try normalizing the types using perhaps only string index to Type Class
