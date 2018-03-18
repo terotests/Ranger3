@@ -9,6 +9,11 @@ Import "../src/context/context.clj"
 Import "../src/codegen/operators.clj"
 Import "../src/codegen/writer.clj"
 
+Import "../src/tokenizer/enums.clj"
+Import "../src/tokenizer/nodes.clj"
+Import "../src/tokenizer/simpleTokenizer.clj"
+
+
 Import "lib/asserts.clj"
 Import "modules/ast.clj"
 
@@ -21,6 +26,7 @@ class testrunner {
       test.blockCtxTest(ctx)
       test.createBlock(ctx)
       test.testCodeWriter(ctx)
+      test.testTokenizer(ctx)
 
       forEach ctx.messages {
         print '  * ' + item

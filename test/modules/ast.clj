@@ -310,6 +310,73 @@ function foobar() {
   }
 
 
+  fn testTokenizer( testCtx:TestContext ) {
+    let testCode `
+ const myFn = x => x + 1   
+ const myFn = x => { return x + 1 }   
+ const myFn = x => ( return x + 1 )   
+    `
+    let code (new SourceCode (testCode))
+    let t (new RangerStringTokenizer (code))
+    t.parse(true)
+    let root t.rootNode    
+
+    let out = (new CodeOutput)
+    out.settings = (new WriterSettings)
+
+    let str = ""
+
+    let walkfn (fn:CodeOutput (item:CodeNode input:CodeOutput) {})
+    walkfn = (fn:CodeOutput (item:CodeNode input:CodeOutput) {
+      let out = input
+      if(item.expression && (item.is_block_node == false)) {
+        out = (write out '(')
+        forEach item.children {
+          out = (walkfn(item out))
+        }
+        out = (write out ')')
+      }     
+      if(item.is_block_node) {
+        out = (write out '{')
+        out = (indent out)
+        out = (nl out)
+        forEach item.children {
+          out = (walkfn(item out))
+          out = (nl out)
+        }
+        out = (unindent out)
+        out = (write out '}')
+        out = (nl out)
+      }     
+      switch item.value_type {
+        case RangerNodeType.VRef {
+           out = (write out (' ' + item.vref))
+        }
+        case RangerNodeType.Boolean {
+          if( item.boolean_value) {
+           out = (write out ' true')
+          } {
+           out = (write out ' false')
+          }
+        }
+        case RangerNodeType.Integer {
+          out = (write out (' ' + item.int_value))
+        }
+        case RangerNodeType.String {
+          out = (write out (' "' + item.string_value + '" '))
+        }
+      }   
+
+     return out 
+    })
+
+    out = (walkfn(root out))
+
+    print "--> AST "
+    let result (getString out 0 '')
+    print result
+  }
+
   ; First proof oc concept test run
   fn blockCtxTest ( testCtx:TestContext ) {
 
@@ -532,9 +599,6 @@ function foobar() {
         }
       }
     }
-
-
-
   }
 
 }
