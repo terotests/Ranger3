@@ -21,6 +21,18 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 
 Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )` or `x + y` where the matcher code will evaluating the operatorss
 
+
+## Text to AST generator
+
+Modify the existing text to AST generator to generate simplified token stream for type definitions and to test the matching of some types to the type AST.
+
+  Exmple of the current AST: `param:(fn:int (x:int y:int))`
+  Possible new AST (TypeScript): `param: (x:int, y:int) => int`
+
+Or Scala style? `(Int, Int) => String`
+Kotlin `(T, T) -> Boolean` or `(x: T, y: T) -> Int`
+
+
 ## Op eval process
 
 A draft of the existing op eval process
