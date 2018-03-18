@@ -1187,8 +1187,7 @@ class BasicAST  {
   testCodeWriter (testCtx) {
     let out = new CodeOutput();
     out = (out).set_settings(new WriterSettings());
-    const importTag = operatorsOfCodeOutput.fork_6(out);
-    out = (out).set_tags(operatorsOfMap_9.set_10(out.tags, "imports", importTag));
+    out = (out).set_tags(operatorsOfMap_9.set_10(out.tags, "imports", operatorsOfCodeOutput.fork_6(out)));
     let tagRef = new WriterTag();
     tagRef = (tagRef).set_name("imports");
     out = (out).set_slices(operatorsOf_3.push_5(out.slices, (tagRef)));
@@ -1403,7 +1402,7 @@ class BasicAST  {
       if ( (typeof(operatorsOf_9.get_49(ctx.operators, "-")) !== "undefined" && operatorsOf_9.get_49(ctx.operators, "-") != null )  ) {
         testCtx.msg("- op was in context");
         const minusStr = this.createJSString((operatorsOf_9.get_49(ctx.operators, "-")));
-        (testCtx).assert(minusStr == "<param 1> - <param 2>", "inorrect command output for -");
+        (testCtx).assert(minusStr == "<param 1> - <param 2>", "incorrect command output for -");
         testCtx.msg(minusStr);
       }
     };
@@ -3130,7 +3129,6 @@ operatorsOfCodeOutput.getString_12 = function(out, indentLevel, currentLine) {
     };
     if( item instanceof WriterTag ) /* union case */ {
       var s_2 = item;
-      console.log("Found a TAG!");
       const tag = operatorsOf_9.get_11(out.tags, s_2.name);
       if ( (typeof(tag) !== "undefined" && tag != null )  ) {
         const codeOutTag = tag;
