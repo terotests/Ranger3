@@ -195,7 +195,7 @@ function foobar() {
     let body (r.block ([] 
               (r.expr ([] (r.op 'return' ) (r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) ) ) )
           ))
-    let params ([] (r.param 'x' 'int' ) (r.param 'x' 'int' ) )
+    let params ([] (r.param 'x' 'int' ) (r.param 'y' 'int' ) )
     let fnNode (r.fn 'add' 'int' params body )
     return fnNode
   }  
@@ -315,6 +315,12 @@ function foobar() {
  const myFn = x => x + 1   
  const myFn = x => { return x + 1 }   
  const myFn = x => ( return x + 1 )   
+
+ class myClass extends someOhter {
+   fn OK ( x:(z:int h:int) -> int) {
+
+   }
+ }
     `
     let code (new SourceCode (testCode))
     let t (new RangerStringTokenizer (code))
@@ -331,9 +337,13 @@ function foobar() {
       let out = input
       if(item.expression && (item.is_block_node == false)) {
         out = (write out '(')
+        out = (indent out)
+        out = (nl out)
         forEach item.children {
           out = (walkfn(item out))
         }
+        out = (nl out)
+        out = (unindent out)
         out = (write out ')')
       }     
       if(item.is_block_node) {

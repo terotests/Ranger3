@@ -3247,7 +3247,7 @@ class BasicAST  {
     };
   };
   testTokenizer (testCtx) {
-    const testCode = "\n const myFn = x => x + 1   \n const myFn = x => { return x + 1 }   \n const myFn = x => ( return x + 1 )   \n    ";
+    const testCode = "\n const myFn = x => x + 1   \n const myFn = x => { return x + 1 }   \n const myFn = x => ( return x + 1 )   \n\n class myClass extends someOhter {\n   fn OK ( x:(z:int h:int) -> int) {\n\n   }\n }\n    ";
     const code = new SourceCode(testCode);
     const t = new RangerStringTokenizer(code);
     t.parse(true);
@@ -3261,9 +3261,13 @@ class BasicAST  {
       let out_2 = input;
       if ( item.expression && (item.is_block_node == false) ) {
         out_2 = operatorsOf_3.write_4(out_2, "(");
+        out_2 = operatorsOf_3.indent_8(out_2);
+        out_2 = operatorsOf_3.nl_8(out_2);
         operatorsOf_9.forEach_52(item.children, ((item, index) => { 
           out_2 = walkfn(item, out_2);
         }));
+        out_2 = operatorsOf_3.nl_8(out_2);
+        out_2 = operatorsOf_3.unindent_8(out_2);
         out_2 = operatorsOf_3.write_4(out_2, ")");
       }
       if ( item.is_block_node ) {

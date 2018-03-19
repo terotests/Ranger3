@@ -77,7 +77,7 @@ A draft of the existing op eval process
     let body (r.block ([] 
               (r.expr ([] (r.op 'return' ) (r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) ) ) )
           ))
-    let params ([] (r.param 'x' 'int' ) (r.param 'x' 'int' ) )
+    let params ([] (r.param 'x' 'int' ) (r.param 'y' 'int' ) )
     let fnNode (r.fn 'add' 'int' params body )
 ```
 
