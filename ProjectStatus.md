@@ -140,10 +140,10 @@ ClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable se
 ```
 
 ```
-ObjectExpressionAsArg = ('{' stream separated by ',' {
+ObjectExpressionAsArg = ('{' (stream separated by ',' {
   (vref -> name) ':' ( typedef -> value_typedef )
   (vref -> name) ':' ( typedef -> value_typedef ) '=' (TokenExpression -> default_value)
-} '}')
+}) '}')
 ```
 
 ```
