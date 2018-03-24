@@ -439,6 +439,12 @@ gql {
 
    }
  }
+
+ FunctionArgs = (stream separated by ',' {
+  (vref -> name) ':' ( typedef -> value_typedef ) ,
+  (vref -> name) ':' ( typedef -> value_typedef ) '=' (TokenExpression -> default_value) ,
+  ObjectExpressionAsArg
+})
     `
     let code (new SourceCode (testCode))
     let t (new RangerStringTokenizer (code))
