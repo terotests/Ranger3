@@ -128,3 +128,37 @@ A class like `myClass { x:int } `
 ```
 Questions:
 - should the type definition in instances be always just string or types TClass reference?
+
+
+### Thinking: how the language grammar could be defined ? 
+
+Classes and Functions should allow multiple attributes
+```
+ClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {
+
+}
+```
+
+```
+ObjectExpressionAsArg = ('{' stream separated by ',' {
+  (vref -> name) ':' ( typedef -> value_typedef )
+  (vref -> name) ':' ( typedef -> value_typedef ) '=' (TokenExpression -> default_value)
+} '}')
+```
+
+```
+FunctionArgs = (stream separated by ',' {
+  (vref -> name) ':' ( typedef -> value_typedef )
+  (vref -> name) ':' ( typedef -> value_typedef ) '=' (TokenExpression -> default_value)
+  ObjectExpressionAsArg
+})
+```
+
+```
+FunctionDef = [async] function (vref -> name) FunctionArgs ( ':' typedef ) {
+}
+```
+```
+LambdaDef = [async] function (vref -> name) ( ':' typedef ) {
+}
+```

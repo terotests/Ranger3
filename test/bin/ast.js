@@ -3070,8 +3070,9 @@ class RangerStringTokenizer  {
         if ( (c == 41) || (c == (125)) ) {
           if ( ((c == (125)) && is_block_parent) && ((this.curr_node.children.length) > 0) ) {
             this.end_expression();
+          } else {
+            this.i = 1 + this.i;
           }
-          this.i = 1 + this.i;
           this.paren_cnt = this.paren_cnt - 1;
           if ( this.paren_cnt < 0 ) {
             break;
@@ -3441,7 +3442,7 @@ class BasicAST  {
     return subCtx;
   };
   testTokenizer (testCtx) {
-    const testCode = "\n \nCREATE TABLE article (\n  article_id bigserial primary key,\n  article_name varchar(20) NOT NULL,\n  article_desc text NOT NULL,\n  date_added timestamp default NULL\n); \n\nlet myValue = (CREATE TABLE second_article (\n  article_id bigserial primary key,\n  article_name varchar(20) NOT NULL,\n  article_desc text NOT NULL,\n  date_added timestamp default NULL\n))\n\ngql {\n  get_items {\n    name\n    count\n    related {\n      name\n    }\n  }\n}\n\n (sql SELECT firstname as name1, lastname as name2 FROM user WHERE user.created > 10 AND user.is_active = true\n        GROUP BY lastname\n )\n\n const myFn = x => x + 1   \n const myFn = x => { return x + 1 }   \n const myFn = x => ( return x + 1 )   \n\n class myClass extends someOhter {\n   fn OK ( x:(z:int h:int) -> int) {\n\n   }\n }\n    ";
+    const testCode = "\n \nCREATE TABLE article (\n  article_id bigserial primary key,\n  article_name varchar(20) NOT NULL,\n  article_desc text NOT NULL,\n  date_added timestamp default NULL\n); \n\nlet myValue = (CREATE TABLE second_article (\n  article_id bigserial primary key,\n  article_name varchar(20) NOT NULL,\n  article_desc text NOT NULL,\n  date_added timestamp default NULL\n))\n\ngql {\n  get_items {\n    name\n    count\n    related {\n      name\n    }\n  }\n}\n\n (sql SELECT firstname as name1, lastname as name2 FROM user WHERE user.created > 10 AND user.is_active = true\n        GROUP BY lastname\n )\n\n // Note: bug in simple tokenizer...\n const mycompo = x => <div>{x}</div>\n const mycompo = x => <div value={\"what?\"}> hello {x} </div>\n\n const myFn = x => x + 1   \n const myFn = x => { return x + 1 }   \n const myFn = x => ( return x + 1 )   \n\n class myClass extends someOhter {\n   fn OK ( x:(z:int h:int) -> int) {\n\n   }\n }\n    ";
     const code = new SourceCode(testCode);
     const t = new RangerStringTokenizer(code);
     t.parse(true);

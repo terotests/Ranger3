@@ -426,6 +426,10 @@ gql {
         GROUP BY lastname
  )
 
+ // Note: bug in simple tokenizer...
+ const mycompo = x => <div>{x}</div>
+ const mycompo = x => <div value={"what?"}> hello {x} </div>
+
  const myFn = x => x + 1   
  const myFn = x => { return x + 1 }   
  const myFn = x => ( return x + 1 )   

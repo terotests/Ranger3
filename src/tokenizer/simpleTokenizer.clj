@@ -1287,10 +1287,12 @@ class RangerStringTokenizer {
 
         ; 
         if (   (c == 41) || (c == ((ccode "}")))) {
+          ; end_expression increments i...
           if ((c == ((ccode "}"))) && is_block_parent && (((array_length curr_node.children)) > 0)) {
             this.end_expression()
+          } {
+            i = 1 + i
           }
-          i = 1 + i
           paren_cnt = paren_cnt - 1
           if (paren_cnt < 0) {
             break
