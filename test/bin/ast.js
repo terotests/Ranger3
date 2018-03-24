@@ -912,6 +912,48 @@ class RNoOp  {
     return res;
   };
 }
+class RMaybeClass  {
+  constructor() {
+    this.className = "";
+  }
+  __CopySelf () {
+    const res = new RMaybeClass();
+    res.className = this.className;
+    res.node = this.node;
+    return res;
+  };
+  set_className (new_value_of_className) {
+    const res = this.__CopySelf();
+    res.className = new_value_of_className;
+    return res;
+  };
+  set_node (new_value_of_node) {
+    const res = this.__CopySelf();
+    res.node = new_value_of_node;
+    return res;
+  };
+}
+class RMaybeSQL  {
+  constructor() {
+    this.command = "";
+  }
+  __CopySelf () {
+    const res = new RMaybeSQL();
+    res.command = this.command;
+    res.node = this.node;
+    return res;
+  };
+  set_command (new_value_of_command) {
+    const res = this.__CopySelf();
+    res.command = new_value_of_command;
+    return res;
+  };
+  set_node (new_value_of_node) {
+    const res = this.__CopySelf();
+    res.node = new_value_of_node;
+    return res;
+  };
+}
 class RContextEnv  {
   constructor() {
     this.langFilePath = "";
@@ -952,6 +994,7 @@ class RContextState  {
     this.in_static_method = false;
     this.in_class = false;
     this.activeClass = "";
+    this.nspath = "";
   }
   __CopySelf () {
     const res = new RContextState();
@@ -964,6 +1007,7 @@ class RContextState  {
     res.in_static_method = this.in_static_method;
     res.in_class = this.in_class;
     res.activeClass = this.activeClass;
+    res.nspath = this.nspath;
     return res;
   };
   set_is_function (new_value_of_is_function) {
@@ -1009,6 +1053,11 @@ class RContextState  {
   set_activeClass (new_value_of_activeClass) {
     const res = this.__CopySelf();
     res.activeClass = new_value_of_activeClass;
+    return res;
+  };
+  set_nspath (new_value_of_nspath) {
+    const res = this.__CopySelf();
+    res.nspath = new_value_of_nspath;
     return res;
   };
 }
@@ -1394,7 +1443,7 @@ CodeNodeLiteral.fromDictionary = function(dict) {
     const values = (dict["ns"] instanceof Array ) ? dict ["ns"] : undefined ;
     if ( (typeof(values) !== "undefined" && values != null )  ) {
       const arr = values;
-      operatorsOfJSONArrayObject_67.forEach_68(arr, ((item, index) => { 
+      operatorsOfJSONArrayObject_68.forEach_69(arr, ((item, index) => { 
         if( typeof(item) === 'string' ) /* union case for string */ {
           var oo = item;
           obj.ns.push(oo);
@@ -1458,7 +1507,7 @@ CodeNodeLiteral.fromDictionary = function(dict) {
     const values_2 = (dict["prop_keys"] instanceof Array ) ? dict ["prop_keys"] : undefined ;
     if ( (typeof(values_2) !== "undefined" && values_2 != null )  ) {
       const arr_1 = values_2;
-      operatorsOf_67.forEach_68(arr_1, ((item, index) => { 
+      operatorsOf_68.forEach_69(arr_1, ((item, index) => { 
         if( typeof(item) === 'string' ) /* union case for string */ {
           var oo_1 = item;
           obj.prop_keys.push(oo_1);
@@ -1468,7 +1517,7 @@ CodeNodeLiteral.fromDictionary = function(dict) {
     const values_3 = (dict["comments"] instanceof Array ) ? dict ["comments"] : undefined ;
     if ( (typeof(values_3) !== "undefined" && values_3 != null )  ) {
       const arr_2 = values_3;
-      operatorsOf_67.forEach_68(arr_2, ((item, index) => { 
+      operatorsOf_68.forEach_69(arr_2, ((item, index) => { 
         if( item instanceof Object ) /* union case */ {
           var oo_2 = item;
           const newObj_4 = CodeNodeLiteral.fromDictionary(oo_2);
@@ -1479,7 +1528,7 @@ CodeNodeLiteral.fromDictionary = function(dict) {
     const values_4 = (dict["children"] instanceof Array ) ? dict ["children"] : undefined ;
     if ( (typeof(values_4) !== "undefined" && values_4 != null )  ) {
       const arr_3 = values_4;
-      operatorsOf_67.forEach_68(arr_3, ((item, index) => { 
+      operatorsOf_68.forEach_69(arr_3, ((item, index) => { 
         if( item instanceof Object ) /* union case */ {
           var oo_3 = item;
           const newObj_5 = CodeNodeLiteral.fromDictionary(oo_3);
@@ -1490,7 +1539,7 @@ CodeNodeLiteral.fromDictionary = function(dict) {
     const values_5 = (dict["attrs"] instanceof Array ) ? dict ["attrs"] : undefined ;
     if ( (typeof(values_5) !== "undefined" && values_5 != null )  ) {
       const arr_4 = values_5;
-      operatorsOf_67.forEach_68(arr_4, ((item, index) => { 
+      operatorsOf_68.forEach_69(arr_4, ((item, index) => { 
         if( item instanceof Object ) /* union case */ {
           var oo_4 = item;
           const newObj_6 = CodeNodeLiteral.fromDictionary(oo_4);
@@ -1895,7 +1944,7 @@ class CodeNode  {
     }
     for ( let i = 0; i < this.children.length; i++) {
       var item = this.children[i];
-      item.walk();
+      (item).walk();
     };
     if ( this.expression ) {
       console.log(")");
@@ -3313,87 +3362,115 @@ class BasicAST  {
       }
     };
   };
+  testClassifier (ctx) {
+    let subCtx = ctx;
+    if ( typeof(ctx.activeNode) === "undefined" ) {
+      return subCtx;
+    }
+    const ast = ctx.activeNode;
+    if( ast instanceof RBlockNode ) /* union case */ {
+      var node = ast;
+      let new_children = [];
+      let res = new RBlockNode();
+      res = (res).set_name(node.name);
+      const emptyCtx = new writerCtx();
+      subCtx = (subCtx).set_outerBlock(ctx);
+      subCtx = (subCtx).set_defined_vars(emptyCtx.defined_vars);
+      res = (res).set_startCtx(subCtx);
+      operatorsOf_5.forEach_21(node.children, ((item) => { 
+        subCtx = (subCtx).set_activeNode(item);
+        subCtx = this.testClassifier(subCtx);
+        if ( (typeof(subCtx.activeNode) !== "undefined" && subCtx.activeNode != null )  ) {
+          new_children.push(subCtx.activeNode);
+        }
+      }));
+      operatorsOf_9.forEach_23(new_children, ((item, index) => { 
+        res = (res).set_children(operatorsOf_5.push_24(res.children, item));
+      }));
+      res = (res).set_endCtx(subCtx);
+      subCtx = (subCtx).set_activeNode((res));
+      subCtx = (subCtx).set_captured_vars(ctx.captured_vars);
+      subCtx = (subCtx).set_defined_vars(ctx.defined_vars);
+      return subCtx;
+    };
+    if( ast instanceof RExpression ) /* union case */ {
+      var node_1 = ast;
+      if ( operatorsOf_5.size_47(node_1.children) >= 3 ) {
+        const fc = operatorsOf_5.at_22(node_1.children, 0);
+        const second = operatorsOf_5.at_22(node_1.children, 1);
+        if( fc instanceof RVRefNode ) /* union case */ {
+          var classTag = fc;
+          if ( classTag.vref == "class" ) {
+            if( second instanceof RVRefNode ) /* union case */ {
+              var classNameTag = second;
+              let maybe = new RMaybeClass();
+              maybe = (maybe).set_className(classNameTag.vref);
+              maybe = (maybe).set_node(ast);
+              subCtx = (subCtx).set_activeNode((maybe));
+              return subCtx;
+            };
+          }
+          if ( classTag.vref == "CREATE" ) {
+            let maybe_1 = new RMaybeSQL();
+            maybe_1 = (maybe_1).set_command(classTag.vref);
+            maybe_1 = (maybe_1).set_node(ast);
+            subCtx = (subCtx).set_activeNode((maybe_1));
+            return subCtx;
+          }
+        };
+      }
+      let new_children_1 = [];
+      let res_1 = new RExpression();
+      operatorsOf_5.forEach_21(node_1.children, ((item) => { 
+        subCtx = (subCtx).set_activeNode(item);
+        subCtx = this.testClassifier(subCtx);
+        if ( (typeof(subCtx.activeNode) !== "undefined" && subCtx.activeNode != null )  ) {
+          new_children_1.push(subCtx.activeNode);
+        }
+      }));
+      operatorsOf_9.forEach_23(new_children_1, ((item, index) => { 
+        res_1 = (res_1).set_children(operatorsOf_5.push_24(res_1.children, item));
+      }));
+      res_1 = (res_1).set_endCtx(subCtx);
+      subCtx = (subCtx).set_activeNode((res_1));
+      return subCtx;
+    };
+    if( ast instanceof RVRefNode ) /* union case */ {
+      var node_2 = ast;
+    };
+    return subCtx;
+  };
   testTokenizer (testCtx) {
-    const testCode = "\n \nCREATE TABLE article (\n  article_id bigserial primary key,\n  article_name varchar(20) NOT NULL,\n  article_desc text NOT NULL,\n  date_added timestamp default NULL\n); \n\n (sql SELECT firstname as name1, lastname as name2 FROM user WHERE user.created > 10 AND user.is_active = true\n        GROUP BY lastname\n )\n\n const myFn = x => x + 1   \n const myFn = x => { return x + 1 }   \n const myFn = x => ( return x + 1 )   \n\n class myClass extends someOhter {\n   fn OK ( x:(z:int h:int) -> int) {\n\n   }\n }\n    ";
+    const testCode = "\n \nCREATE TABLE article (\n  article_id bigserial primary key,\n  article_name varchar(20) NOT NULL,\n  article_desc text NOT NULL,\n  date_added timestamp default NULL\n); \n\nlet myValue = (CREATE TABLE second_article (\n  article_id bigserial primary key,\n  article_name varchar(20) NOT NULL,\n  article_desc text NOT NULL,\n  date_added timestamp default NULL\n))\n\ngql {\n  get_items {\n    name\n    count\n    related {\n      name\n    }\n  }\n}\n\n (sql SELECT firstname as name1, lastname as name2 FROM user WHERE user.created > 10 AND user.is_active = true\n        GROUP BY lastname\n )\n\n const myFn = x => x + 1   \n const myFn = x => { return x + 1 }   \n const myFn = x => ( return x + 1 )   \n\n class myClass extends someOhter {\n   fn OK ( x:(z:int h:int) -> int) {\n\n   }\n }\n    ";
     const code = new SourceCode(testCode);
     const t = new RangerStringTokenizer(code);
     t.parse(true);
     const root = t.rootNode;
+    const res_ast = operatorsOfCodeNode_52.createAST_53(root);
     let out = new CodeOutput();
     out = (out).set_settings(new WriterSettings());
-    /** unused:  const str = ""   **/ 
-    let walkfn = ((item, input) => { 
-    });
-    walkfn = ((item, input) => { 
-      let out_2 = input;
-      if ( item.expression && (item.is_block_node == false) ) {
-        out_2 = operatorsOf_3.write_4(out_2, "(");
-        out_2 = operatorsOf_3.indent_8(out_2);
-        out_2 = operatorsOf_3.nl_8(out_2);
-        operatorsOf_9.forEach_52(item.children, ((item, index) => { 
-          out_2 = walkfn(item, out_2);
-        }));
-        out_2 = operatorsOf_3.nl_8(out_2);
-        out_2 = operatorsOf_3.unindent_8(out_2);
-        out_2 = operatorsOf_3.write_4(out_2, ")");
-      }
-      if ( item.is_block_node ) {
-        out_2 = operatorsOf_3.write_4(out_2, "{");
-        out_2 = operatorsOf_3.indent_8(out_2);
-        out_2 = operatorsOf_3.nl_8(out_2);
-        operatorsOf_9.forEach_52(item.children, ((item, index) => { 
-          out_2 = walkfn(item, out_2);
-          out_2 = operatorsOf_3.nl_8(out_2);
-        }));
-        out_2 = operatorsOf_3.unindent_8(out_2);
-        out_2 = operatorsOf_3.write_4(out_2, "}");
-        out_2 = operatorsOf_3.nl_8(out_2);
-      }
-      switch (item.value_type ) { 
-        case 11 : 
-          out_2 = operatorsOf_3.write_4(out_2, (" " + item.vref));
-          break;
-        case 5 : 
-          if ( item.boolean_value ) {
-            out_2 = operatorsOf_3.write_4(out_2, " true");
-          } else {
-            out_2 = operatorsOf_3.write_4(out_2, " false");
-          }
-          break;
-        case 3 : 
-          out_2 = operatorsOf_3.write_4(out_2, (" " + item.int_value));
-          break;
-        case 4 : 
-          out_2 = operatorsOf_3.write_4(out_2, ((" \"" + item.string_value) + "\" "));
-          break;
-      };
-      return out_2;
-    });
-    out = walkfn(root, out);
-    console.log("--> AST ");
-    const result = operatorsOf_3.getString_14(out, 0, "");
-    console.log(result);
-    const res_ast = operatorsOfCodeNode_53.createAST_54(root);
-    if( res_ast instanceof RBlockNode ) /* union case */ {
-      var node = res_ast;
-      console.log("child count of res_ast = " + operatorsOf_5.size_47(node.children));
-      operatorsOf_5.forEach_21(node.children, ((item) => { 
-        if( item instanceof RExpression ) /* union case */ {
-          var node_1 = item;
-          console.log("-- expression");
-          operatorsOf_5.forEach_21(node_1.children, ((item) => { 
-            if( item instanceof RVRefNode ) /* union case */ {
-              var node_2 = item;
-              console.log(node_2.vref);
-            };
-          }));
+    console.log("--- ast out --- ");
+    console.log(operatorsOf_3.getString_8(operatorsOfRNode_55.print_56(res_ast, out)));
+    let ctx = new writerCtx();
+    ctx = (ctx).set_activeNode(res_ast);
+    const resCtx = this.testClassifier(ctx);
+    if ( (typeof(resCtx.activeNode) !== "undefined" && resCtx.activeNode != null )  ) {
+      console.log("... did walk");
+      const node = resCtx.activeNode;
+      operatorsOf_55.walk_57(node, ((item) => { 
+        if( item instanceof RMaybeClass ) /* union case */ {
+          var n = item;
+          console.log("Maybe Class == " + n.className);
+        };
+        if( item instanceof RMaybeSQL ) /* union case */ {
+          var n_1 = item;
+          console.log("Maybe SQL == " + n_1.command);
+          let out_2 = new CodeOutput();
+          out_2 = (out_2).set_settings(new WriterSettings());
+          console.log(operatorsOf_3.getString_8(operatorsOf_55.print_56((n_1.node), out_2)));
         };
       }));
-    };
-    let out_3 = new CodeOutput();
-    out_3 = (out_3).set_settings(new WriterSettings());
-    console.log("--- ast out --- ");
-    console.log(operatorsOf_3.getString_8(operatorsOfRNode_55.print_56(res_ast, out_3)));
+    }
   };
   blockCtxTest (testCtx) {
     testCtx.msg("Running the Basic Block Context testcase");
@@ -3406,26 +3483,26 @@ class BasicAST  {
     block3 = (block3).set_name("block3");
     let genTrait1 = new RType_GenericTrait();
     genTrait1 = (genTrait1).set_name("Vector<T>");
-    ctx = (ctx).set_defined_types(operatorsOf_11.set_57(ctx.defined_types, "Vector<T>", (genTrait1)));
+    ctx = (ctx).set_defined_types(operatorsOf_11.set_58(ctx.defined_types, "Vector<T>", (genTrait1)));
     let intType = new RType_Scalar();
     intType = (intType).set_bits(64);
-    ctx = (ctx).set_defined_types(operatorsOf_11.set_57(ctx.defined_types, "int", (intType)));
+    ctx = (ctx).set_defined_types(operatorsOf_11.set_58(ctx.defined_types, "int", (intType)));
     let en = new RType_Enum();
     en = (en).set_name("RValueEnum");
     en = (en).set_keys(operatorsOf_5.push_6(en.keys, "Int"));
     en = (en).set_keys(operatorsOf_5.push_6(en.keys, "String"));
     en = (en).set_keys(operatorsOf_5.push_6(en.keys, "Boolean"));
     en = (en).set_keys(operatorsOf_5.push_6(en.keys, "Double"));
-    ctx = (ctx).set_defined_types(operatorsOf_11.set_57(ctx.defined_types, "RValueEnum", (en)));
+    ctx = (ctx).set_defined_types(operatorsOf_11.set_58(ctx.defined_types, "RValueEnum", (en)));
     let someClass = new RType_Class();
     someClass = (someClass).set_name("MyClass");
     let xVal = new RType_Variable();
     xVal = (xVal).set_name("x");
-    xVal = (xVal).set_value_type((operatorsOf_11.get_58(ctx.defined_types, "int")));
-    someClass = (someClass).set_variables(operatorsOf_11.set_59(someClass.variables, "x", xVal));
-    ctx = (ctx).set_defined_types(operatorsOf_11.set_57(ctx.defined_types, "MyClass", (someClass)));
+    xVal = (xVal).set_value_type((operatorsOf_11.get_59(ctx.defined_types, "int")));
+    someClass = (someClass).set_variables(operatorsOf_11.set_60(someClass.variables, "x", xVal));
+    ctx = (ctx).set_defined_types(operatorsOf_11.set_58(ctx.defined_types, "MyClass", (someClass)));
     let objInstance = new RObjectInstance();
-    objInstance = (objInstance).set_objectType((operatorsOf_11.get_58(ctx.defined_types, "MyClass")));
+    objInstance = (objInstance).set_objectType((operatorsOf_11.get_59(ctx.defined_types, "MyClass")));
     let objRef = new RObjectReference();
     objRef = (objRef).set_objInstance(objInstance);
     let vd = new RDefVariable();
@@ -3480,8 +3557,8 @@ class BasicAST  {
     block = (block).set_children(operatorsOf_5.push_24(block.children, (block3)));
     ctx = (ctx).set_activeNode((block));
     ctx = this.walkNode(ctx);
-    (testCtx).assert((operatorsOf_11.keys_60(ctx.variables).length) == 6, "ctx should have definex 6 variables");
-    operatorsOf_11.forEach_61(ctx.variables, ((item, index) => { 
+    (testCtx).assert((operatorsOf_11.keys_61(ctx.variables).length) == 6, "ctx should have definex 6 variables");
+    operatorsOf_11.forEach_62(ctx.variables, ((item, index) => { 
       if ( index == "X" ) {
         (testCtx).assert(item.write_cnt == 1, "write_cnt count of X should be 1");
         (testCtx).assert(item.read_cnt == 1, "read_cnt count of X should be 1");
@@ -3504,7 +3581,7 @@ class BasicAST  {
           if ( (typeof(ob.outerBlock) !== "undefined" && ob.outerBlock != null )  ) {
           }
         }
-        operatorsOf_11.forEach_61(b.startCtx.variables, ((item, index) => { 
+        operatorsOf_11.forEach_62(b.startCtx.variables, ((item, index) => { 
           if ( (typeof(item.value) !== "undefined" && item.value != null )  ) {
             const v = item.value;
             if( Number.isInteger ? Number.isInteger(v) : (function(v) { return typeof v === 'number' &&  isFinite(v) && Math.floor(v) === v; })(v) ) /* union case for int */ {
@@ -3515,7 +3592,7 @@ class BasicAST  {
             };
           }
         }));
-        operatorsOf_11.forEach_61(b.endCtx.variables, ((item, index) => { 
+        operatorsOf_11.forEach_62(b.endCtx.variables, ((item, index) => { 
           if ( (typeof(item.value) !== "undefined" && item.value != null )  ) {
             const v_1 = item.value;
             if( v_1 instanceof RType_Literal ) /* union case */ {
@@ -3541,17 +3618,17 @@ class BasicAST  {
       };
     });
     walkFn(ctx.activeNode);
-    (testCtx).assert(operatorsOf_5.size_62(ctx.errors) == 1, "Error count should be one");
-    operatorsOf_5.forEach_63(ctx.errors, ((item) => { 
+    (testCtx).assert(operatorsOf_5.size_63(ctx.errors) == 1, "Error count should be one");
+    operatorsOf_5.forEach_64(ctx.errors, ((item) => { 
       if( item instanceof RError ) /* union case */ {
         var e_1 = item;
       };
     }));
-    operatorsOf_9.forEach_17(operatorsOf_11.keys_65(ctx.defined_types), ((item, index) => { 
-      const t = operatorsOf_11.get_58(ctx.defined_types, item);
+    operatorsOf_9.forEach_17(operatorsOf_11.keys_66(ctx.defined_types), ((item, index) => { 
+      const t = operatorsOf_11.get_59(ctx.defined_types, item);
       if( t instanceof RType_Class ) /* union case */ {
         var cl = t;
-        operatorsOf_9.forEach_17(operatorsOf_11.keys_66(cl.variables), ((item, index) => { 
+        operatorsOf_9.forEach_17(operatorsOf_11.keys_67(cl.variables), ((item, index) => { 
         }));
       };
     }));
@@ -5151,21 +5228,25 @@ operatorsOf_5.size_49 = function(__self) {
 operatorsOf_5.size_50 = function(__self) {
   return (__self).count();
 };
-operatorsOf_5.size_62 = function(__self) {
+operatorsOf_5.at_22 = function(__self, idx) {
+  const val_4 = (__self).get(idx);
+  return val_4;
+};
+operatorsOf_5.size_63 = function(__self) {
   return (__self).count();
 };
-operatorsOf_5.forEach_63 = function(__self, cb) {
+operatorsOf_5.forEach_64 = function(__self, cb) {
   const cnt_5 = (__self).count();
   let i_19 = 0;
   while (i_19 < cnt_5) {
-    const item_4 = operatorsOf_5.itemAt_64(__self, i_19);
+    const item_4 = operatorsOf_5.itemAt_65(__self, i_19);
     cb(item_4);
     i_19 = i_19 + 1;
   };
 };
-operatorsOf_5.itemAt_64 = function(__self, idx) {
-  const val_4 = (__self).get(idx);
-  return val_4;
+operatorsOf_5.itemAt_65 = function(__self, idx) {
+  const val_5 = (__self).get(idx);
+  return val_5;
 };
 class operatorsOf_3  {
   constructor() {
@@ -5338,7 +5419,7 @@ operatorsOf_9.forEach_42 = function(__self, cb) {
     cb(it_5, i_11);
   };
 };
-operatorsOf_9.forEach_52 = function(__self, cb) {
+operatorsOf_9.forEach_54 = function(__self, cb) {
   for ( let i_15 = 0; i_15 < __self.length; i_15++) {
     var it_6 = __self[i_15];
     cb(it_6, i_15);
@@ -5429,7 +5510,7 @@ operatorsOf_11.set_48 = function(__self, key, value) {
 operatorsOf_11.get_51 = function(__self, key) {
   return __self.elements[key];
 };
-operatorsOf_11.set_57 = function(__self, key, value) {
+operatorsOf_11.set_58 = function(__self, key, value) {
   const c_5 = new Map_string_RValueType();
   const keys_5 = Object.keys(__self.elements);
   for ( let i_16 = 0; i_16 < keys_5.length; i_16++) {
@@ -5442,10 +5523,10 @@ operatorsOf_11.set_57 = function(__self, key, value) {
   c_5.elements[key] = value;
   return c_5;
 };
-operatorsOf_11.get_58 = function(__self, key) {
+operatorsOf_11.get_59 = function(__self, key) {
   return __self.elements[key];
 };
-operatorsOf_11.set_59 = function(__self, key, value) {
+operatorsOf_11.set_60 = function(__self, key, value) {
   const c_6 = new Map_string_RType_Variable();
   const keys_6 = Object.keys(__self.elements);
   for ( let i_17 = 0; i_17 < keys_6.length; i_17++) {
@@ -5458,10 +5539,10 @@ operatorsOf_11.set_59 = function(__self, key, value) {
   c_6.elements[key] = value;
   return c_6;
 };
-operatorsOf_11.keys_60 = function(__self) {
+operatorsOf_11.keys_61 = function(__self) {
   return Object.keys(__self.elements);
 };
-operatorsOf_11.forEach_61 = function(__self, cb) {
+operatorsOf_11.forEach_62 = function(__self, cb) {
   const keys_7 = Object.keys(__self.elements);
   for ( let i_18 = 0; i_18 < keys_7.length; i_18++) {
     var key = keys_7[i_18];
@@ -5469,10 +5550,10 @@ operatorsOf_11.forEach_61 = function(__self, cb) {
   };
   return __self;
 };
-operatorsOf_11.keys_65 = function(__self) {
+operatorsOf_11.keys_66 = function(__self) {
   return Object.keys(__self.elements);
 };
-operatorsOf_11.keys_66 = function(__self) {
+operatorsOf_11.keys_67 = function(__self) {
   return Object.keys(__self.elements);
 };
 class operatorsOfstring_28  {
@@ -5600,23 +5681,23 @@ operatorsOf_34.literal_35 = function(v) {
   sca_1 = (sca_1).set_value_type(1);
   return sca_1;
 };
-class operatorsOfCodeNode_53  {
+class operatorsOfCodeNode_52  {
   constructor() {
   }
 }
-operatorsOfCodeNode_53.createAST_54 = function(item) {
+operatorsOfCodeNode_52.createAST_53 = function(item) {
   if ( item.expression && (item.is_block_node == false) ) {
     let block = new RExpression();
-    operatorsOf_9.forEach_52(item.children, ((item, index) => { 
-      const ch_2 = operatorsOf_53.createAST_54(item);
+    operatorsOf_9.forEach_54(item.children, ((item, index) => { 
+      const ch_2 = operatorsOf_52.createAST_53(item);
       block = (block).set_children(operatorsOf_5.push_24(block.children, ch_2));
     }));
     return block;
   }
   if ( item.is_block_node ) {
     let block_3 = new RBlockNode();
-    operatorsOf_9.forEach_52(item.children, ((item, index) => { 
-      const ch_3 = operatorsOf_53.createAST_54(item);
+    operatorsOf_9.forEach_54(item.children, ((item, index) => { 
+      const ch_3 = operatorsOf_52.createAST_53(item);
       block_3 = (block_3).set_children(operatorsOf_5.push_24(block_3.children, ch_3));
     }));
     return block_3;
@@ -5649,23 +5730,23 @@ operatorsOfCodeNode_53.createAST_54 = function(item) {
   const no_op_1 = new RNoOp();
   return no_op_1;
 };
-class operatorsOf_53  {
+class operatorsOf_52  {
   constructor() {
   }
 }
-operatorsOf_53.createAST_54 = function(item) {
+operatorsOf_52.createAST_53 = function(item) {
   if ( item.expression && (item.is_block_node == false) ) {
     let block_1 = new RExpression();
-    operatorsOf_9.forEach_52(item.children, ((item, index) => { 
-      const ch = operatorsOf_53.createAST_54(item);
+    operatorsOf_9.forEach_54(item.children, ((item, index) => { 
+      const ch = operatorsOf_52.createAST_53(item);
       block_1 = (block_1).set_children(operatorsOf_5.push_24(block_1.children, ch));
     }));
     return block_1;
   }
   if ( item.is_block_node ) {
     let block_2 = new RBlockNode();
-    operatorsOf_9.forEach_52(item.children, ((item, index) => { 
-      const ch_1 = operatorsOf_53.createAST_54(item);
+    operatorsOf_9.forEach_54(item.children, ((item, index) => { 
+      const ch_1 = operatorsOf_52.createAST_53(item);
       block_2 = (block_2).set_children(operatorsOf_5.push_24(block_2.children, ch_1));
     }));
     return block_2;
@@ -5812,11 +5893,26 @@ operatorsOf_55.print_56 = function(res_ast, input) {
   };
   return out_1;
 };
-class operatorsOfJSONArrayObject_67  {
+operatorsOf_55.walk_57 = function(res_ast, cb) {
+  cb(res_ast);
+  if( res_ast instanceof RExpression ) /* union case */ {
+    var node_24 = res_ast;
+    operatorsOf_5.forEach_21(node_24.children, ((item) => { 
+      operatorsOf_55.walk_57(item, cb);
+    }));
+  };
+  if( res_ast instanceof RBlockNode ) /* union case */ {
+    var node_25 = res_ast;
+    operatorsOf_5.forEach_21(node_25.children, ((item) => { 
+      operatorsOf_55.walk_57(item, cb);
+    }));
+  };
+};
+class operatorsOfJSONArrayObject_68  {
   constructor() {
   }
 }
-operatorsOfJSONArrayObject_67.forEach_68 = function(__self, cb) {
+operatorsOfJSONArrayObject_68.forEach_69 = function(__self, cb) {
   let cnt_6 = __self.length;
   let i_20 = 0;
   while (cnt_6 > 0) {
@@ -5826,11 +5922,11 @@ operatorsOfJSONArrayObject_67.forEach_68 = function(__self, cb) {
     i_20 = i_20 + 1;
   };
 };
-class operatorsOf_67  {
+class operatorsOf_68  {
   constructor() {
   }
 }
-operatorsOf_67.forEach_68 = function(__self, cb) {
+operatorsOf_68.forEach_69 = function(__self, cb) {
   let cnt_7 = __self.length;
   let i_21 = 0;
   while (cnt_7 > 0) {

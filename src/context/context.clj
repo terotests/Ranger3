@@ -15,6 +15,7 @@ class RContextState@(immutable) {
   def in_static_method false
   def in_class false
   def activeClass ""
+  def nspath "" ; the current compiler namespace
 }
 
 ; immutable compiler writer context

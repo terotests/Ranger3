@@ -65,4 +65,19 @@ operator type:void all {
     ; vd.value could be set too
     return vd
   }
+
+  fn walk:void (res_ast:RNode cb:(_:void (item:RNode)) ) {
+    cb(res_ast)
+    case res_ast node:RExpression {
+      forEach node.children {
+        (walk item cb)
+      }
+    }
+    case res_ast node:RBlockNode {
+      forEach node.children {
+        (walk item cb)
+      }
+    }
+  }
+  
 }    

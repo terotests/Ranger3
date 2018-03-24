@@ -8,7 +8,6 @@ union RNode (
   RIncExpression
   RExpression
   RVRefNode
-  RExpression
   ROperator
   RFunction
   RFunctionParam
@@ -17,6 +16,8 @@ union RNode (
   RStringValue
   RDoubleValue
   RNoOp
+  RMaybeClass
+  RMaybeSQL
 )
 
 union RValueType (
@@ -250,4 +251,15 @@ class RVariable@(immutable) {
 
 class RNoOp@(immutable) {
   def name ""
+}
+
+
+class RMaybeClass@(immutable) {
+  def className ""
+  def node:RNode
+}
+
+class RMaybeSQL@(immutable) {
+  def command ""
+  def node:RNode
 }

@@ -309,6 +309,88 @@ function foobar() {
     
   }
 
+  ; try to classify nodes
+  fn testClassifier:writerCtx ( ctx:writerCtx ) {
+    let subCtx@(temp) = ctx
+    if(null? ctx.activeNode) {
+      return subCtx
+    }
+    let ast = (unwrap ctx.activeNode)
+
+    case ast node:RBlockNode {
+      let new_children:[RNode]
+      let res (new RBlockNode)
+      res.name = node.name
+      let emptyCtx (new writerCtx)
+      subCtx.outerBlock = ctx
+      subCtx.defined_vars = emptyCtx.defined_vars
+      res.startCtx = subCtx
+      node.children.forEach({
+        subCtx.activeNode = item
+        subCtx = (this.testClassifier(subCtx))      
+        if(!null? subCtx.activeNode) {
+          push new_children (unwrap subCtx.activeNode)
+        }  
+      })
+      new_children.forEach({
+        res.children = (push res.children item)
+      })
+      res.endCtx = subCtx
+      subCtx.activeNode = res
+      subCtx.captured_vars = ctx.captured_vars
+      subCtx.defined_vars = ctx.defined_vars
+      return subCtx
+    }
+
+    case ast node:RExpression {
+
+      ; a trivial classifier which detects SQL and simple class
+      if( (size node.children) >= 3) {
+        let fc = (at node.children 0)
+        let second = (at node.children 1)
+        case fc classTag:RVRefNode {
+          if(classTag.vref == 'class') {
+            case second classNameTag:RVRefNode {
+              let maybe = (new RMaybeClass)
+              maybe.className = classNameTag.vref
+              maybe.node = ast
+              subCtx.activeNode = maybe
+              return subCtx
+            }
+          }
+          if(classTag.vref == 'CREATE') {
+            let maybe = (new RMaybeSQL)
+            maybe.command = classTag.vref
+            maybe.node = ast
+            subCtx.activeNode = maybe
+            return subCtx
+          }
+        }
+      }
+
+      ; standard way of walking the expressions...
+      let new_children:[RNode]
+      let res (new RExpression)
+      node.children.forEach({
+        subCtx.activeNode = item
+        subCtx = (this.testClassifier(subCtx))      
+        if(!null? subCtx.activeNode) {
+          push new_children (unwrap subCtx.activeNode)
+        }  
+      })
+      new_children.forEach({
+        res.children = (push res.children item)
+      })
+      res.endCtx = subCtx
+      subCtx.activeNode = res
+      return subCtx
+    }
+
+    case ast node:RVRefNode {
+    }
+    return subCtx
+  }
+
 
   fn testTokenizer( testCtx:TestContext ) {
     ; http://www.postgresqltutorial.com/postgresql-create-table/
@@ -322,6 +404,23 @@ CREATE TABLE article (
   article_desc text NOT NULL,
   date_added timestamp default NULL
 ); 
+
+let myValue = (CREATE TABLE second_article (
+  article_id bigserial primary key,
+  article_name varchar(20) NOT NULL,
+  article_desc text NOT NULL,
+  date_added timestamp default NULL
+))
+
+gql {
+  get_items {
+    name
+    count
+    related {
+      name
+    }
+  }
+}
 
  (sql SELECT firstname as name1, lastname as name2 FROM user WHERE user.created > 10 AND user.is_active = true
         GROUP BY lastname
@@ -342,87 +441,30 @@ CREATE TABLE article (
     t.parse(true)
     let root (unwrap t.rootNode)    
 
-    let out = (new CodeOutput)
-    out.settings = (new WriterSettings)
-
-    let str = ""
-
-  
-    let walkfn (fn:CodeOutput (item:CodeNode input:CodeOutput) {})
-    walkfn = (fn:CodeOutput (item:CodeNode input:CodeOutput) {
-      let out = input
-      if(item.expression && (item.is_block_node == false)) {
-        ; create ast block
-        out = (write out '(')
-        out = (indent out)
-        out = (nl out)
-        forEach item.children {
-          out = (walkfn(item out))
-        }
-        out = (nl out)
-        out = (unindent out)
-        out = (write out ')')
-      }     
-      if(item.is_block_node) {
-        out = (write out '{')
-        out = (indent out)
-        out = (nl out)
-        forEach item.children {
-          out = (walkfn(item out))
-          out = (nl out)
-        }
-        out = (unindent out)
-        out = (write out '}')
-        out = (nl out)
-      }     
-      switch item.value_type {
-        case RangerNodeType.VRef {
-           out = (write out (' ' + item.vref))
-        }
-        case RangerNodeType.Boolean {
-          if( item.boolean_value) {
-           out = (write out ' true')
-          } {
-           out = (write out ' false')
-          }
-        }
-        case RangerNodeType.Integer {
-          out = (write out (' ' + item.int_value))
-        }
-        case RangerNodeType.String {
-          out = (write out (' "' + item.string_value + '" '))
-        }
-      }   
-
-     return out 
-    })
-
-    out = (walkfn(root out))
-
-    print "--> AST "
-    let result (getString out 0 '')
-    print result
-
     let res_ast = (createAST root)
-    case res_ast node:RBlockNode {
-      print "child count of res_ast = " + (size node.children)
-      node.children.forEach({
-        case item node:RExpression {
-          print "-- expression"
-          node.children.forEach({
-            case item node:RVRefNode {
-              print node.vref
-            }
-            
-          })
-        }
-      })
-    }
     let out = (new CodeOutput)
     out.settings = (new WriterSettings)
     print "--- ast out --- "
     print (getString (print res_ast out) )
-    
+
+    let ctx (new writerCtx)
+    ctx.activeNode = res_ast
+    let resCtx = (this.testClassifier(ctx))
+    if(!null? resCtx.activeNode) {
+      print "... did walk"
+      let node = (unwrap resCtx.activeNode)
+      walk node {
+        case item n:RMaybeClass {
+          print "Maybe Class == " + n.className
+        }
+        case item n:RMaybeSQL {
+          print "Maybe SQL == " + n.command
+          let out = (new CodeOutput)
+          out.settings = (new WriterSettings)
+          print (getString (print (unwrap n.node) out) )
+        }
+      }
+    }
   }
 
   ; First proof oc concept test run
