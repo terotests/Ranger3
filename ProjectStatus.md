@@ -17,8 +17,11 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 - function AST creation
 - CodeWriter is approximately OK
 - String tokenizer can now create basic AST structure
+- Trivial classifier example is now done
 
 # Next steps could be
+
+- Think how node classifier should really work
 
 Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )` or `x + y` where the matcher code will evaluating the operatorss
 
