@@ -17,6 +17,7 @@ operator type:void all {
              (c == (ccode ">")) ||
              (c == (ccode "|")) ||
              (c == (ccode "%")) ||
+             (c == (ccode ".")) ||
              (c == (ccode ",")) )
   }
   
@@ -41,6 +42,7 @@ operator type:void all {
              (c != (ccode "}")) && 
              (c != (ccode "<")) && 
              (c != (ccode ">")) && 
+             (c != (ccode ".")) && 
              (c != (ccode ",")) )
   }
 }

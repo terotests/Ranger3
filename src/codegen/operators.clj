@@ -44,6 +44,9 @@ operator type:void all {
     }
     return res
   }
+  fn getString:string (out:CodeOutput) {
+    return (getString out 0 '')
+  }
   fn getString:string (out:CodeOutput indentLevel:int currentLine:string) {
     let res = ""
     let curr_line = currentLine

@@ -311,7 +311,22 @@ function foobar() {
 
 
   fn testTokenizer( testCtx:TestContext ) {
+    ; http://www.postgresqltutorial.com/postgresql-create-table/
+    ; INHERITS existing_table_name;
+
     let testCode `
+ 
+CREATE TABLE article (
+  article_id bigserial primary key,
+  article_name varchar(20) NOT NULL,
+  article_desc text NOT NULL,
+  date_added timestamp default NULL
+); 
+
+ (sql SELECT firstname as name1, lastname as name2 FROM user WHERE user.created > 10 AND user.is_active = true
+        GROUP BY lastname
+ )
+
  const myFn = x => x + 1   
  const myFn = x => { return x + 1 }   
  const myFn = x => ( return x + 1 )   
@@ -325,17 +340,19 @@ function foobar() {
     let code (new SourceCode (testCode))
     let t (new RangerStringTokenizer (code))
     t.parse(true)
-    let root t.rootNode    
+    let root (unwrap t.rootNode)    
 
     let out = (new CodeOutput)
     out.settings = (new WriterSettings)
 
     let str = ""
 
+  
     let walkfn (fn:CodeOutput (item:CodeNode input:CodeOutput) {})
     walkfn = (fn:CodeOutput (item:CodeNode input:CodeOutput) {
       let out = input
       if(item.expression && (item.is_block_node == false)) {
+        ; create ast block
         out = (write out '(')
         out = (indent out)
         out = (nl out)
@@ -385,6 +402,27 @@ function foobar() {
     print "--> AST "
     let result (getString out 0 '')
     print result
+
+    let res_ast = (createAST root)
+    case res_ast node:RBlockNode {
+      print "child count of res_ast = " + (size node.children)
+      node.children.forEach({
+        case item node:RExpression {
+          print "-- expression"
+          node.children.forEach({
+            case item node:RVRefNode {
+              print node.vref
+            }
+            
+          })
+        }
+      })
+    }
+    let out = (new CodeOutput)
+    out.settings = (new WriterSettings)
+    print "--- ast out --- "
+    print (getString (print res_ast out) )
+    
   }
 
   ; First proof oc concept test run

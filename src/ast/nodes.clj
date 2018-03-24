@@ -12,6 +12,11 @@ union RNode (
   ROperator
   RFunction
   RFunctionParam
+  RIntValue
+  RBooleanValue
+  RStringValue
+  RDoubleValue
+  RNoOp
 )
 
 union RValueType (
@@ -222,7 +227,16 @@ class RExpression@(immutable) {
 ; -- some value types
 ; should you be using 
 class RIntValue@(immutable) {
-  
+  def value:int 0
+}
+class RBooleanValue@(immutable) {
+  def value:boolean false
+}
+class RStringValue@(immutable) {
+  def value:string ""
+}
+class RDoubleValue@(immutable) {
+  def value:double 0.0
 }
 
 ; should the variable also be of union type?
@@ -232,4 +246,8 @@ class RVariable@(immutable) {
   def value:RValueType
   def read_cnt 0
   def write_cnt 0 
+}
+
+class RNoOp@(immutable) {
+  def name ""
 }

@@ -9,6 +9,7 @@ Import "../src/context/context.clj"
 Import "../src/codegen/operators.clj"
 Import "../src/codegen/writer.clj"
 
+Import "../src/tokenizer/operators.clj"
 Import "../src/tokenizer/enums.clj"
 Import "../src/tokenizer/nodes.clj"
 Import "../src/tokenizer/simpleTokenizer.clj"

@@ -16,6 +16,7 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 - simple test of walking operator AST and create output pseudocode
 - function AST creation
 - CodeWriter is approximately OK
+- String tokenizer can now create basic AST structure
 
 # Next steps could be
 
