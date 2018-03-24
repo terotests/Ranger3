@@ -158,7 +158,8 @@ FunctionArgs = (stream separated by ',' {
 FunctionDef = [async] function (vref -> name) FunctionArgs ( ':' typedef ) {
 }
 ```
+
 ```
-LambdaDef = [async] function (vref -> name) ( ':' typedef ) {
+ArrowLambdaDef = [async] FunctionArgs ( ':' typedef ) '=>' {
 }
 ```
