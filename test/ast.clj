@@ -14,7 +14,7 @@ Import "../src/tokenizer/enums.clj"
 Import "../src/tokenizer/nodes.clj"
 Import "../src/tokenizer/simpleTokenizer.clj"
 
-
+Import "ideas/iterator.clj"
 Import "lib/asserts.clj"
 Import "modules/ast.clj"
 
@@ -28,6 +28,7 @@ class testrunner {
       test.createBlock(ctx)
       test.testCodeWriter(ctx)
       test.testTokenizer(ctx)
+      test.testIterator(ctx)
 
       forEach ctx.messages {
         print '  * ' + item

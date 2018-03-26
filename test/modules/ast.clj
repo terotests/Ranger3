@@ -1,6 +1,26 @@
 
+class IterTestClass@(immutable) {
+  def values:[int]
+}
 
 class BasicAST {
+
+  fn testIterator ( testCtx:TestContext ) {
+    print "--- iterator test ---"
+    let obj = (new IterTestClass)
+    obj.values = (push obj.values 1)
+    obj.values = (push obj.values 2)
+    obj.values = (push obj.values 3)
+    obj.values = (push obj.values 4)
+
+    let iter = (new VectorIterator)
+    iter.vec = obj.values
+    print "First value == " + (iter.value())
+    let iter = (iter.next())
+    print "Second value == " + (iter.value())
+
+    ; ---> 
+  }
 
   fn writeFunction2:CodeOutput ( inputWr:CodeOutput ) {
     def wr = inputWr
@@ -344,6 +364,9 @@ function foobar() {
 
     case ast node:RExpression {
 
+      ; try iterator for RExpression....
+
+
       ; a trivial classifier which detects SQL and simple class
       if( (size node.children) >= 3) {
         let fc = (at node.children 0)
@@ -459,6 +482,25 @@ gql {
 
     let ctx (new writerCtx)
     ctx.activeNode = res_ast
+
+
+    walk res_ast {
+      case item node:RExpression {
+        let iter@(optional) = (node_iterator node.children)
+        print "--- iterator ---"
+        while(!null? iter) {
+          let value = (iter.value())  
+          case value tag:RVRefNode {
+            print "... iterator VREF == " + tag.vref
+          }
+          case value tag:RExpression {
+            print "... iterator EXRP with childcnt " + (size tag.children)
+          }
+          iter = (iter.next())
+        }
+        print "--- iterator ends ---"
+      }      
+    }
     let resCtx = (this.testClassifier(ctx))
     if(!null? resCtx.activeNode) {
       print "... did walk"
@@ -472,7 +514,7 @@ gql {
           let out = (new CodeOutput)
           out.settings = (new WriterSettings)
           print (getString (print (unwrap n.node) out) )
-        }
+        }        
       }
     }
   }
