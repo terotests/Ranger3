@@ -23,9 +23,12 @@ class BasicAST {
     let iter = (iter.next())
     print "Second value == " + (iter.value())
 
+    ; 
     ; 10 * 20 + 30
     ; 10 + 30 * 40
     ; 10 + (30 * 40)
+    ; obj.x.y( 20 ) + obj.z.foo() * obj.foo.bar()
+    ; <Expression><Expression> <-- CALL ? 
     let res_ast (createAST `
 
 ClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {
@@ -33,6 +36,8 @@ ClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable se
 };
 SumOperator = (Expression '+' Expression);
 MulOperator = (Expression '*' Expression);
+
+( !b && !c )
 
 myFn(a,b,c) {
   a = 

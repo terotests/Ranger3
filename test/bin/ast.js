@@ -3173,7 +3173,7 @@ class BasicAST  {
     console.log("First value == " + iter.value());
     const iter_2 = iter.next();
     console.log("Second value == " + iter_2.value());
-    const res_ast = operatorsOfstring_5.createAST_6("\n\nClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {\n\n};\nSumOperator = (Expression '+' Expression);\nMulOperator = (Expression '*' Expression);\n\nmyFn(a,b,c) {\n  a = \n  128 + 140 * ;\n  |> joo afd\n  |> jo asd\n}\n    ");
+    const res_ast = operatorsOfstring_5.createAST_6("\n\nClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {\n\n};\nSumOperator = (Expression '+' Expression);\nMulOperator = (Expression '*' Expression);\n\n( !b && !c )\n\nmyFn(a,b,c) {\n  a = \n  128 + 140 * ;\n  |> joo afd\n  |> jo asd\n}\n    ");
     operatorsOfRNode_12.walk_13(res_ast, ((item) => { 
       if( item instanceof RExpression ) /* union case */ {
         var node = item;
