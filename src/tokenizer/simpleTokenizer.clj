@@ -15,6 +15,7 @@ operator type:void all {
              (c == (ccode "=")) ||
              (c == (ccode "<")) ||
              (c == (ccode ">")) ||
+             (c == (ccode ";")) ||
              (c == (ccode "|")) ||
              (c == (ccode "%")) ||
              (c == (ccode ".")) ||
@@ -116,15 +117,15 @@ class RangerStringTokenizer {
         return true
 ;        throw "Invalid string"
       }
-      if (is_block_parent && ((c == 10) || (c == 13))) {
-        this.end_expression()
-        current_line_index = current_line_index + 1
-        did_break = true
-        break
-      }
+      ;if (is_block_parent && ((c == 10) || (c == 13))) {
+      ;  this.end_expression()
+      ;  current_line_index = current_line_index + 1
+      ;  did_break = true
+      ;  break
+      ; }
       ;         current_line_index = current_line_index + 1
       def had_break false
-      while( (i < len ) &&  c == 10 || c == 13) {
+      while( (i < len ) && c == 10 || c == 13) {
         had_break = true
         i = i + 1
         if (i >= len) {
@@ -144,7 +145,6 @@ class RangerStringTokenizer {
         }
         c = (charAt s i)
       }
-
     }
     return did_break
   }
@@ -1000,10 +1000,10 @@ class RangerStringTokenizer {
             }
             i = 1 + i
             c = (charAt s i)
-            if ((c == 10) || (c == 13)) {
-              last_was_newline = true
-              break
-            }
+            ;if ((c == 10) || (c == 13)) {
+            ;  last_was_newline = true
+            ;  break
+            ;}
             if (c == ((ccode "."))) {
               push ns_list (substring s last_ns i)
               last_ns = i + 1
@@ -1028,12 +1028,12 @@ class RangerStringTokenizer {
         while ((i < len) && (c <= 32) && (false == last_was_newline)) {
           i = 1 + i
           c = (charAt s i)
-          if (is_block_parent && ((c == 10) || (c == 13))) {
-            i = i - 1
-            c = (charAt s i)
-            had_lf = true
-            break
-          }
+          ;if (is_block_parent && ((c == 10) || (c == 13))) {
+          ;  i = i - 1
+          ;  c = (charAt s i)
+          ;  had_lf = true
+          ;  break
+          ;}
         }
         if ( (false == disable_ops_set) && (c == (ccode ":") ) ) {
           i = i + 1

@@ -1,5 +1,13 @@
 operator type:void all {
 
+  fn createAST:RNode (src:string) {
+    let code (new SourceCode (src))
+    let t (new RangerStringTokenizer (code))
+    t.parse(true)
+    let root (unwrap t.rootNode)    
+    return (createAST root)
+  }
+
   fn createAST:RNode (item:CodeNode) {
     if(item.expression && (item.is_block_node == false)) {
       let block (new RExpression)

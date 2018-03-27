@@ -2,6 +2,10 @@
 class IterTestClass@(immutable) {
   def values:[int]
 }
+class NodeRange {
+  def start@(weak):RNodeIterator
+  def end@(weak):RNodeIterator
+}
 
 class BasicAST {
 
@@ -18,6 +22,64 @@ class BasicAST {
     print "First value == " + (iter.value())
     let iter = (iter.next())
     print "Second value == " + (iter.value())
+
+    ; 10 * 20 + 30
+    ; 10 + 30 * 40
+    ; 10 + (30 * 40)
+    let res_ast (createAST `
+
+ClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {
+
+};
+SumOperator = (Expression '+' Expression);
+MulOperator = (Expression '*' Expression);
+
+myFn(a,b,c) {
+  a = 
+  128 + 140 * ;
+  |> joo afd
+  |> jo asd
+}
+    `)
+
+    walk res_ast {
+      case item node:RExpression {
+        let iter@(optional lives) = (node_iterator node.children)
+        print "--- iterator ---"
+        let start@(temp lives) = iter
+        let iter_list:[NodeRange]
+        let new_starts = false
+        while(!null? iter) {
+          if(new_starts) {
+            start = iter
+            new_starts = false
+          }
+          let value = (iter.value())  
+          case value tag:RIntValue {
+            print "... Int == " + tag.value
+          }          
+          case value tag:RVRefNode {
+            print "... VREF == " + tag.vref
+            if(tag.vref == ";") {
+              let newRange = (new NodeRange)
+              newRange.start = start
+              newRange.end = iter
+              push iter_list newRange
+              new_starts = true
+            }
+          }
+          case value tag:RExpression {
+            print "... EXRP with childcnt " + (size tag.children)
+          }
+          case value tag:RBlockNode {
+            print "... BLOCK with childcnt " + (size tag.children)
+          }
+          iter = (iter.next())
+        }
+        print "--- iterator ends ---, range cnt == " + (size iter_list)
+      }      
+    }
+    
 
     ; ---> 
   }
@@ -483,24 +545,6 @@ gql {
     let ctx (new writerCtx)
     ctx.activeNode = res_ast
 
-
-    walk res_ast {
-      case item node:RExpression {
-        let iter@(optional) = (node_iterator node.children)
-        print "--- iterator ---"
-        while(!null? iter) {
-          let value = (iter.value())  
-          case value tag:RVRefNode {
-            print "... iterator VREF == " + tag.vref
-          }
-          case value tag:RExpression {
-            print "... iterator EXRP with childcnt " + (size tag.children)
-          }
-          iter = (iter.next())
-        }
-        print "--- iterator ends ---"
-      }      
-    }
     let resCtx = (this.testClassifier(ctx))
     if(!null? resCtx.activeNode) {
       print "... did walk"

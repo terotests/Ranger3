@@ -1496,7 +1496,7 @@ CodeNodeLiteral.fromDictionary = function(dict) {
     if ( (typeof(values_1) !== "undefined" && values_1 != null )  ) {
       const theObjprops = values_1;
       const obj_keys = Object.keys(theObjprops);
-      operatorsOf_10.forEach_18(obj_keys, ((item, index) => { 
+      operatorsOf_9.forEach_29(obj_keys, ((item, index) => { 
         const theValue_3 = (theObjprops[item] instanceof Object ) ? theObjprops [item] : undefined ;
         if ( (typeof(theValue_3) !== "undefined" && theValue_3 != null )  ) {
           const newObj_3 = CodeNodeLiteral.fromDictionary((theValue_3));
@@ -1997,7 +1997,7 @@ class RangerStringTokenizer  {
   };
   skip_space (is_block_parent) {
     const s = this.buff;
-    let did_break = false;
+    const did_break = false;
     if ( this.i >= this.__len ) {
       return true;
     }
@@ -2007,12 +2007,6 @@ class RangerStringTokenizer  {
       if ( c < 8 ) {
         this.i = this.__len;
         return true;
-      }
-      if ( is_block_parent && ((c == 10) || (c == 13)) ) {
-        this.end_expression();
-        this.current_line_index = this.current_line_index + 1;
-        did_break = true;
-        break;
       }
       let had_break = false;
       while (((this.i < this.__len) && (c == 10)) || (c == 13)) {
@@ -2785,7 +2779,7 @@ class RangerStringTokenizer  {
         }
         let op_c = 0;
         op_c = this.getOperator(disable_ops_set);
-        let last_was_newline = false;
+        const last_was_newline = false;
         if ( op_c > 0 ) {
         } else {
           while ((((((((this.i < this.__len) && ((s.charCodeAt(this.i )) != (96))) && operatorsOfchar.isc95notc95limiter_2((s.charCodeAt(this.i )))) && ((s.charCodeAt(this.i )) > 32)) && (c != 58)) && (c != 40)) && (c != 41)) && (c != (125))) {
@@ -2797,10 +2791,6 @@ class RangerStringTokenizer  {
             }
             this.i = 1 + this.i;
             c = s.charCodeAt(this.i );
-            if ( (c == 10) || (c == 13) ) {
-              last_was_newline = true;
-              break;
-            }
             if ( c == (46) ) {
               ns_list.push(s.substring(last_ns, this.i ));
               last_ns = this.i + 1;
@@ -2824,12 +2814,6 @@ class RangerStringTokenizer  {
         while (((this.i < this.__len) && (c <= 32)) && (false == last_was_newline)) {
           this.i = 1 + this.i;
           c = s.charCodeAt(this.i );
-          if ( is_block_parent && ((c == 10) || (c == 13)) ) {
-            this.i = this.i - 1;
-            c = s.charCodeAt(this.i );
-            had_lf = true;
-            break;
-          }
         };
         if ( (false == disable_ops_set) && (c == (58)) ) {
           this.i = this.i + 1;
@@ -3170,6 +3154,10 @@ class IterTestClass  {
     return res;
   };
 }
+class NodeRange  {
+  constructor() {
+  }
+}
 class BasicAST  {
   constructor() {
   }
@@ -3185,55 +3173,98 @@ class BasicAST  {
     console.log("First value == " + iter.value());
     const iter_2 = iter.next();
     console.log("Second value == " + iter_2.value());
+    const res_ast = operatorsOfstring_5.createAST_6("\n\nClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {\n\n};\nSumOperator = (Expression '+' Expression);\nMulOperator = (Expression '*' Expression);\n\nmyFn(a,b,c) {\n  a = \n  128 + 140 * ;\n  |> joo afd\n  |> jo asd\n}\n    ");
+    operatorsOfRNode_12.walk_13(res_ast, ((item) => { 
+      if( item instanceof RExpression ) /* union case */ {
+        var node = item;
+        let iter_3 = operatorsOf_3.nodec95iterator_16(node.children);
+        console.log("--- iterator ---");
+        let start = iter_3;
+        let iter_list = [];
+        let new_starts = false;
+        while ((typeof(iter_3) !== "undefined" && iter_3 != null ) ) {
+          if ( new_starts ) {
+            start = iter_3;
+            new_starts = false;
+          }
+          const value = iter_3.value();
+          if( value instanceof RIntValue ) /* union case */ {
+            var tag = value;
+            console.log("... Int == " + tag.value);
+          };
+          if( value instanceof RVRefNode ) /* union case */ {
+            var tag_1 = value;
+            console.log("... VREF == " + tag_1.vref);
+            if ( tag_1.vref == ";" ) {
+              const newRange = new NodeRange();
+              newRange.start = start;
+              newRange.end = iter_3;
+              iter_list.push(newRange);
+              new_starts = true;
+            }
+          };
+          if( value instanceof RExpression ) /* union case */ {
+            var tag_2 = value;
+            console.log("... EXRP with childcnt " + operatorsOf_3.size_16(tag_2.children));
+          };
+          if( value instanceof RBlockNode ) /* union case */ {
+            var tag_3 = value;
+            console.log("... BLOCK with childcnt " + operatorsOf_3.size_16(tag_3.children));
+          };
+          iter_3 = iter_3.next();
+        };
+        console.log("--- iterator ends ---, range cnt == " + (iter_list.length));
+      };
+    }));
   };
   writeFunction2 (inputWr) {
     let wr = inputWr;
-    wr = operatorsOfCodeOutput_5.write_6(wr, "const myFnXX = () => {");
-    wr = operatorsOf_5.nl_9(wr);
-    wr = operatorsOf_5.indent_9(wr);
-    wr = operatorsOf_5.write_6(wr, "return x + 1 ");
-    wr = operatorsOf_5.nl_9(wr);
-    wr = operatorsOf_5.unindent_9(wr);
-    wr = operatorsOf_5.write_6(wr, "}");
-    wr = operatorsOf_5.nl_9(wr);
+    wr = operatorsOfCodeOutput_17.write_18(wr, "const myFnXX = () => {");
+    wr = operatorsOf_17.nl_21(wr);
+    wr = operatorsOf_17.indent_21(wr);
+    wr = operatorsOf_17.write_18(wr, "return x + 1 ");
+    wr = operatorsOf_17.nl_21(wr);
+    wr = operatorsOf_17.unindent_21(wr);
+    wr = operatorsOf_17.write_18(wr, "}");
+    wr = operatorsOf_17.nl_21(wr);
     return wr;
   };
   writeFunctionBody (inputWr) {
     let wr = inputWr;
     const items = [1, 2, 3, 4, 5];
-    operatorsOf_10.forEach_11(items, ((item, index) => { 
-      wr = operatorsOf_5.write_6(wr, ("let x = " + item));
-      wr = operatorsOf_5.nl_9(wr);
+    operatorsOf_9.forEach_22(items, ((item, index) => { 
+      wr = operatorsOf_17.write_18(wr, ("let x = " + item));
+      wr = operatorsOf_17.nl_21(wr);
       wr = this.writeFunction2(wr);
     }));
-    wr = operatorsOf_5.write_6(wr, "\n// The function body\nreturn x + 1 ");
+    wr = operatorsOf_17.write_18(wr, "\n// The function body\nreturn x + 1 ");
     return wr;
   };
   testCodeWriter (testCtx) {
     let out = new CodeOutput();
     out = (out).set_settings(new WriterSettings());
-    out = (out).set_tags(operatorsOfMap_12.set_13(out.tags, "imports", operatorsOf_5.fork_9(out)));
+    out = (out).set_tags(operatorsOfMap_23.set_24(out.tags, "imports", operatorsOf_17.fork_21(out)));
     let tagRef = new WriterTag();
     tagRef = (tagRef).set_name("imports");
-    out = (out).set_slices(operatorsOf_3.push_8(out.slices, (tagRef)));
-    out = operatorsOf_5.write_6(out, "\nfunction foobar() {\n\n}   \n");
-    out = operatorsOf_5.write_6(out, "const myFn = () => {");
-    out = operatorsOf_5.nl_9(out);
-    out = operatorsOf_5.indent_9(out);
+    out = (out).set_slices(operatorsOf_3.push_20(out.slices, (tagRef)));
+    out = operatorsOf_17.write_18(out, "\nfunction foobar() {\n\n}   \n");
+    out = operatorsOf_17.write_18(out, "const myFn = () => {");
+    out = operatorsOf_17.nl_21(out);
+    out = operatorsOf_17.indent_21(out);
     out = this.writeFunctionBody(out);
-    out = operatorsOf_5.nl_9(out);
-    out = operatorsOf_5.unindent_9(out);
-    out = operatorsOf_5.write_6(out, "}");
-    out = operatorsOf_5.nl_9(out);
-    let imp = operatorsOf_12.get_14(out.tags, "imports");
-    imp = operatorsOf_5.write_6(imp, "import xyz from foobardom");
-    imp = operatorsOf_5.nl_9(imp);
-    out = (out).set_tags(operatorsOf_12.set_13(out.tags, "imports", imp));
-    let imp_2 = operatorsOf_12.get_14(out.tags, "imports");
-    imp_2 = operatorsOf_5.write_6(imp_2, "import foo from bar");
-    imp_2 = operatorsOf_5.nl_9(imp_2);
-    out = (out).set_tags(operatorsOf_12.set_13(out.tags, "imports", imp_2));
-    const result = operatorsOf_5.getString_15(out, 0, "");
+    out = operatorsOf_17.nl_21(out);
+    out = operatorsOf_17.unindent_21(out);
+    out = operatorsOf_17.write_18(out, "}");
+    out = operatorsOf_17.nl_21(out);
+    let imp = operatorsOf_23.get_25(out.tags, "imports");
+    imp = operatorsOf_17.write_18(imp, "import xyz from foobardom");
+    imp = operatorsOf_17.nl_21(imp);
+    out = (out).set_tags(operatorsOf_23.set_24(out.tags, "imports", imp));
+    let imp_2 = operatorsOf_23.get_25(out.tags, "imports");
+    imp_2 = operatorsOf_17.write_18(imp_2, "import foo from bar");
+    imp_2 = operatorsOf_17.nl_21(imp_2);
+    out = (out).set_tags(operatorsOf_23.set_24(out.tags, "imports", imp_2));
+    const result = operatorsOf_17.getString_26(out, 0, "");
     console.log("--> got ");
     console.log(result);
   };
@@ -3248,15 +3279,15 @@ class BasicAST  {
       subCtx = (subCtx).set_outerBlock(ctx);
       subCtx = (subCtx).set_defined_vars(emptyCtx.defined_vars);
       res = (res).set_startCtx(subCtx);
-      operatorsOf_3.forEach_22(b.children, ((item) => { 
+      operatorsOf_3.forEach_14(b.children, ((item) => { 
         subCtx = (subCtx).set_activeNode(item);
         subCtx = this.walkNode(subCtx);
         if ( (typeof(subCtx.activeNode) !== "undefined" && subCtx.activeNode != null )  ) {
           new_children.push(subCtx.activeNode);
         }
       }));
-      operatorsOf_10.forEach_24(new_children, ((item, index) => { 
-        res = (res).set_children(operatorsOf_3.push_25(res.children, item));
+      operatorsOf_9.forEach_33(new_children, ((item, index) => { 
+        res = (res).set_children(operatorsOf_3.push_11(res.children, item));
       }));
       res = (res).set_endCtx(subCtx);
       subCtx = (subCtx).set_activeNode((res));
@@ -3279,15 +3310,15 @@ class BasicAST  {
     if( ctx.activeNode instanceof RIncExpression ) /* union case */ {
       var b_3 = ctx.activeNode;
       let newCtx_1 = ctx;
-      let myVar = operatorsOf_12.get_26(newCtx_1.variables, b_3.name);
+      let myVar = operatorsOf_23.get_34(newCtx_1.variables, b_3.name);
       if ( (typeof(myVar) !== "undefined" && myVar != null )  ) {
-        const defined_here = operatorsOf_12.get_26(newCtx_1.defined_vars, b_3.name);
+        const defined_here = operatorsOf_23.get_34(newCtx_1.defined_vars, b_3.name);
         if ( (typeof(defined_here) !== "undefined" && defined_here != null )  ) {
         }
         if ( ((typeof(ctx.outerBlock) !== "undefined" && ctx.outerBlock != null ) ) && (typeof(defined_here) === "undefined") ) {
-          const outerVar = operatorsOf_12.get_26(ctx.outerBlock.variables, b_3.name);
+          const outerVar = operatorsOf_23.get_34(ctx.outerBlock.variables, b_3.name);
           if ( (typeof(outerVar) !== "undefined" && outerVar != null )  ) {
-            newCtx_1 = (newCtx_1).set_captured_vars(operatorsOf_12.set_27(newCtx_1.captured_vars, b_3.name, (myVar)));
+            newCtx_1 = (newCtx_1).set_captured_vars(operatorsOf_23.set_35(newCtx_1.captured_vars, b_3.name, (myVar)));
           }
         }
         const value = myVar.value;
@@ -3297,11 +3328,11 @@ class BasicAST  {
         };
         myVar = (myVar).set_read_cnt((myVar.read_cnt + 1));
         myVar = (myVar).set_write_cnt((myVar.write_cnt + 1));
-        newCtx_1 = (newCtx_1).set_variables(operatorsOf_12.set_27(newCtx_1.variables, b_3.name, (myVar)));
+        newCtx_1 = (newCtx_1).set_variables(operatorsOf_23.set_35(newCtx_1.variables, b_3.name, (myVar)));
       } else {
         let err = new RError();
         err = (err).set_text(("Undefined variable " + b_3.name));
-        newCtx_1 = (newCtx_1).set_errors(operatorsOf_3.push_28(newCtx_1.errors, (err)));
+        newCtx_1 = (newCtx_1).set_errors(operatorsOf_3.push_36(newCtx_1.errors, (err)));
       }
       return newCtx_1;
     };
@@ -3314,34 +3345,34 @@ class BasicAST  {
       v = (v).set_name(b_4.name);
       v = (v).set_typename(b_4.typename);
       v = (v).set_value(b_4.value);
-      newCtx_2 = (newCtx_2).set_variables(operatorsOf_12.set_27(newCtx_2.variables, b_4.name, v));
-      newCtx_2 = (newCtx_2).set_defined_vars(operatorsOf_12.set_27(newCtx_2.defined_vars, b_4.name, v));
+      newCtx_2 = (newCtx_2).set_variables(operatorsOf_23.set_35(newCtx_2.variables, b_4.name, v));
+      newCtx_2 = (newCtx_2).set_defined_vars(operatorsOf_23.set_35(newCtx_2.defined_vars, b_4.name, v));
       return newCtx_2;
     };
     return ctx;
   };
   testBlockAsReturn () {
-    const b = operatorsOf_32.rc46block_33([operatorsOfstring_29.rc46def_30("x", "int"), operatorsOf_29.rc46def_30("y", "int"), operatorsOf_32.rc46expr_33([operatorsOf_29.rc46op_31("+"), operatorsOf_29.rc46vref_31("x"), operatorsOf_29.rc46vref_31("y")])]);
+    const b = operatorsOf_38.rc46block_39([operatorsOf_5.rc46def_37("x", "int"), operatorsOf_5.rc46def_37("y", "int"), operatorsOf_38.rc46expr_39([operatorsOf_5.rc46op_6("+"), operatorsOf_5.rc46vref_6("x"), operatorsOf_5.rc46vref_6("y")])]);
     return b;
   };
   testFnBlock () {
-    const body = operatorsOf_32.rc46block_33([operatorsOf_32.rc46expr_33([operatorsOf_29.rc46op_31("return"), operatorsOf_32.rc46expr_33([operatorsOf_29.rc46op_31("+"), operatorsOf_29.rc46vref_31("x"), operatorsOf_29.rc46vref_31("y")])])]);
-    const params = [operatorsOf_29.rc46param_30("x", "int"), operatorsOf_29.rc46param_30("y", "int")];
-    const fnNode = operatorsOf_29.rc46fn_34("add", "int", params, body);
+    const body = operatorsOf_38.rc46block_39([operatorsOf_38.rc46expr_39([operatorsOf_5.rc46op_6("return"), operatorsOf_38.rc46expr_39([operatorsOf_5.rc46op_6("+"), operatorsOf_5.rc46vref_6("x"), operatorsOf_5.rc46vref_6("y")])])]);
+    const params = [operatorsOf_5.rc46param_37("x", "int"), operatorsOf_5.rc46param_37("y", "int")];
+    const fnNode = operatorsOf_5.rc46fn_40("add", "int", params, body);
     return fnNode;
   };
   testSimpleInfix (infixName) {
-    const plusop = operatorsOf_29.opc46collection_42(infixName, [operatorsOf_29.opc46def_37("js", "", [operatorsOf_29.opc46param_30("x", "int"), operatorsOf_29.opc46param_30("y", "int")], [operatorsOfint_35.cmdc46param_36(1), operatorsOf_29.cmdc46text_31(((" " + infixName) + " ")), operatorsOf_35.cmdc46param_36(2)])]);
+    const plusop = operatorsOf_5.opc46collection_48(infixName, [operatorsOf_5.opc46def_43("js", "", [operatorsOf_5.opc46param_37("x", "int"), operatorsOf_5.opc46param_37("y", "int")], [operatorsOfint_41.cmdc46param_42(1), operatorsOf_5.cmdc46text_6(((" " + infixName) + " ")), operatorsOf_41.cmdc46param_42(2)])]);
     return plusop;
   };
   createJSString (opDef) {
     let str = "";
     if( opDef instanceof ROperatorCollection ) /* union case */ {
       var op = opDef;
-      const es6Op = operatorsOf_12.get_45(op.langs, "js");
+      const es6Op = operatorsOf_23.get_51(op.langs, "js");
       if ( (typeof(es6Op) !== "undefined" && es6Op != null )  ) {
         const op_1 = es6Op;
-        operatorsOf_3.forEach_46(op_1.cmds, ((item) => { 
+        operatorsOf_3.forEach_52(op_1.cmds, ((item) => { 
           if( item instanceof ROpCmdWriteText ) /* union case */ {
             var writeTxt = item;
             str = str + writeTxt.text;
@@ -3357,17 +3388,17 @@ class BasicAST  {
   };
   createBlock (testCtx) {
     testCtx.msg("Test Creating Blocks manually");
-    const b = operatorsOf_32.rc46block_33([operatorsOf_29.rc46def_30("x", "int"), operatorsOf_32.rc46expr_33([operatorsOf_29.rc46op_31("+"), operatorsOf_29.rc46vref_31("x"), operatorsOf_29.rc46vref_31("y")])]);
+    const b = operatorsOf_38.rc46block_39([operatorsOf_5.rc46def_37("x", "int"), operatorsOf_38.rc46expr_39([operatorsOf_5.rc46op_6("+"), operatorsOf_5.rc46vref_6("x"), operatorsOf_5.rc46vref_6("y")])]);
     let case_cnt = 0;
     if( b instanceof RBlockNode ) /* union case */ {
       var bb = b;
-      (testCtx).assert(operatorsOf_3.size_48(bb.children) == 2, "There should be two children for the block");
+      (testCtx).assert(operatorsOf_3.size_16(bb.children) == 2, "There should be two children for the block");
       case_cnt = case_cnt + 1;
     };
     const b2 = this.testBlockAsReturn();
     if( b2 instanceof RBlockNode ) /* union case */ {
       var bb_1 = b2;
-      (testCtx).assert(operatorsOf_3.size_48(bb_1.children) == 3, "There should be 3 children for the block");
+      (testCtx).assert(operatorsOf_3.size_16(bb_1.children) == 3, "There should be 3 children for the block");
       testCtx.msg("The Second Block appeared to be OK");
       case_cnt = case_cnt + 1;
     };
@@ -3376,7 +3407,7 @@ class BasicAST  {
     if( fnTest instanceof RFunction ) /* union case */ {
       var f = fnTest;
       (testCtx).assert(f.name == "add", "Function name should be Add");
-      (testCtx).assert(operatorsOf_3.size_48(f.params) == 2, "Function has two params");
+      (testCtx).assert(operatorsOf_3.size_16(f.params) == 2, "Function has two params");
       const fbody = f.body;
       if( fbody instanceof RBlockNode ) /* union case */ {
         var fnBody = fbody;
@@ -3386,22 +3417,22 @@ class BasicAST  {
     testCtx.msg("Testing function op creation");
     let ctx = new writerCtx();
     const opDef = this.testSimpleInfix("+");
-    ctx = (ctx).set_operators(operatorsOf_12.set_49(ctx.operators, "-", this.testSimpleInfix("-")));
-    ctx = (ctx).set_operators(operatorsOf_12.set_49(ctx.operators, "*", this.testSimpleInfix("*")));
-    ctx = (ctx).set_operators(operatorsOf_12.set_49(ctx.operators, "/", this.testSimpleInfix("/")));
+    ctx = (ctx).set_operators(operatorsOf_23.set_54(ctx.operators, "-", this.testSimpleInfix("-")));
+    ctx = (ctx).set_operators(operatorsOf_23.set_54(ctx.operators, "*", this.testSimpleInfix("*")));
+    ctx = (ctx).set_operators(operatorsOf_23.set_54(ctx.operators, "/", this.testSimpleInfix("/")));
     let cnt = 0;
     if( opDef instanceof ROperatorCollection ) /* union case */ {
       var op = opDef;
       cnt = cnt + 1;
       (testCtx).assert(op.name == "+", "Op name should be +");
-      const es6Op = operatorsOf_12.get_45(op.langs, "js");
+      const es6Op = operatorsOf_23.get_51(op.langs, "js");
       if ( (typeof(es6Op) !== "undefined" && es6Op != null )  ) {
         const op_1 = es6Op;
         cnt = cnt + 1;
-        (testCtx).assert(operatorsOf_3.size_50(op_1.params) == 2, "+ Op has two params");
-        (testCtx).assert(operatorsOf_3.size_51(op_1.cmds) == 3, "+ Op has three commands");
+        (testCtx).assert(operatorsOf_3.size_55(op_1.params) == 2, "+ Op has two params");
+        (testCtx).assert(operatorsOf_3.size_56(op_1.cmds) == 3, "+ Op has three commands");
         let str = "";
-        operatorsOf_3.forEach_46(op_1.cmds, ((item) => { 
+        operatorsOf_3.forEach_52(op_1.cmds, ((item) => { 
           if( item instanceof ROpCmdWriteText ) /* union case */ {
             var writeTxt = item;
             str = str + writeTxt.text;
@@ -3418,15 +3449,15 @@ class BasicAST  {
     (testCtx).assert(cnt == 2, "All op tests were not run");
     if( opDef instanceof ROperatorCollection ) /* union case */ {
       var op_2 = opDef;
-      ctx = (ctx).set_operators(operatorsOf_12.set_49(ctx.operators, op_2.name, opDef));
-      const findOp = operatorsOf_12.get_52(ctx.operators, "+");
+      ctx = (ctx).set_operators(operatorsOf_23.set_54(ctx.operators, op_2.name, opDef));
+      const findOp = operatorsOf_23.get_57(ctx.operators, "+");
       (testCtx).assert((typeof(findOp) !== "undefined" && findOp != null ) , "+ OP was not found from ctx");
       if ( (typeof(findOp) !== "undefined" && findOp != null )  ) {
         testCtx.msg("+ op was in context");
       }
-      if ( (typeof(operatorsOf_12.get_52(ctx.operators, "-")) !== "undefined" && operatorsOf_12.get_52(ctx.operators, "-") != null )  ) {
+      if ( (typeof(operatorsOf_23.get_57(ctx.operators, "-")) !== "undefined" && operatorsOf_23.get_57(ctx.operators, "-") != null )  ) {
         testCtx.msg("- op was in context");
-        const minusStr = this.createJSString((operatorsOf_12.get_52(ctx.operators, "-")));
+        const minusStr = this.createJSString((operatorsOf_23.get_57(ctx.operators, "-")));
         (testCtx).assert(minusStr == "<param 1> - <param 2>", "incorrect command output for -");
         testCtx.msg(minusStr);
       }
@@ -3447,15 +3478,15 @@ class BasicAST  {
       subCtx = (subCtx).set_outerBlock(ctx);
       subCtx = (subCtx).set_defined_vars(emptyCtx.defined_vars);
       res = (res).set_startCtx(subCtx);
-      operatorsOf_3.forEach_22(node.children, ((item) => { 
+      operatorsOf_3.forEach_14(node.children, ((item) => { 
         subCtx = (subCtx).set_activeNode(item);
         subCtx = this.testClassifier(subCtx);
         if ( (typeof(subCtx.activeNode) !== "undefined" && subCtx.activeNode != null )  ) {
           new_children.push(subCtx.activeNode);
         }
       }));
-      operatorsOf_10.forEach_24(new_children, ((item, index) => { 
-        res = (res).set_children(operatorsOf_3.push_25(res.children, item));
+      operatorsOf_9.forEach_33(new_children, ((item, index) => { 
+        res = (res).set_children(operatorsOf_3.push_11(res.children, item));
       }));
       res = (res).set_endCtx(subCtx);
       subCtx = (subCtx).set_activeNode((res));
@@ -3465,9 +3496,9 @@ class BasicAST  {
     };
     if( ast instanceof RExpression ) /* union case */ {
       var node_1 = ast;
-      if ( operatorsOf_3.size_48(node_1.children) >= 3 ) {
-        const fc = operatorsOf_3.at_23(node_1.children, 0);
-        const second = operatorsOf_3.at_23(node_1.children, 1);
+      if ( operatorsOf_3.size_16(node_1.children) >= 3 ) {
+        const fc = operatorsOf_3.at_15(node_1.children, 0);
+        const second = operatorsOf_3.at_15(node_1.children, 1);
         if( fc instanceof RVRefNode ) /* union case */ {
           var classTag = fc;
           if ( classTag.vref == "class" ) {
@@ -3491,15 +3522,15 @@ class BasicAST  {
       }
       let new_children_1 = [];
       let res_1 = new RExpression();
-      operatorsOf_3.forEach_22(node_1.children, ((item) => { 
+      operatorsOf_3.forEach_14(node_1.children, ((item) => { 
         subCtx = (subCtx).set_activeNode(item);
         subCtx = this.testClassifier(subCtx);
         if ( (typeof(subCtx.activeNode) !== "undefined" && subCtx.activeNode != null )  ) {
           new_children_1.push(subCtx.activeNode);
         }
       }));
-      operatorsOf_10.forEach_24(new_children_1, ((item, index) => { 
-        res_1 = (res_1).set_children(operatorsOf_3.push_25(res_1.children, item));
+      operatorsOf_9.forEach_33(new_children_1, ((item, index) => { 
+        res_1 = (res_1).set_children(operatorsOf_3.push_11(res_1.children, item));
       }));
       res_1 = (res_1).set_endCtx(subCtx);
       subCtx = (subCtx).set_activeNode((res_1));
@@ -3516,38 +3547,18 @@ class BasicAST  {
     const t = new RangerStringTokenizer(code);
     t.parse(true);
     const root = t.rootNode;
-    const res_ast = operatorsOfCodeNode_53.createAST_54(root);
+    const res_ast = operatorsOf_7.createAST_8(root);
     let out = new CodeOutput();
     out = (out).set_settings(new WriterSettings());
     console.log("--- ast out --- ");
-    console.log(operatorsOf_5.getString_9(operatorsOfRNode_56.print_57(res_ast, out)));
+    console.log(operatorsOf_17.getString_21(operatorsOf_12.print_58(res_ast, out)));
     let ctx = new writerCtx();
     ctx = (ctx).set_activeNode(res_ast);
-    operatorsOf_56.walk_58(res_ast, ((item) => { 
-      if( item instanceof RExpression ) /* union case */ {
-        var node = item;
-        let iter = operatorsOf_3.nodec95iterator_48(node.children);
-        console.log("--- iterator ---");
-        while ((typeof(iter) !== "undefined" && iter != null ) ) {
-          const value = iter.value();
-          if( value instanceof RVRefNode ) /* union case */ {
-            var tag = value;
-            console.log("... iterator VREF == " + tag.vref);
-          };
-          if( value instanceof RExpression ) /* union case */ {
-            var tag_1 = value;
-            console.log("... iterator EXRP with childcnt " + operatorsOf_3.size_48(tag_1.children));
-          };
-          iter = iter.next();
-        };
-        console.log("--- iterator ends ---");
-      };
-    }));
     const resCtx = this.testClassifier(ctx);
     if ( (typeof(resCtx.activeNode) !== "undefined" && resCtx.activeNode != null )  ) {
       console.log("... did walk");
-      const node_1 = resCtx.activeNode;
-      operatorsOf_56.walk_58(node_1, ((item) => { 
+      const node = resCtx.activeNode;
+      operatorsOf_12.walk_13(node, ((item) => { 
         if( item instanceof RMaybeClass ) /* union case */ {
           var n = item;
           console.log("Maybe Class == " + n.className);
@@ -3557,7 +3568,7 @@ class BasicAST  {
           console.log("Maybe SQL == " + n_1.command);
           let out_2 = new CodeOutput();
           out_2 = (out_2).set_settings(new WriterSettings());
-          console.log(operatorsOf_5.getString_9(operatorsOf_56.print_57((n_1.node), out_2)));
+          console.log(operatorsOf_17.getString_21(operatorsOf_12.print_58((n_1.node), out_2)));
         };
       }));
     }
@@ -3573,82 +3584,82 @@ class BasicAST  {
     block3 = (block3).set_name("block3");
     let genTrait1 = new RType_GenericTrait();
     genTrait1 = (genTrait1).set_name("Vector<T>");
-    ctx = (ctx).set_defined_types(operatorsOf_12.set_59(ctx.defined_types, "Vector<T>", (genTrait1)));
+    ctx = (ctx).set_defined_types(operatorsOf_23.set_59(ctx.defined_types, "Vector<T>", (genTrait1)));
     let intType = new RType_Scalar();
     intType = (intType).set_bits(64);
-    ctx = (ctx).set_defined_types(operatorsOf_12.set_59(ctx.defined_types, "int", (intType)));
+    ctx = (ctx).set_defined_types(operatorsOf_23.set_59(ctx.defined_types, "int", (intType)));
     let en = new RType_Enum();
     en = (en).set_name("RValueEnum");
-    en = (en).set_keys(operatorsOf_3.push_7(en.keys, "Int"));
-    en = (en).set_keys(operatorsOf_3.push_7(en.keys, "String"));
-    en = (en).set_keys(operatorsOf_3.push_7(en.keys, "Boolean"));
-    en = (en).set_keys(operatorsOf_3.push_7(en.keys, "Double"));
-    ctx = (ctx).set_defined_types(operatorsOf_12.set_59(ctx.defined_types, "RValueEnum", (en)));
+    en = (en).set_keys(operatorsOf_3.push_19(en.keys, "Int"));
+    en = (en).set_keys(operatorsOf_3.push_19(en.keys, "String"));
+    en = (en).set_keys(operatorsOf_3.push_19(en.keys, "Boolean"));
+    en = (en).set_keys(operatorsOf_3.push_19(en.keys, "Double"));
+    ctx = (ctx).set_defined_types(operatorsOf_23.set_59(ctx.defined_types, "RValueEnum", (en)));
     let someClass = new RType_Class();
     someClass = (someClass).set_name("MyClass");
     let xVal = new RType_Variable();
     xVal = (xVal).set_name("x");
-    xVal = (xVal).set_value_type((operatorsOf_12.get_60(ctx.defined_types, "int")));
-    someClass = (someClass).set_variables(operatorsOf_12.set_61(someClass.variables, "x", xVal));
-    ctx = (ctx).set_defined_types(operatorsOf_12.set_59(ctx.defined_types, "MyClass", (someClass)));
+    xVal = (xVal).set_value_type((operatorsOf_23.get_60(ctx.defined_types, "int")));
+    someClass = (someClass).set_variables(operatorsOf_23.set_61(someClass.variables, "x", xVal));
+    ctx = (ctx).set_defined_types(operatorsOf_23.set_59(ctx.defined_types, "MyClass", (someClass)));
     let objInstance = new RObjectInstance();
-    objInstance = (objInstance).set_objectType((operatorsOf_12.get_60(ctx.defined_types, "MyClass")));
+    objInstance = (objInstance).set_objectType((operatorsOf_23.get_60(ctx.defined_types, "MyClass")));
     let objRef = new RObjectReference();
     objRef = (objRef).set_objInstance(objInstance);
     let vd = new RDefVariable();
     vd = (vd).set_name("obj");
     vd = (vd).set_typename("");
     vd = (vd).set_value((objRef));
-    block = (block).set_children(operatorsOf_3.push_25(block.children, (vd)));
+    block = (block).set_children(operatorsOf_3.push_11(block.children, (vd)));
     ctx = (ctx).set_state((ctx.state).set_is_function(true));
     let vd_2 = new RDefVariable();
     vd_2 = (vd_2).set_name("innerHTML");
     vd_2 = (vd_2).set_typename("string");
-    vd_2 = (vd_2).set_value((operatorsOf_29.literal_31("<div/>")));
-    block = (block).set_children(operatorsOf_3.push_25(block.children, (vd_2)));
+    vd_2 = (vd_2).set_value((operatorsOf_5.literal_6("<div/>")));
+    block = (block).set_children(operatorsOf_3.push_11(block.children, (vd_2)));
     let nn = new RParsedNode();
     nn = (nn).set_value("The Node 1");
-    block = (block).set_children(operatorsOf_3.push_25(block.children, (nn)));
+    block = (block).set_children(operatorsOf_3.push_11(block.children, (nn)));
     let nn_2 = new RParsedNode();
     nn_2 = (nn_2).set_value("The Node 2");
-    block = (block).set_children(operatorsOf_3.push_25(block.children, (nn_2)));
+    block = (block).set_children(operatorsOf_3.push_11(block.children, (nn_2)));
     let nn_3 = new RParsedNode();
     nn_3 = (nn_3).set_value("The Node 3");
-    block2 = (block2).set_children(operatorsOf_3.push_25(block2.children, (nn_3)));
+    block2 = (block2).set_children(operatorsOf_3.push_11(block2.children, (nn_3)));
     let vd_3 = new RDefVariable();
     vd_3 = (vd_3).set_name("FXZ");
     vd_3 = (vd_3).set_typename("string");
-    vd_3 = (vd_3).set_value((operatorsOf_29.literal_31("FOOBARDOM")));
-    block2 = (block2).set_children(operatorsOf_3.push_25(block2.children, (vd_3)));
+    vd_3 = (vd_3).set_value((operatorsOf_5.literal_6("FOOBARDOM")));
+    block2 = (block2).set_children(operatorsOf_3.push_11(block2.children, (vd_3)));
     const expr1 = new RExpression();
-    block2 = (block2).set_children(operatorsOf_3.push_25(block2.children, (expr1)));
+    block2 = (block2).set_children(operatorsOf_3.push_11(block2.children, (expr1)));
     let vd_4 = new RDefVariable();
     vd_4 = (vd_4).set_name("X");
-    vd_4 = (vd_4).set_value((operatorsOf_35.literal_36(1234)));
-    block = (block).set_children(operatorsOf_3.push_25(block.children, (vd_4)));
+    vd_4 = (vd_4).set_value((operatorsOf_41.literal_42(1234)));
+    block = (block).set_children(operatorsOf_3.push_11(block.children, (vd_4)));
     let vd_5 = new RDefVariable();
     vd_5 = (vd_5).set_name("notused");
-    vd_5 = (vd_5).set_value((operatorsOf_35.literal_36(55)));
-    block3 = (block3).set_children(operatorsOf_3.push_25(block3.children, (vd_5)));
+    vd_5 = (vd_5).set_value((operatorsOf_41.literal_42(55)));
+    block3 = (block3).set_children(operatorsOf_3.push_11(block3.children, (vd_5)));
     let incCmd = new RIncExpression();
     incCmd = (incCmd).set_name("X");
-    block2 = (block2).set_children(operatorsOf_3.push_25(block2.children, (incCmd)));
+    block2 = (block2).set_children(operatorsOf_3.push_11(block2.children, (incCmd)));
     let vd2 = new RDefVariable();
     vd2 = (vd2).set_name("Y");
-    vd2 = (vd2).set_value((operatorsOf_35.literal_36(24)));
-    block2 = (block2).set_children(operatorsOf_3.push_25(block2.children, (vd2)));
+    vd2 = (vd2).set_value((operatorsOf_41.literal_42(24)));
+    block2 = (block2).set_children(operatorsOf_3.push_11(block2.children, (vd2)));
     let incCmd_2 = new RIncExpression();
     incCmd_2 = (incCmd_2).set_name("Y");
-    block2 = (block2).set_children(operatorsOf_3.push_25(block2.children, (incCmd_2)));
+    block2 = (block2).set_children(operatorsOf_3.push_11(block2.children, (incCmd_2)));
     let incCmd_3 = new RIncExpression();
     incCmd_3 = (incCmd_3).set_name("ThisVarItIs");
-    block3 = (block3).set_children(operatorsOf_3.push_25(block3.children, (incCmd_3)));
-    block = (block).set_children(operatorsOf_3.push_25(block.children, (block2)));
-    block = (block).set_children(operatorsOf_3.push_25(block.children, (block3)));
+    block3 = (block3).set_children(operatorsOf_3.push_11(block3.children, (incCmd_3)));
+    block = (block).set_children(operatorsOf_3.push_11(block.children, (block2)));
+    block = (block).set_children(operatorsOf_3.push_11(block.children, (block3)));
     ctx = (ctx).set_activeNode((block));
     ctx = this.walkNode(ctx);
-    (testCtx).assert((operatorsOf_12.keys_62(ctx.variables).length) == 6, "ctx should have definex 6 variables");
-    operatorsOf_12.forEach_63(ctx.variables, ((item, index) => { 
+    (testCtx).assert((operatorsOf_23.keys_62(ctx.variables).length) == 6, "ctx should have definex 6 variables");
+    operatorsOf_23.forEach_63(ctx.variables, ((item, index) => { 
       if ( index == "X" ) {
         (testCtx).assert(item.write_cnt == 1, "write_cnt count of X should be 1");
         (testCtx).assert(item.read_cnt == 1, "read_cnt count of X should be 1");
@@ -3671,7 +3682,7 @@ class BasicAST  {
           if ( (typeof(ob.outerBlock) !== "undefined" && ob.outerBlock != null )  ) {
           }
         }
-        operatorsOf_12.forEach_63(b.startCtx.variables, ((item, index) => { 
+        operatorsOf_23.forEach_63(b.startCtx.variables, ((item, index) => { 
           if ( (typeof(item.value) !== "undefined" && item.value != null )  ) {
             const v = item.value;
             if( Number.isInteger ? Number.isInteger(v) : (function(v) { return typeof v === 'number' &&  isFinite(v) && Math.floor(v) === v; })(v) ) /* union case for int */ {
@@ -3682,7 +3693,7 @@ class BasicAST  {
             };
           }
         }));
-        operatorsOf_12.forEach_63(b.endCtx.variables, ((item, index) => { 
+        operatorsOf_23.forEach_63(b.endCtx.variables, ((item, index) => { 
           if ( (typeof(item.value) !== "undefined" && item.value != null )  ) {
             const v_1 = item.value;
             if( v_1 instanceof RType_Literal ) /* union case */ {
@@ -3690,7 +3701,7 @@ class BasicAST  {
             };
           }
         }));
-        operatorsOf_3.forEach_22(b.children, ((item) => { 
+        operatorsOf_3.forEach_14(b.children, ((item) => { 
           if( item instanceof RDefVariable ) /* union case */ {
             var d = item;
           };
@@ -3714,11 +3725,11 @@ class BasicAST  {
         var e_1 = item;
       };
     }));
-    operatorsOf_10.forEach_18(operatorsOf_12.keys_67(ctx.defined_types), ((item, index) => { 
-      const t = operatorsOf_12.get_60(ctx.defined_types, item);
+    operatorsOf_9.forEach_29(operatorsOf_23.keys_67(ctx.defined_types), ((item, index) => { 
+      const t = operatorsOf_23.get_60(ctx.defined_types, item);
       if( t instanceof RType_Class ) /* union case */ {
         var cl = t;
-        operatorsOf_10.forEach_18(operatorsOf_12.keys_68(cl.variables), ((item, index) => { 
+        operatorsOf_9.forEach_29(operatorsOf_23.keys_68(cl.variables), ((item, index) => { 
         }));
       };
     }));
@@ -5389,7 +5400,7 @@ class operatorsOfchar  {
   }
 }
 operatorsOfchar.isc95tokenc95limiter_2 = function(c) {
-  return ((((((((((((((((c == (58)) || (c == (91))) || (c == (33))) || (c == (93))) || (c == (94))) || (c == (43))) || (c == (45))) || (c == (47))) || (c == (42))) || (c == (38))) || (c == (61))) || (c == (60))) || (c == (62))) || (c == (124))) || (c == (37))) || (c == (46))) || (c == (44));
+  return (((((((((((((((((c == (58)) || (c == (91))) || (c == (33))) || (c == (93))) || (c == (94))) || (c == (43))) || (c == (45))) || (c == (47))) || (c == (42))) || (c == (38))) || (c == (61))) || (c == (60))) || (c == (62))) || (c == (59))) || (c == (124))) || (c == (37))) || (c == (46))) || (c == (44));
 };
 operatorsOfchar.isc95notc95limiter_2 = function(c) {
   return ((((((((((((((((((((c > 32) && (c != (59))) && (c != (91))) && (c != (93))) && (c != (94))) && (c != (38))) && (c != (41))) && (c != (61))) && (c != (33))) && (c != (41))) && (c != (37))) && (c != (43))) && (c != (45))) && (c != (47))) && (c != (42))) && (c != (123))) && (c != (125))) && (c != (60))) && (c != (62))) && (c != (46))) && (c != (44));
@@ -5408,92 +5419,23 @@ class operatorsOf_3  {
 operatorsOf_3.push_4 = function(__self, item) {
   return __self.add(item);
 };
-operatorsOf_3.push_7 = function(__self, item) {
+operatorsOf_3.push_11 = function(__self, item) {
   return __self.add(item);
 };
-operatorsOf_3.push_8 = function(__self, item) {
-  return __self.add(item);
-};
-operatorsOf_3.forEach_16 = function(__self, cb) {
+operatorsOf_3.forEach_14 = function(__self, cb) {
   const cnt = (__self).count();
-  let i_3 = 0;
-  while (i_3 < cnt) {
-    const item = operatorsOf_3.itemAt_17(__self, i_3);
+  let i_1 = 0;
+  while (i_1 < cnt) {
+    const item = operatorsOf_3.itemAt_15(__self, i_1);
     cb(item);
-    i_3 = i_3 + 1;
+    i_1 = i_1 + 1;
   };
 };
-operatorsOf_3.itemAt_17 = function(__self, idx) {
+operatorsOf_3.itemAt_15 = function(__self, idx) {
   const val = (__self).get(idx);
   return val;
 };
-operatorsOf_3.map_20 = function(__self, cb) {
-  let res_2 = [];
-  const cnt_2 = (__self).count();
-  let i_5 = 0;
-  while (i_5 < cnt_2) {
-    const item_1 = operatorsOf_3.itemAt_21(__self, i_5);
-    res_2.push(cb(item_1));
-    i_5 = i_5 + 1;
-  };
-  return res_2;
-};
-operatorsOf_3.itemAt_21 = function(__self, idx) {
-  const val_1 = (__self).get(idx);
-  return val_1;
-};
-operatorsOf_3.forEach_22 = function(__self, cb) {
-  const cnt_3 = (__self).count();
-  let i_6 = 0;
-  while (i_6 < cnt_3) {
-    const item_2 = operatorsOf_3.itemAt_23(__self, i_6);
-    cb(item_2);
-    i_6 = i_6 + 1;
-  };
-};
-operatorsOf_3.itemAt_23 = function(__self, idx) {
-  const val_2 = (__self).get(idx);
-  return val_2;
-};
-operatorsOf_3.push_25 = function(__self, item) {
-  return __self.add(item);
-};
-operatorsOf_3.push_28 = function(__self, item) {
-  return __self.add(item);
-};
-operatorsOf_3.push_39 = function(__self, item) {
-  return __self.add(item);
-};
-operatorsOf_3.push_41 = function(__self, item) {
-  return __self.add(item);
-};
-operatorsOf_3.forEach_46 = function(__self, cb) {
-  const cnt_4 = (__self).count();
-  let i_13 = 0;
-  while (i_13 < cnt_4) {
-    const item_3 = operatorsOf_3.itemAt_47(__self, i_13);
-    cb(item_3);
-    i_13 = i_13 + 1;
-  };
-};
-operatorsOf_3.itemAt_47 = function(__self, idx) {
-  const val_3 = (__self).get(idx);
-  return val_3;
-};
-operatorsOf_3.size_48 = function(__self) {
-  return (__self).count();
-};
-operatorsOf_3.size_50 = function(__self) {
-  return (__self).count();
-};
-operatorsOf_3.size_51 = function(__self) {
-  return (__self).count();
-};
-operatorsOf_3.at_23 = function(__self, idx) {
-  const val_4 = (__self).get(idx);
-  return val_4;
-};
-operatorsOf_3.nodec95iterator_48 = function(from) {
+operatorsOf_3.nodec95iterator_16 = function(from) {
   let obj = new RNodeIterator();
   obj.vec = from;
   obj.idx = from.start;
@@ -5505,6 +5447,75 @@ operatorsOf_3.nodec95iterator_48 = function(from) {
     obj = newIter;
   };
   return obj;
+};
+operatorsOf_3.size_16 = function(__self) {
+  return (__self).count();
+};
+operatorsOf_3.push_19 = function(__self, item) {
+  return __self.add(item);
+};
+operatorsOf_3.push_20 = function(__self, item) {
+  return __self.add(item);
+};
+operatorsOf_3.forEach_27 = function(__self, cb) {
+  const cnt_1 = (__self).count();
+  let i_5 = 0;
+  while (i_5 < cnt_1) {
+    const item_1 = operatorsOf_3.itemAt_28(__self, i_5);
+    cb(item_1);
+    i_5 = i_5 + 1;
+  };
+};
+operatorsOf_3.itemAt_28 = function(__self, idx) {
+  const val_1 = (__self).get(idx);
+  return val_1;
+};
+operatorsOf_3.map_31 = function(__self, cb) {
+  let res_2 = [];
+  const cnt_3 = (__self).count();
+  let i_7 = 0;
+  while (i_7 < cnt_3) {
+    const item_2 = operatorsOf_3.itemAt_32(__self, i_7);
+    res_2.push(cb(item_2));
+    i_7 = i_7 + 1;
+  };
+  return res_2;
+};
+operatorsOf_3.itemAt_32 = function(__self, idx) {
+  const val_2 = (__self).get(idx);
+  return val_2;
+};
+operatorsOf_3.push_36 = function(__self, item) {
+  return __self.add(item);
+};
+operatorsOf_3.push_45 = function(__self, item) {
+  return __self.add(item);
+};
+operatorsOf_3.push_47 = function(__self, item) {
+  return __self.add(item);
+};
+operatorsOf_3.forEach_52 = function(__self, cb) {
+  const cnt_4 = (__self).count();
+  let i_14 = 0;
+  while (i_14 < cnt_4) {
+    const item_3 = operatorsOf_3.itemAt_53(__self, i_14);
+    cb(item_3);
+    i_14 = i_14 + 1;
+  };
+};
+operatorsOf_3.itemAt_53 = function(__self, idx) {
+  const val_3 = (__self).get(idx);
+  return val_3;
+};
+operatorsOf_3.size_55 = function(__self) {
+  return (__self).count();
+};
+operatorsOf_3.size_56 = function(__self) {
+  return (__self).count();
+};
+operatorsOf_3.at_15 = function(__self, idx) {
+  const val_4 = (__self).get(idx);
+  return val_4;
 };
 operatorsOf_3.size_64 = function(__self) {
   return (__self).count();
@@ -5522,468 +5533,35 @@ operatorsOf_3.itemAt_66 = function(__self, idx) {
   const val_5 = (__self).get(idx);
   return val_5;
 };
-class operatorsOfCodeOutput_5  {
+class operatorsOfstring_5  {
   constructor() {
   }
 }
-operatorsOfCodeOutput_5.write_6 = function(out, str) {
-  let newOut = out;
-  let slice = new CodeSlice();
-  slice = (slice).set_tokens(operatorsOf_3.push_7(slice.tokens, str));
-  newOut = (newOut).set_slices(operatorsOf_3.push_8(newOut.slices, (slice)));
-  return newOut;
+operatorsOfstring_5.createAST_6 = function(src) {
+  const code = new SourceCode(src);
+  const t = new RangerStringTokenizer(code);
+  t.parse(true);
+  const root = t.rootNode;
+  return operatorsOfCodeNode_7.createAST_8(root);
 };
-class operatorsOf_5  {
+class operatorsOfCodeNode_7  {
   constructor() {
   }
 }
-operatorsOf_5.nl_9 = function(out) {
-  let newOut_1 = out;
-  newOut_1 = (newOut_1).set_slices(operatorsOf_3.push_8(newOut_1.slices, (new WriterCmdNewLine())));
-  return newOut_1;
-};
-operatorsOf_5.indent_9 = function(out) {
-  let newOut_2 = out;
-  newOut_2 = (newOut_2).set_slices(operatorsOf_3.push_8(newOut_2.slices, (new WriterCmdIndent())));
-  return newOut_2;
-};
-operatorsOf_5.write_6 = function(out, str) {
-  let newOut_3 = out;
-  let slice_1 = new CodeSlice();
-  slice_1 = (slice_1).set_tokens(operatorsOf_3.push_7(slice_1.tokens, str));
-  newOut_3 = (newOut_3).set_slices(operatorsOf_3.push_8(newOut_3.slices, (slice_1)));
-  return newOut_3;
-};
-operatorsOf_5.unindent_9 = function(out) {
-  let newOut_4 = out;
-  newOut_4 = (newOut_4).set_slices(operatorsOf_3.push_8(newOut_4.slices, (new WriterCmdUnIndent())));
-  return newOut_4;
-};
-operatorsOf_5.fork_9 = function(out) {
-  let newOut_5 = new CodeOutput();
-  newOut_5 = (newOut_5).set_settings(out.settings);
-  return newOut_5;
-};
-operatorsOf_5.getString_15 = function(out, indentLevel, currentLine) {
-  let res = "";
-  let curr_line = currentLine;
-  let indent = indentLevel;
-  operatorsOf_3.forEach_16(out.slices, ((item) => { 
-    if( item instanceof CodeOutput ) /* union case */ {
-      var s = item;
-      const the_string = operatorsOf_5.getString_15(s, indent, curr_line);
-      const lines = the_string.split("\n");
-      operatorsOf_10.forEach_18(lines, ((item, index) => { 
-        if ( index == 0 ) {
-          if ( (curr_line.length) == 0 ) {
-            curr_line = curr_line + operatorsOf_5.getTabStr_19(out, indent);
-            res = res + operatorsOf_5.getTabStr_19(out, indent);
-          }
-          curr_line = curr_line + item;
-          res = res + item;
-        } else {
-          res = res + out.settings.newlineStr;
-          res = (res + operatorsOf_5.getTabStr_19(out, indent)) + item;
-          curr_line = operatorsOf_5.getTabStr_19(out, indent) + item;
-        }
-      }));
-    };
-    if( item instanceof CodeSlice ) /* union case */ {
-      var s_1 = item;
-      const the_string_1 = operatorsOf_3.map_20(s_1.tokens, ((item) => { 
-        const str = item;
-        return str;
-      })).join("");
-      const lines_1 = the_string_1.split("\n");
-      operatorsOf_10.forEach_18(lines_1, ((item, index) => { 
-        if ( index == 0 ) {
-          if ( (curr_line.length) == 0 ) {
-            curr_line = curr_line + operatorsOf_5.getTabStr_19(out, indent);
-            res = res + operatorsOf_5.getTabStr_19(out, indent);
-          }
-          curr_line = curr_line + item;
-          res = res + item;
-        } else {
-          res = res + out.settings.newlineStr;
-          res = (res + operatorsOf_5.getTabStr_19(out, indent)) + item;
-          curr_line = operatorsOf_5.getTabStr_19(out, indent) + item;
-        }
-      }));
-    };
-    if( item instanceof WriterTag ) /* union case */ {
-      var s_2 = item;
-      const tag = operatorsOf_12.get_14(out.tags, s_2.name);
-      if ( (typeof(tag) !== "undefined" && tag != null )  ) {
-        const codeOutTag = tag;
-        const the_string_2 = operatorsOf_5.getString_15(codeOutTag, indent, curr_line);
-        const lines_2 = the_string_2.split("\n");
-        operatorsOf_10.forEach_18(lines_2, ((item, index) => { 
-          if ( index == 0 ) {
-            if ( (curr_line.length) == 0 ) {
-              curr_line = curr_line + operatorsOf_5.getTabStr_19(out, indent);
-              res = res + operatorsOf_5.getTabStr_19(out, indent);
-            }
-            curr_line = curr_line + item;
-            res = res + item;
-          } else {
-            res = res + out.settings.newlineStr;
-            res = (res + operatorsOf_5.getTabStr_19(out, indent)) + item;
-            curr_line = operatorsOf_5.getTabStr_19(out, indent) + item;
-          }
-        }));
-      }
-    };
-    if( item instanceof WriterCmdIndent ) /* union case */ {
-      var s_3 = item;
-      indent = indent + 1;
-    };
-    if( item instanceof WriterCmdUnIndent ) /* union case */ {
-      var s_4 = item;
-      indent = indent - 1;
-    };
-    if( item instanceof WriterCmdNewLine ) /* union case */ {
-      var s_5 = item;
-      res = res + out.settings.newlineStr;
-      curr_line = "";
-    };
-  }));
-  return res;
-};
-operatorsOf_5.getTabStr_19 = function(out, indentLevel) {
-  if ( indentLevel == 0 ) {
-    return "";
-  }
-  let cnt_1 = indentLevel;
-  let res_1 = "";
-  while (cnt_1 > 0) {
-    res_1 = res_1 + out.settings.indentStr;
-    cnt_1 = cnt_1 - 1;
-  };
-  return res_1;
-};
-operatorsOf_5.getString_9 = function(out) {
-  return operatorsOf_5.getString_15(out, 0, "");
-};
-class operatorsOf_10  {
-  constructor() {
-  }
-}
-operatorsOf_10.forEach_11 = function(__self, cb) {
-  for ( let i = 0; i < __self.length; i++) {
-    var it = __self[i];
-    cb(it, i);
-  };
-};
-operatorsOf_10.forEach_18 = function(__self, cb) {
-  for ( let i_4 = 0; i_4 < __self.length; i_4++) {
-    var it_1 = __self[i_4];
-    cb(it_1, i_4);
-  };
-};
-operatorsOf_10.forEach_24 = function(__self, cb) {
-  for ( let i_7 = 0; i_7 < __self.length; i_7++) {
-    var it_2 = __self[i_7];
-    cb(it_2, i_7);
-  };
-};
-operatorsOf_10.forEach_38 = function(__self, cb) {
-  for ( let i_9 = 0; i_9 < __self.length; i_9++) {
-    var it_3 = __self[i_9];
-    cb(it_3, i_9);
-  };
-};
-operatorsOf_10.forEach_40 = function(__self, cb) {
-  for ( let i_10 = 0; i_10 < __self.length; i_10++) {
-    var it_4 = __self[i_10];
-    cb(it_4, i_10);
-  };
-};
-operatorsOf_10.forEach_43 = function(__self, cb) {
-  for ( let i_11 = 0; i_11 < __self.length; i_11++) {
-    var it_5 = __self[i_11];
-    cb(it_5, i_11);
-  };
-};
-operatorsOf_10.forEach_55 = function(__self, cb) {
-  for ( let i_15 = 0; i_15 < __self.length; i_15++) {
-    var it_6 = __self[i_15];
-    cb(it_6, i_15);
-  };
-};
-class operatorsOfMap_12  {
-  constructor() {
-  }
-}
-operatorsOfMap_12.set_13 = function(__self, key, value) {
-  const c = new Map_string_CodeOutput();
-  const keys = Object.keys(__self.elements);
-  for ( let i_1 = 0; i_1 < keys.length; i_1++) {
-    var k = keys[i_1];
-    if ( k == key ) {
-    } else {
-      c.elements[k] = (__self.elements[k]);
-    }
-  };
-  c.elements[key] = value;
-  return c;
-};
-class operatorsOf_12  {
-  constructor() {
-  }
-}
-operatorsOf_12.get_14 = function(__self, key) {
-  return __self.elements[key];
-};
-operatorsOf_12.set_13 = function(__self, key, value) {
-  const c_1 = new Map_string_CodeOutput();
-  const keys_1 = Object.keys(__self.elements);
-  for ( let i_2 = 0; i_2 < keys_1.length; i_2++) {
-    var k_1 = keys_1[i_2];
-    if ( k_1 == key ) {
-    } else {
-      c_1.elements[k_1] = (__self.elements[k_1]);
-    }
-  };
-  c_1.elements[key] = value;
-  return c_1;
-};
-operatorsOf_12.get_26 = function(__self, key) {
-  return __self.elements[key];
-};
-operatorsOf_12.set_27 = function(__self, key, value) {
-  const c_2 = new Map_string_RVariable();
-  const keys_2 = Object.keys(__self.elements);
-  for ( let i_8 = 0; i_8 < keys_2.length; i_8++) {
-    var k_2 = keys_2[i_8];
-    if ( k_2 == key ) {
-    } else {
-      c_2.elements[k_2] = (__self.elements[k_2]);
-    }
-  };
-  c_2.elements[key] = value;
-  return c_2;
-};
-operatorsOf_12.set_44 = function(__self, key, value) {
-  const c_3 = new Map_string_ROperatorDef();
-  const keys_3 = Object.keys(__self.elements);
-  for ( let i_12 = 0; i_12 < keys_3.length; i_12++) {
-    var k_3 = keys_3[i_12];
-    if ( k_3 == key ) {
-    } else {
-      c_3.elements[k_3] = (__self.elements[k_3]);
-    }
-  };
-  c_3.elements[key] = value;
-  return c_3;
-};
-operatorsOf_12.get_45 = function(__self, key) {
-  return __self.elements[key];
-};
-operatorsOf_12.set_49 = function(__self, key, value) {
-  const c_4 = new Map_string_ROpNode();
-  const keys_4 = Object.keys(__self.elements);
-  for ( let i_14 = 0; i_14 < keys_4.length; i_14++) {
-    var k_4 = keys_4[i_14];
-    if ( k_4 == key ) {
-    } else {
-      c_4.elements[k_4] = (__self.elements[k_4]);
-    }
-  };
-  c_4.elements[key] = value;
-  return c_4;
-};
-operatorsOf_12.get_52 = function(__self, key) {
-  return __self.elements[key];
-};
-operatorsOf_12.set_59 = function(__self, key, value) {
-  const c_5 = new Map_string_RValueType();
-  const keys_5 = Object.keys(__self.elements);
-  for ( let i_16 = 0; i_16 < keys_5.length; i_16++) {
-    var k_5 = keys_5[i_16];
-    if ( k_5 == key ) {
-    } else {
-      c_5.elements[k_5] = (__self.elements[k_5]);
-    }
-  };
-  c_5.elements[key] = value;
-  return c_5;
-};
-operatorsOf_12.get_60 = function(__self, key) {
-  return __self.elements[key];
-};
-operatorsOf_12.set_61 = function(__self, key, value) {
-  const c_6 = new Map_string_RType_Variable();
-  const keys_6 = Object.keys(__self.elements);
-  for ( let i_17 = 0; i_17 < keys_6.length; i_17++) {
-    var k_6 = keys_6[i_17];
-    if ( k_6 == key ) {
-    } else {
-      c_6.elements[k_6] = (__self.elements[k_6]);
-    }
-  };
-  c_6.elements[key] = value;
-  return c_6;
-};
-operatorsOf_12.keys_62 = function(__self) {
-  return Object.keys(__self.elements);
-};
-operatorsOf_12.forEach_63 = function(__self, cb) {
-  const keys_7 = Object.keys(__self.elements);
-  for ( let i_18 = 0; i_18 < keys_7.length; i_18++) {
-    var key = keys_7[i_18];
-    cb((__self.elements[key]), key);
-  };
-  return __self;
-};
-operatorsOf_12.keys_67 = function(__self) {
-  return Object.keys(__self.elements);
-};
-operatorsOf_12.keys_68 = function(__self) {
-  return Object.keys(__self.elements);
-};
-class operatorsOfstring_29  {
-  constructor() {
-  }
-}
-operatorsOfstring_29.rc46def_30 = function(name, typename) {
-  let vd = new RDefVariable();
-  vd = (vd).set_name(name);
-  vd = (vd).set_typename("");
-  return vd;
-};
-class operatorsOf_29  {
-  constructor() {
-  }
-}
-operatorsOf_29.rc46def_30 = function(name, typename) {
-  let vd_1 = new RDefVariable();
-  vd_1 = (vd_1).set_name(name);
-  vd_1 = (vd_1).set_typename("");
-  return vd_1;
-};
-operatorsOf_29.rc46op_31 = function(name) {
-  let o = new ROperator();
-  o = (o).set_name(name);
-  return o;
-};
-operatorsOf_29.rc46vref_31 = function(name) {
-  let o_1 = new RVRefNode();
-  o_1 = (o_1).set_vref(name);
-  return o_1;
-};
-operatorsOf_29.rc46param_30 = function(name, type_name) {
-  let p = new RFunctionParam();
-  p = (p).set_name(name);
-  p = (p).set_type_name(type_name);
-  return p;
-};
-operatorsOf_29.rc46fn_34 = function(name, rvType, params, body) {
-  let f = new RFunction();
-  f = (f).set_name(name);
-  f = (f).set_rvType(rvType);
-  operatorsOf_10.forEach_24(params, ((item, index) => { 
-    f = (f).set_params(operatorsOf_3.push_25(f.params, item));
-  }));
-  f = (f).set_body(body);
-  return f;
-};
-operatorsOf_29.opc46param_30 = function(name, type_name) {
-  let p_1 = new ROperatorParam();
-  p_1 = (p_1).set_name(name);
-  p_1 = (p_1).set_type_name(type_name);
-  return p_1;
-};
-operatorsOf_29.cmdc46text_31 = function(txt) {
-  let p_3 = new ROpCmdWriteText();
-  p_3 = (p_3).set_text(txt);
-  return p_3;
-};
-operatorsOf_29.opc46def_37 = function(lang, versions, params, cmds) {
-  let n_2 = new ROperatorDef();
-  n_2 = (n_2).set_lang(lang);
-  n_2 = (n_2).set_versions(versions);
-  operatorsOf_10.forEach_38(params, ((item, index) => { 
-    n_2 = (n_2).set_params(operatorsOf_3.push_39(n_2.params, item));
-  }));
-  operatorsOf_10.forEach_40(cmds, ((item, index) => { 
-    n_2 = (n_2).set_cmds(operatorsOf_3.push_41(n_2.cmds, item));
-  }));
-  return n_2;
-};
-operatorsOf_29.opc46collection_42 = function(opName, params) {
-  let n_3 = new ROperatorCollection();
-  n_3 = (n_3).set_name(opName);
-  operatorsOf_10.forEach_43(params, ((item, index) => { 
-    n_3 = (n_3).set_langs(operatorsOf_12.set_44(n_3.langs, item.lang, item));
-  }));
-  return n_3;
-};
-operatorsOf_29.literal_31 = function(v) {
-  let sca = new RType_Literal();
-  sca = (sca).set_string_value(v);
-  sca = (sca).set_value_type(4);
-  return sca;
-};
-class operatorsOf_32  {
-  constructor() {
-  }
-}
-operatorsOf_32.rc46expr_33 = function(children) {
-  let n = new RExpression();
-  operatorsOf_10.forEach_24(children, ((item, index) => { 
-    n = (n).set_children(operatorsOf_3.push_25(n.children, item));
-  }));
-  return n;
-};
-operatorsOf_32.rc46block_33 = function(children) {
-  let n_1 = new RBlockNode();
-  operatorsOf_10.forEach_24(children, ((item, index) => { 
-    n_1 = (n_1).set_children(operatorsOf_3.push_25(n_1.children, item));
-  }));
-  return n_1;
-};
-class operatorsOfint_35  {
-  constructor() {
-  }
-}
-operatorsOfint_35.cmdc46param_36 = function(index) {
-  let p_2 = new ROpCmdParam();
-  p_2 = (p_2).set_index(index);
-  return p_2;
-};
-class operatorsOf_35  {
-  constructor() {
-  }
-}
-operatorsOf_35.cmdc46param_36 = function(index) {
-  let p_4 = new ROpCmdParam();
-  p_4 = (p_4).set_index(index);
-  return p_4;
-};
-operatorsOf_35.literal_36 = function(v) {
-  let sca_1 = new RType_Literal();
-  sca_1 = (sca_1).set_int_value(v);
-  sca_1 = (sca_1).set_value_type(1);
-  return sca_1;
-};
-class operatorsOfCodeNode_53  {
-  constructor() {
-  }
-}
-operatorsOfCodeNode_53.createAST_54 = function(item) {
+operatorsOfCodeNode_7.createAST_8 = function(item) {
   if ( item.expression && (item.is_block_node == false) ) {
     let block = new RExpression();
-    operatorsOf_10.forEach_55(item.children, ((item, index) => { 
-      const ch_2 = operatorsOf_53.createAST_54(item);
-      block = (block).set_children(operatorsOf_3.push_25(block.children, ch_2));
+    operatorsOf_9.forEach_10(item.children, ((item, index) => { 
+      const ch_2 = operatorsOf_7.createAST_8(item);
+      block = (block).set_children(operatorsOf_3.push_11(block.children, ch_2));
     }));
     return block;
   }
   if ( item.is_block_node ) {
     let block_3 = new RBlockNode();
-    operatorsOf_10.forEach_55(item.children, ((item, index) => { 
-      const ch_3 = operatorsOf_53.createAST_54(item);
-      block_3 = (block_3).set_children(operatorsOf_3.push_25(block_3.children, ch_3));
+    operatorsOf_9.forEach_10(item.children, ((item, index) => { 
+      const ch_3 = operatorsOf_7.createAST_8(item);
+      block_3 = (block_3).set_children(operatorsOf_3.push_11(block_3.children, ch_3));
     }));
     return block_3;
   }
@@ -6015,24 +5593,70 @@ operatorsOfCodeNode_53.createAST_54 = function(item) {
   const no_op_1 = new RNoOp();
   return no_op_1;
 };
-class operatorsOf_53  {
+class operatorsOf_9  {
   constructor() {
   }
 }
-operatorsOf_53.createAST_54 = function(item) {
+operatorsOf_9.forEach_10 = function(__self, cb) {
+  for ( let i = 0; i < __self.length; i++) {
+    var it = __self[i];
+    cb(it, i);
+  };
+};
+operatorsOf_9.forEach_22 = function(__self, cb) {
+  for ( let i_2 = 0; i_2 < __self.length; i_2++) {
+    var it_1 = __self[i_2];
+    cb(it_1, i_2);
+  };
+};
+operatorsOf_9.forEach_29 = function(__self, cb) {
+  for ( let i_6 = 0; i_6 < __self.length; i_6++) {
+    var it_2 = __self[i_6];
+    cb(it_2, i_6);
+  };
+};
+operatorsOf_9.forEach_33 = function(__self, cb) {
+  for ( let i_8 = 0; i_8 < __self.length; i_8++) {
+    var it_3 = __self[i_8];
+    cb(it_3, i_8);
+  };
+};
+operatorsOf_9.forEach_44 = function(__self, cb) {
+  for ( let i_10 = 0; i_10 < __self.length; i_10++) {
+    var it_4 = __self[i_10];
+    cb(it_4, i_10);
+  };
+};
+operatorsOf_9.forEach_46 = function(__self, cb) {
+  for ( let i_11 = 0; i_11 < __self.length; i_11++) {
+    var it_5 = __self[i_11];
+    cb(it_5, i_11);
+  };
+};
+operatorsOf_9.forEach_49 = function(__self, cb) {
+  for ( let i_12 = 0; i_12 < __self.length; i_12++) {
+    var it_6 = __self[i_12];
+    cb(it_6, i_12);
+  };
+};
+class operatorsOf_7  {
+  constructor() {
+  }
+}
+operatorsOf_7.createAST_8 = function(item) {
   if ( item.expression && (item.is_block_node == false) ) {
     let block_1 = new RExpression();
-    operatorsOf_10.forEach_55(item.children, ((item, index) => { 
-      const ch = operatorsOf_53.createAST_54(item);
-      block_1 = (block_1).set_children(operatorsOf_3.push_25(block_1.children, ch));
+    operatorsOf_9.forEach_10(item.children, ((item, index) => { 
+      const ch = operatorsOf_7.createAST_8(item);
+      block_1 = (block_1).set_children(operatorsOf_3.push_11(block_1.children, ch));
     }));
     return block_1;
   }
   if ( item.is_block_node ) {
     let block_2 = new RBlockNode();
-    operatorsOf_10.forEach_55(item.children, ((item, index) => { 
-      const ch_1 = operatorsOf_53.createAST_54(item);
-      block_2 = (block_2).set_children(operatorsOf_3.push_25(block_2.children, ch_1));
+    operatorsOf_9.forEach_10(item.children, ((item, index) => { 
+      const ch_1 = operatorsOf_7.createAST_8(item);
+      block_2 = (block_2).set_children(operatorsOf_3.push_11(block_2.children, ch_1));
     }));
     return block_2;
   }
@@ -6064,134 +5688,484 @@ operatorsOf_53.createAST_54 = function(item) {
   const no_op = new RNoOp();
   return no_op;
 };
-class operatorsOfRNode_56  {
+class operatorsOfRNode_12  {
   constructor() {
   }
 }
-operatorsOfRNode_56.print_57 = function(res_ast, input) {
-  let out = input;
+operatorsOfRNode_12.walk_13 = function(res_ast, cb) {
+  cb(res_ast);
   if( res_ast instanceof RExpression ) /* union case */ {
     var node_10 = res_ast;
-    out = operatorsOf_5.write_6(out, "(");
-    out = operatorsOf_5.indent_9(out);
-    out = operatorsOf_5.nl_9(out);
-    operatorsOf_3.forEach_22(node_10.children, ((item) => { 
-      out = operatorsOf_56.print_57(item, out);
+    operatorsOf_3.forEach_14(node_10.children, ((item) => { 
+      operatorsOf_12.walk_13(item, cb);
     }));
-    out = operatorsOf_5.nl_9(out);
-    out = operatorsOf_5.unindent_9(out);
-    out = operatorsOf_5.write_6(out, ")");
   };
   if( res_ast instanceof RBlockNode ) /* union case */ {
-    var node_18 = res_ast;
-    out = operatorsOf_5.write_6(out, "{");
-    out = operatorsOf_5.indent_9(out);
-    out = operatorsOf_5.nl_9(out);
-    operatorsOf_3.forEach_22(node_18.children, ((item) => { 
-      out = operatorsOf_56.print_57(item, out);
-      out = operatorsOf_5.nl_9(out);
+    var node_13 = res_ast;
+    operatorsOf_3.forEach_14(node_13.children, ((item) => { 
+      operatorsOf_12.walk_13(item, cb);
     }));
-    out = operatorsOf_5.unindent_9(out);
-    out = operatorsOf_5.write_6(out, "}");
-    out = operatorsOf_5.nl_9(out);
   };
-  if( res_ast instanceof RVRefNode ) /* union case */ {
-    var node_19 = res_ast;
-    return operatorsOf_5.write_6(out, (" " + node_19.vref));
-  };
-  if( res_ast instanceof RBooleanValue ) /* union case */ {
-    var node_20 = res_ast;
-    if ( node_20.value ) {
-      out = operatorsOf_5.write_6(out, " true");
-    } else {
-      out = operatorsOf_5.write_6(out, " false");
-    }
-  };
-  if( res_ast instanceof RDoubleValue ) /* union case */ {
-    var node_21 = res_ast;
-    out = operatorsOf_5.write_6(out, (" " + node_21.value));
-  };
-  if( res_ast instanceof RIntValue ) /* union case */ {
-    var node_22 = res_ast;
-    out = operatorsOf_5.write_6(out, (" " + node_22.value));
-  };
-  if( res_ast instanceof RStringValue ) /* union case */ {
-    var node_23 = res_ast;
-    out = operatorsOf_5.write_6(out, (("`" + node_23.value) + "`"));
-  };
-  return out;
 };
-class operatorsOf_56  {
+class operatorsOf_12  {
   constructor() {
   }
 }
-operatorsOf_56.print_57 = function(res_ast, input) {
-  let out_1 = input;
+operatorsOf_12.walk_13 = function(res_ast, cb) {
+  cb(res_ast);
   if( res_ast instanceof RExpression ) /* union case */ {
     var node_11 = res_ast;
-    out_1 = operatorsOf_5.write_6(out_1, "(");
-    out_1 = operatorsOf_5.indent_9(out_1);
-    out_1 = operatorsOf_5.nl_9(out_1);
-    operatorsOf_3.forEach_22(node_11.children, ((item) => { 
-      out_1 = operatorsOf_56.print_57(item, out_1);
+    operatorsOf_3.forEach_14(node_11.children, ((item) => { 
+      operatorsOf_12.walk_13(item, cb);
     }));
-    out_1 = operatorsOf_5.nl_9(out_1);
-    out_1 = operatorsOf_5.unindent_9(out_1);
-    out_1 = operatorsOf_5.write_6(out_1, ")");
   };
   if( res_ast instanceof RBlockNode ) /* union case */ {
     var node_12 = res_ast;
-    out_1 = operatorsOf_5.write_6(out_1, "{");
-    out_1 = operatorsOf_5.indent_9(out_1);
-    out_1 = operatorsOf_5.nl_9(out_1);
-    operatorsOf_3.forEach_22(node_12.children, ((item) => { 
-      out_1 = operatorsOf_56.print_57(item, out_1);
-      out_1 = operatorsOf_5.nl_9(out_1);
+    operatorsOf_3.forEach_14(node_12.children, ((item) => { 
+      operatorsOf_12.walk_13(item, cb);
     }));
-    out_1 = operatorsOf_5.unindent_9(out_1);
-    out_1 = operatorsOf_5.write_6(out_1, "}");
-    out_1 = operatorsOf_5.nl_9(out_1);
+  };
+};
+operatorsOf_12.print_58 = function(res_ast, input) {
+  let out = input;
+  if( res_ast instanceof RExpression ) /* union case */ {
+    var node_14 = res_ast;
+    out = operatorsOf_17.write_18(out, "(");
+    out = operatorsOf_17.indent_21(out);
+    out = operatorsOf_17.nl_21(out);
+    operatorsOf_3.forEach_14(node_14.children, ((item) => { 
+      out = operatorsOf_12.print_58(item, out);
+    }));
+    out = operatorsOf_17.nl_21(out);
+    out = operatorsOf_17.unindent_21(out);
+    out = operatorsOf_17.write_18(out, ")");
+  };
+  if( res_ast instanceof RBlockNode ) /* union case */ {
+    var node_15 = res_ast;
+    out = operatorsOf_17.write_18(out, "{");
+    out = operatorsOf_17.indent_21(out);
+    out = operatorsOf_17.nl_21(out);
+    operatorsOf_3.forEach_14(node_15.children, ((item) => { 
+      out = operatorsOf_12.print_58(item, out);
+      out = operatorsOf_17.nl_21(out);
+    }));
+    out = operatorsOf_17.unindent_21(out);
+    out = operatorsOf_17.write_18(out, "}");
+    out = operatorsOf_17.nl_21(out);
   };
   if( res_ast instanceof RVRefNode ) /* union case */ {
-    var node_13 = res_ast;
-    return operatorsOf_5.write_6(out_1, (" " + node_13.vref));
+    var node_16 = res_ast;
+    return operatorsOf_17.write_18(out, (" " + node_16.vref));
   };
   if( res_ast instanceof RBooleanValue ) /* union case */ {
-    var node_14 = res_ast;
-    if ( node_14.value ) {
-      out_1 = operatorsOf_5.write_6(out_1, " true");
+    var node_17 = res_ast;
+    if ( node_17.value ) {
+      out = operatorsOf_17.write_18(out, " true");
     } else {
-      out_1 = operatorsOf_5.write_6(out_1, " false");
+      out = operatorsOf_17.write_18(out, " false");
     }
   };
   if( res_ast instanceof RDoubleValue ) /* union case */ {
-    var node_15 = res_ast;
-    out_1 = operatorsOf_5.write_6(out_1, (" " + node_15.value));
+    var node_18 = res_ast;
+    out = operatorsOf_17.write_18(out, (" " + node_18.value));
   };
   if( res_ast instanceof RIntValue ) /* union case */ {
-    var node_16 = res_ast;
-    out_1 = operatorsOf_5.write_6(out_1, (" " + node_16.value));
+    var node_19 = res_ast;
+    out = operatorsOf_17.write_18(out, (" " + node_19.value));
   };
   if( res_ast instanceof RStringValue ) /* union case */ {
-    var node_17 = res_ast;
-    out_1 = operatorsOf_5.write_6(out_1, (("`" + node_17.value) + "`"));
+    var node_20 = res_ast;
+    out = operatorsOf_17.write_18(out, (("`" + node_20.value) + "`"));
   };
-  return out_1;
+  return out;
 };
-operatorsOf_56.walk_58 = function(res_ast, cb) {
-  cb(res_ast);
-  if( res_ast instanceof RExpression ) /* union case */ {
-    var node_24 = res_ast;
-    operatorsOf_3.forEach_22(node_24.children, ((item) => { 
-      operatorsOf_56.walk_58(item, cb);
-    }));
+class operatorsOfCodeOutput_17  {
+  constructor() {
+  }
+}
+operatorsOfCodeOutput_17.write_18 = function(out, str) {
+  let newOut = out;
+  let slice = new CodeSlice();
+  slice = (slice).set_tokens(operatorsOf_3.push_19(slice.tokens, str));
+  newOut = (newOut).set_slices(operatorsOf_3.push_20(newOut.slices, (slice)));
+  return newOut;
+};
+class operatorsOf_17  {
+  constructor() {
+  }
+}
+operatorsOf_17.nl_21 = function(out) {
+  let newOut_1 = out;
+  newOut_1 = (newOut_1).set_slices(operatorsOf_3.push_20(newOut_1.slices, (new WriterCmdNewLine())));
+  return newOut_1;
+};
+operatorsOf_17.indent_21 = function(out) {
+  let newOut_2 = out;
+  newOut_2 = (newOut_2).set_slices(operatorsOf_3.push_20(newOut_2.slices, (new WriterCmdIndent())));
+  return newOut_2;
+};
+operatorsOf_17.write_18 = function(out, str) {
+  let newOut_3 = out;
+  let slice_1 = new CodeSlice();
+  slice_1 = (slice_1).set_tokens(operatorsOf_3.push_19(slice_1.tokens, str));
+  newOut_3 = (newOut_3).set_slices(operatorsOf_3.push_20(newOut_3.slices, (slice_1)));
+  return newOut_3;
+};
+operatorsOf_17.unindent_21 = function(out) {
+  let newOut_4 = out;
+  newOut_4 = (newOut_4).set_slices(operatorsOf_3.push_20(newOut_4.slices, (new WriterCmdUnIndent())));
+  return newOut_4;
+};
+operatorsOf_17.fork_21 = function(out) {
+  let newOut_5 = new CodeOutput();
+  newOut_5 = (newOut_5).set_settings(out.settings);
+  return newOut_5;
+};
+operatorsOf_17.getString_26 = function(out, indentLevel, currentLine) {
+  let res = "";
+  let curr_line = currentLine;
+  let indent = indentLevel;
+  operatorsOf_3.forEach_27(out.slices, ((item) => { 
+    if( item instanceof CodeOutput ) /* union case */ {
+      var s = item;
+      const the_string = operatorsOf_17.getString_26(s, indent, curr_line);
+      const lines = the_string.split("\n");
+      operatorsOf_9.forEach_29(lines, ((item, index) => { 
+        if ( index == 0 ) {
+          if ( (curr_line.length) == 0 ) {
+            curr_line = curr_line + operatorsOf_17.getTabStr_30(out, indent);
+            res = res + operatorsOf_17.getTabStr_30(out, indent);
+          }
+          curr_line = curr_line + item;
+          res = res + item;
+        } else {
+          res = res + out.settings.newlineStr;
+          res = (res + operatorsOf_17.getTabStr_30(out, indent)) + item;
+          curr_line = operatorsOf_17.getTabStr_30(out, indent) + item;
+        }
+      }));
+    };
+    if( item instanceof CodeSlice ) /* union case */ {
+      var s_1 = item;
+      const the_string_1 = operatorsOf_3.map_31(s_1.tokens, ((item) => { 
+        const str = item;
+        return str;
+      })).join("");
+      const lines_1 = the_string_1.split("\n");
+      operatorsOf_9.forEach_29(lines_1, ((item, index) => { 
+        if ( index == 0 ) {
+          if ( (curr_line.length) == 0 ) {
+            curr_line = curr_line + operatorsOf_17.getTabStr_30(out, indent);
+            res = res + operatorsOf_17.getTabStr_30(out, indent);
+          }
+          curr_line = curr_line + item;
+          res = res + item;
+        } else {
+          res = res + out.settings.newlineStr;
+          res = (res + operatorsOf_17.getTabStr_30(out, indent)) + item;
+          curr_line = operatorsOf_17.getTabStr_30(out, indent) + item;
+        }
+      }));
+    };
+    if( item instanceof WriterTag ) /* union case */ {
+      var s_2 = item;
+      const tag = operatorsOf_23.get_25(out.tags, s_2.name);
+      if ( (typeof(tag) !== "undefined" && tag != null )  ) {
+        const codeOutTag = tag;
+        const the_string_2 = operatorsOf_17.getString_26(codeOutTag, indent, curr_line);
+        const lines_2 = the_string_2.split("\n");
+        operatorsOf_9.forEach_29(lines_2, ((item, index) => { 
+          if ( index == 0 ) {
+            if ( (curr_line.length) == 0 ) {
+              curr_line = curr_line + operatorsOf_17.getTabStr_30(out, indent);
+              res = res + operatorsOf_17.getTabStr_30(out, indent);
+            }
+            curr_line = curr_line + item;
+            res = res + item;
+          } else {
+            res = res + out.settings.newlineStr;
+            res = (res + operatorsOf_17.getTabStr_30(out, indent)) + item;
+            curr_line = operatorsOf_17.getTabStr_30(out, indent) + item;
+          }
+        }));
+      }
+    };
+    if( item instanceof WriterCmdIndent ) /* union case */ {
+      var s_3 = item;
+      indent = indent + 1;
+    };
+    if( item instanceof WriterCmdUnIndent ) /* union case */ {
+      var s_4 = item;
+      indent = indent - 1;
+    };
+    if( item instanceof WriterCmdNewLine ) /* union case */ {
+      var s_5 = item;
+      res = res + out.settings.newlineStr;
+      curr_line = "";
+    };
+  }));
+  return res;
+};
+operatorsOf_17.getTabStr_30 = function(out, indentLevel) {
+  if ( indentLevel == 0 ) {
+    return "";
+  }
+  let cnt_2 = indentLevel;
+  let res_1 = "";
+  while (cnt_2 > 0) {
+    res_1 = res_1 + out.settings.indentStr;
+    cnt_2 = cnt_2 - 1;
   };
-  if( res_ast instanceof RBlockNode ) /* union case */ {
-    var node_25 = res_ast;
-    operatorsOf_3.forEach_22(node_25.children, ((item) => { 
-      operatorsOf_56.walk_58(item, cb);
-    }));
+  return res_1;
+};
+operatorsOf_17.getString_21 = function(out) {
+  return operatorsOf_17.getString_26(out, 0, "");
+};
+class operatorsOfMap_23  {
+  constructor() {
+  }
+}
+operatorsOfMap_23.set_24 = function(__self, key, value) {
+  const c = new Map_string_CodeOutput();
+  const keys = Object.keys(__self.elements);
+  for ( let i_3 = 0; i_3 < keys.length; i_3++) {
+    var k = keys[i_3];
+    if ( k == key ) {
+    } else {
+      c.elements[k] = (__self.elements[k]);
+    }
   };
+  c.elements[key] = value;
+  return c;
+};
+class operatorsOf_23  {
+  constructor() {
+  }
+}
+operatorsOf_23.get_25 = function(__self, key) {
+  return __self.elements[key];
+};
+operatorsOf_23.set_24 = function(__self, key, value) {
+  const c_1 = new Map_string_CodeOutput();
+  const keys_1 = Object.keys(__self.elements);
+  for ( let i_4 = 0; i_4 < keys_1.length; i_4++) {
+    var k_1 = keys_1[i_4];
+    if ( k_1 == key ) {
+    } else {
+      c_1.elements[k_1] = (__self.elements[k_1]);
+    }
+  };
+  c_1.elements[key] = value;
+  return c_1;
+};
+operatorsOf_23.get_34 = function(__self, key) {
+  return __self.elements[key];
+};
+operatorsOf_23.set_35 = function(__self, key, value) {
+  const c_2 = new Map_string_RVariable();
+  const keys_2 = Object.keys(__self.elements);
+  for ( let i_9 = 0; i_9 < keys_2.length; i_9++) {
+    var k_2 = keys_2[i_9];
+    if ( k_2 == key ) {
+    } else {
+      c_2.elements[k_2] = (__self.elements[k_2]);
+    }
+  };
+  c_2.elements[key] = value;
+  return c_2;
+};
+operatorsOf_23.set_50 = function(__self, key, value) {
+  const c_3 = new Map_string_ROperatorDef();
+  const keys_3 = Object.keys(__self.elements);
+  for ( let i_13 = 0; i_13 < keys_3.length; i_13++) {
+    var k_3 = keys_3[i_13];
+    if ( k_3 == key ) {
+    } else {
+      c_3.elements[k_3] = (__self.elements[k_3]);
+    }
+  };
+  c_3.elements[key] = value;
+  return c_3;
+};
+operatorsOf_23.get_51 = function(__self, key) {
+  return __self.elements[key];
+};
+operatorsOf_23.set_54 = function(__self, key, value) {
+  const c_4 = new Map_string_ROpNode();
+  const keys_4 = Object.keys(__self.elements);
+  for ( let i_15 = 0; i_15 < keys_4.length; i_15++) {
+    var k_4 = keys_4[i_15];
+    if ( k_4 == key ) {
+    } else {
+      c_4.elements[k_4] = (__self.elements[k_4]);
+    }
+  };
+  c_4.elements[key] = value;
+  return c_4;
+};
+operatorsOf_23.get_57 = function(__self, key) {
+  return __self.elements[key];
+};
+operatorsOf_23.set_59 = function(__self, key, value) {
+  const c_5 = new Map_string_RValueType();
+  const keys_5 = Object.keys(__self.elements);
+  for ( let i_16 = 0; i_16 < keys_5.length; i_16++) {
+    var k_5 = keys_5[i_16];
+    if ( k_5 == key ) {
+    } else {
+      c_5.elements[k_5] = (__self.elements[k_5]);
+    }
+  };
+  c_5.elements[key] = value;
+  return c_5;
+};
+operatorsOf_23.get_60 = function(__self, key) {
+  return __self.elements[key];
+};
+operatorsOf_23.set_61 = function(__self, key, value) {
+  const c_6 = new Map_string_RType_Variable();
+  const keys_6 = Object.keys(__self.elements);
+  for ( let i_17 = 0; i_17 < keys_6.length; i_17++) {
+    var k_6 = keys_6[i_17];
+    if ( k_6 == key ) {
+    } else {
+      c_6.elements[k_6] = (__self.elements[k_6]);
+    }
+  };
+  c_6.elements[key] = value;
+  return c_6;
+};
+operatorsOf_23.keys_62 = function(__self) {
+  return Object.keys(__self.elements);
+};
+operatorsOf_23.forEach_63 = function(__self, cb) {
+  const keys_7 = Object.keys(__self.elements);
+  for ( let i_18 = 0; i_18 < keys_7.length; i_18++) {
+    var key = keys_7[i_18];
+    cb((__self.elements[key]), key);
+  };
+  return __self;
+};
+operatorsOf_23.keys_67 = function(__self) {
+  return Object.keys(__self.elements);
+};
+operatorsOf_23.keys_68 = function(__self) {
+  return Object.keys(__self.elements);
+};
+class operatorsOf_5  {
+  constructor() {
+  }
+}
+operatorsOf_5.rc46def_37 = function(name, typename) {
+  let vd = new RDefVariable();
+  vd = (vd).set_name(name);
+  vd = (vd).set_typename("");
+  return vd;
+};
+operatorsOf_5.rc46op_6 = function(name) {
+  let o = new ROperator();
+  o = (o).set_name(name);
+  return o;
+};
+operatorsOf_5.rc46vref_6 = function(name) {
+  let o_1 = new RVRefNode();
+  o_1 = (o_1).set_vref(name);
+  return o_1;
+};
+operatorsOf_5.rc46param_37 = function(name, type_name) {
+  let p = new RFunctionParam();
+  p = (p).set_name(name);
+  p = (p).set_type_name(type_name);
+  return p;
+};
+operatorsOf_5.rc46fn_40 = function(name, rvType, params, body) {
+  let f = new RFunction();
+  f = (f).set_name(name);
+  f = (f).set_rvType(rvType);
+  operatorsOf_9.forEach_33(params, ((item, index) => { 
+    f = (f).set_params(operatorsOf_3.push_11(f.params, item));
+  }));
+  f = (f).set_body(body);
+  return f;
+};
+operatorsOf_5.opc46param_37 = function(name, type_name) {
+  let p_1 = new ROperatorParam();
+  p_1 = (p_1).set_name(name);
+  p_1 = (p_1).set_type_name(type_name);
+  return p_1;
+};
+operatorsOf_5.cmdc46text_6 = function(txt) {
+  let p_3 = new ROpCmdWriteText();
+  p_3 = (p_3).set_text(txt);
+  return p_3;
+};
+operatorsOf_5.opc46def_43 = function(lang, versions, params, cmds) {
+  let n_2 = new ROperatorDef();
+  n_2 = (n_2).set_lang(lang);
+  n_2 = (n_2).set_versions(versions);
+  operatorsOf_9.forEach_44(params, ((item, index) => { 
+    n_2 = (n_2).set_params(operatorsOf_3.push_45(n_2.params, item));
+  }));
+  operatorsOf_9.forEach_46(cmds, ((item, index) => { 
+    n_2 = (n_2).set_cmds(operatorsOf_3.push_47(n_2.cmds, item));
+  }));
+  return n_2;
+};
+operatorsOf_5.opc46collection_48 = function(opName, params) {
+  let n_3 = new ROperatorCollection();
+  n_3 = (n_3).set_name(opName);
+  operatorsOf_9.forEach_49(params, ((item, index) => { 
+    n_3 = (n_3).set_langs(operatorsOf_23.set_50(n_3.langs, item.lang, item));
+  }));
+  return n_3;
+};
+operatorsOf_5.literal_6 = function(v) {
+  let sca = new RType_Literal();
+  sca = (sca).set_string_value(v);
+  sca = (sca).set_value_type(4);
+  return sca;
+};
+class operatorsOf_38  {
+  constructor() {
+  }
+}
+operatorsOf_38.rc46expr_39 = function(children) {
+  let n = new RExpression();
+  operatorsOf_9.forEach_33(children, ((item, index) => { 
+    n = (n).set_children(operatorsOf_3.push_11(n.children, item));
+  }));
+  return n;
+};
+operatorsOf_38.rc46block_39 = function(children) {
+  let n_1 = new RBlockNode();
+  operatorsOf_9.forEach_33(children, ((item, index) => { 
+    n_1 = (n_1).set_children(operatorsOf_3.push_11(n_1.children, item));
+  }));
+  return n_1;
+};
+class operatorsOfint_41  {
+  constructor() {
+  }
+}
+operatorsOfint_41.cmdc46param_42 = function(index) {
+  let p_2 = new ROpCmdParam();
+  p_2 = (p_2).set_index(index);
+  return p_2;
+};
+class operatorsOf_41  {
+  constructor() {
+  }
+}
+operatorsOf_41.cmdc46param_42 = function(index) {
+  let p_4 = new ROpCmdParam();
+  p_4 = (p_4).set_index(index);
+  return p_4;
+};
+operatorsOf_41.literal_42 = function(v) {
+  let sca_1 = new RType_Literal();
+  sca_1 = (sca_1).set_int_value(v);
+  sca_1 = (sca_1).set_value_type(1);
+  return sca_1;
 };
 class operatorsOfJSONArrayObject_69  {
   constructor() {
@@ -6231,11 +6205,11 @@ function __js_main() {
     test.testCodeWriter(ctx);
     test.testTokenizer(ctx);
     test.testIterator(ctx);
-    operatorsOf_10.forEach_18(ctx.messages, ((item, index) => { 
+    operatorsOf_9.forEach_29(ctx.messages, ((item, index) => { 
       console.log("  * " + item);
     }));
     if ( (ctx.errors.length) > 0 ) {
-      operatorsOf_10.forEach_18(ctx.errors, ((item, index) => { 
+      operatorsOf_9.forEach_29(ctx.errors, ((item, index) => { 
         console.log("ERROR: " + item);
       }));
     } else {
