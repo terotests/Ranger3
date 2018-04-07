@@ -4,7 +4,10 @@ Import "../src/operators/operators.clj"
 
 Import "../src/ast/nodes.clj"
 Import "../src/ast/operators.clj"
+Import "../src/ast/iterator.clj"
 Import "../src/context/context.clj"
+
+Import "../src/grammar/context.clj"
 
 Import "../src/codegen/operators.clj"
 Import "../src/codegen/writer.clj"
@@ -14,7 +17,6 @@ Import "../src/tokenizer/enums.clj"
 Import "../src/tokenizer/nodes.clj"
 Import "../src/tokenizer/simpleTokenizer.clj"
 
-Import "ideas/iterator.clj"
 Import "lib/asserts.clj"
 Import "modules/ast.clj"
 

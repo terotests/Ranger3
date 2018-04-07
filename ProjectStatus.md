@@ -21,6 +21,8 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 
 # Next steps could be
 
+- Iterators: creating slices
+
 - Think how node classifier should really work
 
 Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )` or `x + y` where the matcher code will evaluating the operatorss

@@ -44,6 +44,18 @@ class RNodeIterator {
     obj.parent = this.parent
     return obj
   }
+  fn step@(optional weak):RNodeIterator (steps:int) {
+    let curr@(optional weak) = this
+    let step = steps
+    while(!null? curr) {
+      if( step <= 0 ) {
+        break
+      }
+      curr = (curr.next())
+      step = step - 1
+    }
+    return curr
+  }
 }
 
 operator type:void all {

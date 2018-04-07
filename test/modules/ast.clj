@@ -23,6 +23,136 @@ class BasicAST {
     let iter = (iter.next())
     print "Second value == " + (iter.value())
 
+    let gCtx (new grammarCtx)
+
+    let myGrammar = (createAST `
+SumOperator = vref '+' vref
+MinusOperator = vref '-' vref
+
+FunctionParams = Expression having {
+
+};
+ClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {
+
+};
+
+Daa = vref 'Moi' 
+
+`)
+
+    case myGrammar mainBlock:RBlockNode {
+      def fc (at mainBlock.children 0)
+      case fc expr:RExpression {
+        let rootIter@(optional lives) = (node_iterator expr.children)
+        while(!null? rootIter) {
+          let nameNode = (rootIter.stepValue(0))
+          let eqNode = (rootIter.stepValue(1))
+          if( (!null? nameNode) && (!null? eqNode) ) {
+            case (unwrap nameNode) name:RVRefNode {
+              case (unwrap eqNode) eq:RVRefNode {
+                if(eq.vref == "=") {
+                  print "Found rule " + name.vref 
+                  rootIter = (rootIter.step(2))
+                  let slice = (cut (unwrap rootIter) {
+                    let eqNode = (item.stepValue(1))
+                    if(!null? eqNode) {
+                      case (unwrap eqNode) eq:RVRefNode {
+                        if(eq.vref == "=") {
+                          print "^^ did cut the iterator"
+                          return true
+                        }
+                      }                      
+                    }
+                    return false
+                  })                  
+                  gCtx.rules = (set gCtx.rules name.vref slice)           
+                }
+              }
+            }
+          }
+          rootIter = (rootIter.next())
+        }
+      }
+    }
+
+    let keys = (keys gCtx.rules)
+
+    forEach gCtx.rules {
+      print " ** >> " + index
+      walk_iter item {
+        case item v:RVRefNode {
+          print "... " + v.vref
+        }
+        case item v:RStringValue {
+          print "... " + v.value
+        }
+      }
+    }
+
+    ; ** the operator walking...
+    let source_ast (createAST `x+y`)
+    let op_ast (createAST `SumOperator = vref '+' vref`)
+
+    case op_ast node:RBlockNode {
+      print "--> RBlock found!!"
+      def fc (at node.children 0)
+      case fc node:RExpression {
+        print "--> RExpr found!! children " + (size node.children)
+        let iter@(optional lives) = (node_iterator node.children)
+        let testN (iter.step(3))
+        let v = (unwrap (testN.value()))
+        case v node:RExpression {
+          print "first of testN was expr"
+        }
+        case v node:RVRefNode {
+          print "first of testN was VREF " + node.vref
+        }
+        case v node:RStringValue {
+          print "first of testN was string " + node.value
+        }
+      }
+    }
+
+
+    ; look for the position of x + y
+    walk source_ast {
+      case item node:RExpression {
+        let iter@(optional lives) = (node_iterator node.children)
+        print "possibly found the x + y " + (size node.children))
+        while(!null? iter) {
+          let value = (unwrap (iter.value()))
+          case value tag:RVRefNode {
+            print " -> " + tag.vref
+          }
+          iter = (iter.next())
+        }
+      }
+    }
+
+    walk op_ast {
+      case item node:RStringValue {
+        print " str " + node.value
+      }
+      case item node:RVRefNode {
+        print " -> " + node.vref
+      }
+      case item node:RExpression {
+        let iter@(optional lives) = (node_iterator node.children)
+        while(!null? iter) {
+          let value = (unwrap (iter.value()))
+          case value tag:RVRefNode {
+            print " : " + tag.vref
+          }
+          case value tag:RExpression {
+            print "<expression>"
+          }
+          iter = (iter.next())
+        }
+      }
+    }
+
+    return
+
     ; 
     ; 10 * 20 + 30
     ; 10 + 30 * 40
@@ -31,9 +161,15 @@ class BasicAST {
     ; <Expression><Expression> <-- CALL ? 
     let res_ast (createAST `
 
+FunctionParams = Expression having {
+
+};
 ClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {
 
 };
+
+SumOperator = (vref '+' vref);
+
 SumOperator = (Expression '+' Expression);
 MulOperator = (Expression '*' Expression);
 
@@ -59,7 +195,7 @@ myFn(a,b,c) {
             start = iter
             new_starts = false
           }
-          let value = (iter.value())  
+          let value = (unwrap (iter.value())) 
           case value tag:RIntValue {
             print "... Int == " + tag.value
           }          
