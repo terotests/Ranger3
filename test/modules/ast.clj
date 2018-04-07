@@ -25,8 +25,22 @@ class BasicAST {
 
     let gCtx (new grammarCtx)
 
+    ; -- after this analysis you do not know the types yet
+    ; new WHATERVER ( SOMETHING )
+
     let myGrammar = (createAST `
-SumOperator = vref '+' vref
+
+CallArguments = <expression>
+GetOperator = <expression> '.' vref
+CallOperand = <expression> '(' CallArguments ')'
+
+SumOperator = <expression> + <expression>
+MulOperator = <expression> * <expression>
+
+SumOperator = {
+  int '+' int -> int
+  double '+' double -> double
+}
 MinusOperator = vref '-' vref
 
 FunctionParams = Expression having {
@@ -51,14 +65,12 @@ Daa = vref 'Moi'
             case (unwrap nameNode) name:RVRefNode {
               case (unwrap eqNode) eq:RVRefNode {
                 if(eq.vref == "=") {
-                  print "Found rule " + name.vref 
                   rootIter = (rootIter.step(2))
                   let slice = (cut (unwrap rootIter) {
                     let eqNode = (item.stepValue(1))
                     if(!null? eqNode) {
                       case (unwrap eqNode) eq:RVRefNode {
                         if(eq.vref == "=") {
-                          print "^^ did cut the iterator"
                           return true
                         }
                       }                      

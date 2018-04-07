@@ -2978,7 +2978,7 @@ class BasicAST  {
     const iter_2 = iter.next();
     console.log("Second value == " + iter_2.value());
     let gCtx = new grammarCtx();
-    const myGrammar = operatorsOfstring_5.createAST_6("\nSumOperator = vref '+' vref\nMinusOperator = vref '-' vref\n\nFunctionParams = Expression having {\n\n};\nClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {\n\n};\n\nDaa = vref 'Moi' \n\n");
+    const myGrammar = operatorsOfstring_5.createAST_6("\n\nCallArguments = <expression>\nGetOperator = <expression> '.' vref\nCallOperand = <expression> '(' CallArguments ')'\n\nSumOperator = <expression> + <expression>\nMulOperator = <expression> * <expression>\n\nSumOperator = {\n  int '+' int -> int\n  double '+' double -> double\n}\nMinusOperator = vref '-' vref\n\nFunctionParams = Expression having {\n\n};\nClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {\n\n};\n\nDaa = vref 'Moi' \n\n");
     if( myGrammar instanceof RBlockNode ) /* union case */ {
       var mainBlock = myGrammar;
       const fc = operatorsOf_3.at_12(mainBlock.children, 0);
@@ -2994,7 +2994,6 @@ class BasicAST  {
               if( eqNode instanceof RVRefNode ) /* union case */ {
                 var eq = eqNode;
                 if ( eq.vref == "=" ) {
-                  console.log("Found rule " + name.vref);
                   rootIter = rootIter.step(2);
                   const slice = operatorsOfRNodeIterator_14.cut_15((rootIter), ((item) => { 
                     const eqNode_1 = item.stepValue(1);
@@ -3002,7 +3001,6 @@ class BasicAST  {
                       if( eqNode_1 instanceof RVRefNode ) /* union case */ {
                         var eq_1 = eqNode_1;
                         if ( eq_1.vref == "=" ) {
-                          console.log("^^ did cut the iterator");
                           return true;
                         }
                       };
