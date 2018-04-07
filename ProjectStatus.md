@@ -27,6 +27,46 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 
 Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )` or `x + y` where the matcher code will evaluating the operatorss
 
+## How to collect expressions with Operator Precedence
+
+Example 1
+```javascript
+  new Vector().x * new Vector().x + new Vector().y
+```
+Example 2
+```javascript
+  new Vector().x * new Vector().x + 5 != new Vector().y && foo
+```
+
+Precedence Table: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
+
+Perhaps should be added that pure keywords, literals and numbers have high P.
+
+- new operator `new` == 19
+- member access `.` == 19
+- plus `*` == 14
+- plus `+` == 13
+
+In the beginning P = 0 or infinite (which?). The Expression is empty. 
+
+We define there is some CONTEXT_P which defines current max P value. CONTEXT_P = infinite.
+
+1. new ... Vector () maches `new` which is smaller than CONTEXT_P
+2. after new we find member access operator
+3. Both have P == 19 thus we start with `new` first, CONTEXT_P = 19
+4. Result of new is now added as the first element (new <expression>)
+5. Then the next operator is member and operator after that is `*`
+6. member has P == 19 and * has 14, so we go with `get operator` first
+7. we have now ('.' (new <expression>) x ) which is ready to be applied to `*`
+8. then we find that * is followed by `new` which has higher P
+9. ... so ('.' (new <expression>) x )  is good but right side of `*` is not ready
+10. We enter now this function having CONTEXT_P = 14
+11. We collect `new Vector()` and `new Vector().x` with higher P to right side
+12. Finally there comes `+` with P == 13. We stop collectin right side and have (* left right) ready
+13. We Enter `+` with it's left side ready, however the right side has higher OP `new` and `.`
+14. The `+` must go first into `new Vector().y` until P becomes back to 13 or lower
+15. In Example 2 `!=` the `+` operand ends to number 5, then we continue with `!=` having its left set and CONTEXT_P = 10
+
 
 ## Text to AST generator
 
