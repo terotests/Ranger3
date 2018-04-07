@@ -47,17 +47,15 @@ Perhaps should be added that pure keywords, literals and numbers have high P.
 - plus `*` == 14
 - plus `+` == 13
 
-In the beginning P = 0 or infinite (which?). The Expression is empty. 
-
 We define there is some CONTEXT_P which defines current max P value. CONTEXT_P = infinite.
 
 1. new ... Vector () maches `new` which is smaller than CONTEXT_P
 2. after new we find member access operator
 3. Both have P == 19 thus we start with `new` first, CONTEXT_P = 19
-4. Result of new is now added as the first element (new <expression>)
+4. Result of new is now added as the first element `(new <expression>)`
 5. Then the next operator is member and operator after that is `*`
 6. member has P == 19 and * has 14, so we go with `get operator` first
-7. we have now ('.' (new <expression>) x ) which is ready to be applied to `*`
+7. we have now `('.' (new <expression>) x )` which is ready to be applied to `*`
 8. then we find that * is followed by `new` which has higher P
 9. ... so ('.' (new <expression>) x )  is good but right side of `*` is not ready
 10. We enter now this function having CONTEXT_P = 14
