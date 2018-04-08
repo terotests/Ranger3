@@ -28,9 +28,12 @@ class BasicAST {
     ; -- after this analysis you do not know the types yet
     ; new WHATERVER ( SOMETHING )
 
+
+    ; TODO: keywords could eb collected from the grammar
     let myGrammar = (createAST `
 
 Literal = int | string | boolean | double
+
 VREF = vref 
 
 GroupedExpression = P 20 expression (childcount 1)
@@ -53,6 +56,12 @@ MinusOperator = P 13 Expression  -> left '-' Expression -> right
 SumOperator = P 13 Expression -> left '+' Expression -> right
 
 `)
+
+    walk myGrammar {
+      case item keyword:RStringValue {
+        print "keyword " + keyword.value
+      }
+    }
 
     case myGrammar mainBlock:RBlockNode {
       def fc (at mainBlock.children 0)
@@ -87,17 +96,28 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
       }
     }
 
+    ; At this point the Grammar has been preliminarily parsed...
+
+
     let keys = (keys gCtx.rules)
 
-    forEach gCtx.rules {
-      print " ** >> " + index
-      walk_iter item {
-        case item v:RVRefNode {
-          print "... " + v.vref
-        }
-        case item v:RStringValue {
-          print "... " + v.value
-        }
+    ; this is the AST which we could start walking...
+
+    ; First problem, this is OK, but error case:
+    ; let test_ast (createAST ` x + y `)
+
+    ; This should fail!
+    let test_ast (createAST `+ + +`)
+
+    ; --> simple test
+    case test_ast node:RBlockNode {
+      def fc (at node.children 0)
+      case fc node:RExpression {
+        let iter@(optional lives) = (node_iterator node.children)
+        ; THEN try to figure out whar are the parts
+        gCtx.codevec = iter
+        gCtx = ( collect gCtx )
+
       }
     }
 

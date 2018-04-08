@@ -8,6 +8,7 @@ Import "../src/ast/iterator.clj"
 Import "../src/context/context.clj"
 
 Import "../src/grammar/context.clj"
+Import "../src/grammar/operators.clj"
 
 Import "../src/codegen/operators.clj"
 Import "../src/codegen/writer.clj"
