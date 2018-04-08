@@ -34,11 +34,11 @@ class BasicAST {
 
 Literal = int | string | boolean | double
 
-VREF = vref 
+Identifier = vref 
 
 GroupedExpression = P 20 expression (childcount 1)
 
-Expression = Literal | VREF | GroupedExpression | NewOperator | 
+Expression = Literal | Identifier | GroupedExpression | NewOperator | 
  GetOperator | CallOperand | SumOperator | MulOperator
 
 FunctionArguments = expression stream (separator ',') {
@@ -53,7 +53,7 @@ NewArguments = expression stream (separator ',') {
 }
 
 NewOperatorWithArgs = P 19 'new' vref -> classname NewArguments -> args
-GetOperator = P 19 Expression -> left '.' VREF -> right
+GetOperator = P 19 Expression -> left '.' Identifier -> right
 
 CallOperand = P 19 Expression -> left CallArguments -> right
 
@@ -112,14 +112,25 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
     let keys = (keys gCtx.rules)
 
     let kwdlist = (keys gCtx.keywords)
+    
+    forEach gCtx.rules {
+      let ruleIter@(optional) = item
+      ; try to walk the rule iterator
+      print "--- rule " + index + " ----"
+      while(!null? ruleIter) {
+        let id1 = (get_identifier gCtx (ruleIter.stepValue(0)))
+        let pred = (get_int gCtx (ruleIter.stepValue(1)))
+        if( (id1 == 'P') && (!null? pred) ) {
+          print " op " + index + " has P == " + (unwrap pred)
+          ruleIter = (ruleIter.step(2))
+          continue
+        }
+        if( has gCtx.rules id1 ) {
+          print " rule has subrule " + id1         
+        }
+        ruleIter = (ruleIter.next())
+      }
 
-    ; print "KEYWORDS : " + (join kwdlist ",")
-    forEach gCtx.keywords {
-      print " kw: " + index
-    }
-
-    if( has gCtx.keywords '+') {
-      print "+ is a keyword!!"
     }
 
 
@@ -130,19 +141,19 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
     ; let test_ast (createAST ` x + y `)
 
     ; This should fail!
-    let test_ast (createAST `+ x +`)
 
-    ; --> simple test
-    case test_ast node:RBlockNode {
-      def fc (at node.children 0)
-      case fc node:RExpression {
-        let iter@(optional lives) = (node_iterator node.children)
-        ; THEN try to figure out whar are the parts
-        gCtx.codevec = iter
-        gCtx = ( collect gCtx )
+    let test_iter (test_expression `x + y`)
+    gCtx.codevec = test_iter
+    gCtx = ( simple_plus_test gCtx )
 
-      }
-    }
+    let test_iter (test_expression `+ + +`)
+    gCtx.codevec = test_iter
+    gCtx = ( simple_plus_test gCtx )
+
+
+    let test_iter (test_expression `+ x +`)
+    gCtx.codevec = test_iter
+    gCtx = ( collect gCtx )
 
     ; ** the operator walking...
     let source_ast (createAST `x+y`)
