@@ -30,10 +30,23 @@ Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref
 
 ## Grammar definition language
 
-### Things to do
+### Things to consider
 
 - now we separate keywords from the grammar as separate entities to detect things like `+ + +`
 - also, collecting things like `->` or should we just write `-` `>` ?
+- statements vs expressions
+
+Expressions and Statements should be separated somehow.
+
+Maybe
+
+```
+expression MinusOperator = P 13 Expression  -> left '-' Expression -> right;
+
+statement WhileStatement : 'while' ConditionalExpression -> condition block -> block
+```
+
+
 
 
 ### Example
