@@ -30,27 +30,27 @@ class BasicAST {
 
     let myGrammar = (createAST `
 
-CallArguments = <expression>
-GetOperator = <expression> '.' vref
-CallOperand = <expression> '(' CallArguments ')'
+Literal = int | string | boolean | double
+VREF = vref 
 
-SumOperator = <expression> + <expression>
-MulOperator = <expression> * <expression>
+GroupedExpression = P 20 expression (childcount 1)
 
-SumOperator = {
-  int '+' int -> int
-  double '+' double -> double
+Expression = Literal | VREF | GroupedExpression | NewOperator | 
+ GetOperator | CallOperand | SumOperator | MulOperator
+
+CallArguments = expression stream (separator ',') {
+  Expression -> arg
 }
-MinusOperator = vref '-' vref
+NewArguments = expression stream (separator ',') {
+  Expression -> arg
+}
 
-FunctionParams = Expression having {
-
-};
-ClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {
-
-};
-
-Daa = vref 'Moi' 
+NewOperatorWithArgs = P 19 'new' vref -> classname NewArguments -> args
+GetOperator = P 19 Expression -> left '.' VREF -> right
+CallOperand = P 19 Expression -> left CallArguments -> right
+MulOperator = P 14 Expression -> left '*' Expression -> right
+MinusOperator = P 13 Expression  -> left '-' Expression -> right
+SumOperator = P 13 Expression -> left '+' Expression -> right
 
 `)
 

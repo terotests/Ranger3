@@ -27,6 +27,60 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 
 Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref 'x') (r.vref 'y') ) )` or `x + y` where the matcher code will evaluating the operatorss
 
+
+## Grammar definition language
+
+For example definition
+```
+NewOperatorWithArgs = P 19 'new' vref -> classname NewArguments -> args
+```
+means that `NewOperatorWithArgs` has Precedence 19 (what about Associativity?) and begins
+with "new" which is followed by a token which is stored as "classname" and then follows 
+`NewArguments` which is defined as 
+
+```
+NewArguments = expression stream (separator ',') {
+  Expression -> arg
+}
+```
+
+Where "expression" means a ( ... ) group, which has children (stream) which can be separated by ","
+end each child will be `Expression`, which is defined as 
+
+```
+Expression = Literal | VREF | GroupedExpression | NewOperator | 
+ GetOperator | CallOperand | SumOperator | MulOperator
+```
+
+Which means that `Expression` can be one of `Literal`, `VREF` etc. 
+
+
+The full example is
+
+```
+Literal = int | string | boolean | double
+VREF = vref 
+
+GroupedExpression = P 20 expression (childcount 1)
+
+Expression = Literal | VREF | GroupedExpression | NewOperator | 
+ GetOperator | CallOperand | SumOperator | MulOperator
+
+CallArguments = expression stream (separator ',') {
+  Expression -> arg
+}
+NewArguments = expression stream (separator ',') {
+  Expression -> arg
+}
+
+NewOperatorWithArgs = P 19 'new' vref -> classname NewArguments -> args
+GetOperator = P 19 Expression -> left '.' VREF -> right
+CallOperand = P 19 Expression -> left CallArguments -> right
+MulOperator = P 14 Expression -> left '*' Expression -> right
+MinusOperator = P 13 Expression  -> left '-' Expression -> right
+SumOperator = P 13 Expression -> left '+' Expression -> right
+```
+
 ## How to collect expressions with Operator Precedence
 
 Example 1

@@ -2978,7 +2978,7 @@ class BasicAST  {
     const iter_2 = iter.next();
     console.log("Second value == " + iter_2.value());
     let gCtx = new grammarCtx();
-    const myGrammar = operatorsOfstring_5.createAST_6("\n\nCallArguments = <expression>\nGetOperator = <expression> '.' vref\nCallOperand = <expression> '(' CallArguments ')'\n\nSumOperator = <expression> + <expression>\nMulOperator = <expression> * <expression>\n\nSumOperator = {\n  int '+' int -> int\n  double '+' double -> double\n}\nMinusOperator = vref '-' vref\n\nFunctionParams = Expression having {\n\n};\nClassDef = class (vref -> className) [[extends (vref ->extends)]]  [immutable serialize] {\n\n};\n\nDaa = vref 'Moi' \n\n");
+    const myGrammar = operatorsOfstring_5.createAST_6("\n\nLiteral = {\n  int \n  string\n  boolean \n  double \n}\nVREF = vref -> vref\n\nGroupedExpression = P 20 expression (childcount 1)\n\nExpression = Literal | VREF | GroupedExpression | NewOperator | \n GetOperator | CallOperand | SumOperator | MulOperator\n\nCallArguments = expression stream (separator ',') {\n  Expression -> arg\n}\nNewArguments = expression stream (separator ',') {\n  Expression -> arg\n}\n\nNewOperatorWithArgs = P 19 'new' vref -> classname NewArguments -> args\nGetOperator = P 19 Expression -> left '.' VREF -> right\nCallOperand = P 19 Expression -> left CallArguments -> right\nMulOperator = P 14 Expression -> left '*' Expression -> right\nMinusOperator = P 13 Expression  -> left '-' Expression -> right\nSumOperator = P 13 Expression -> left '+' Expression -> right\n\n\n");
     if( myGrammar instanceof RBlockNode ) /* union case */ {
       var mainBlock = myGrammar;
       const fc = operatorsOf_3.at_12(mainBlock.children, 0);
