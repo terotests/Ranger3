@@ -30,6 +30,14 @@ Create a expression matcher for expressions like `(r.expr ([] (r.op '+') (r.vref
 
 ## Grammar definition language
 
+### Things to do
+
+- now we separate keywords from the grammar as separate entities to detect things like `+ + +`
+- also, collecting things like `->` or should we just write `-` `>` ?
+
+
+### Example
+
 Draft of grammar language is
 
 ```

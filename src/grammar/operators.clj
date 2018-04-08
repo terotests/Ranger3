@@ -13,7 +13,22 @@ operator type:void all {
       if(!null? valueMaybe) {
         let value = (unwrap valueMaybe)
         case value v:RVRefNode {
-          print "the first value was VREF! == " + v.vref
+          if( has ctx.keywords v.vref) {
+            print "the first value is a keyword!!" + v.vref
+          } {
+            print "the first value was identifier " + v.vref
+          }                    
+        }
+      }
+      let valueMaybe = (vec.stepValue(1))
+      if(!null? valueMaybe) {
+        let value = (unwrap valueMaybe)
+        case value v:RVRefNode {
+          if( has ctx.keywords v.vref) {
+            print "the second value is a keyword!!" + v.vref
+          } {
+            print "the second value was identifier " + v.vref
+          }                    
         }
       }
     }

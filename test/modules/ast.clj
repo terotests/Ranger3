@@ -59,9 +59,11 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
 
     walk myGrammar {
       case item keyword:RStringValue {
-        print "keyword " + keyword.value
+        gCtx.keywords = (set gCtx.keywords keyword.value true)
       }
     }
+
+
 
     case myGrammar mainBlock:RBlockNode {
       def fc (at mainBlock.children 0)
@@ -101,13 +103,26 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
 
     let keys = (keys gCtx.rules)
 
+    let kwdlist = (keys gCtx.keywords)
+
+    ; print "KEYWORDS : " + (join kwdlist ",")
+    forEach gCtx.keywords {
+      print " kw: " + index
+    }
+
+    if( has gCtx.keywords '+') {
+      print "+ is a keyword!!"
+    }
+
+
+
     ; this is the AST which we could start walking...
 
     ; First problem, this is OK, but error case:
     ; let test_ast (createAST ` x + y `)
 
     ; This should fail!
-    let test_ast (createAST `+ + +`)
+    let test_ast (createAST `+ x +`)
 
     ; --> simple test
     case test_ast node:RBlockNode {
