@@ -41,6 +41,10 @@ GroupedExpression = P 20 expression (childcount 1)
 Expression = Literal | VREF | GroupedExpression | NewOperator | 
  GetOperator | CallOperand | SumOperator | MulOperator
 
+FunctionArguments = expression stream (separator ',') {
+  vref
+}
+
 CallArguments = expression stream (separator ',') {
   Expression -> arg
 }
@@ -50,7 +54,11 @@ NewArguments = expression stream (separator ',') {
 
 NewOperatorWithArgs = P 19 'new' vref -> classname NewArguments -> args
 GetOperator = P 19 Expression -> left '.' VREF -> right
+
 CallOperand = P 19 Expression -> left CallArguments -> right
+
+ArrowFunctionExpression = P 19 FunctionArguments -> args '=' '>' Expression -> body
+
 MulOperator = P 14 Expression -> left '*' Expression -> right
 MinusOperator = P 13 Expression  -> left '-' Expression -> right
 SumOperator = P 13 Expression -> left '+' Expression -> right
