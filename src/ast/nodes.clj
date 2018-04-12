@@ -18,6 +18,7 @@ union RNode (
   RNoOp
   RMaybeClass
   RMaybeSQL
+  RLanguageRule
 )
 
 union RValueType (
@@ -37,6 +38,7 @@ union RErrorType (
 
 Enum RLiteralType ( None Int Double Boolean String )
 Enum RScalarType ( None Int Double Boolean String )
+
 
 class RType_Scalar@(immutable) {
   def name ""
@@ -263,3 +265,13 @@ class RMaybeSQL@(immutable) {
   def command ""
   def node:RNode
 }
+
+; grammar nodes
+
+class RGrammarRule@(immutable) {
+  def precedence 20
+  def associativity 0
+  def name ""
+  def rules:RNodeIterator
+}
+

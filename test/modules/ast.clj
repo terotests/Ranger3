@@ -23,8 +23,6 @@ class BasicAST {
     let iter = (iter.next())
     print "Second value == " + (iter.value())
 
-    let gCtx (new grammarCtx)
-
     ; -- after this analysis you do not know the types yet
     ; new WHATERVER ( SOMETHING )
 
@@ -65,54 +63,10 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
 
 `)
 
-    walk myGrammar {
-      case item keyword:RStringValue {
-        gCtx.keywords = (set gCtx.keywords keyword.value true)
-      }
-    }
-
-
-
-    case myGrammar mainBlock:RBlockNode {
-      def fc (at mainBlock.children 0)
-      case fc expr:RExpression {
-        let rootIter@(optional lives) = (node_iterator expr.children)
-        while(!null? rootIter) {
-          let nameNode = (rootIter.stepValue(0))
-          let eqNode = (rootIter.stepValue(1))
-          if( (!null? nameNode) && (!null? eqNode) ) {
-            case (unwrap nameNode) name:RVRefNode {
-              case (unwrap eqNode) eq:RVRefNode {
-                if(eq.vref == "=") {
-                  rootIter = (rootIter.step(2))
-                  let slice = (cut (unwrap rootIter) {
-                    let eqNode = (item.stepValue(1))
-                    if(!null? eqNode) {
-                      case (unwrap eqNode) eq:RVRefNode {
-                        if(eq.vref == "=") {
-                          return true
-                        }
-                      }                      
-                    }
-                    return false
-                  })                  
-                  gCtx.rules = (set gCtx.rules name.vref slice)           
-                }
-              }
-            }
-          }
-          rootIter = (rootIter.next())
-        }
-      }
-    }
-
-    ; At this point the Grammar has been preliminarily parsed...
-
-
+    let gCtx (create_grammar myGrammar)
     let keys = (keys gCtx.rules)
-
     let kwdlist = (keys gCtx.keywords)
-    
+
     forEach gCtx.rules {
       let ruleIter@(optional) = item
       ; try to walk the rule iterator

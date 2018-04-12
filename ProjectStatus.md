@@ -18,10 +18,13 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 - CodeWriter is approximately OK
 - String tokenizer can now create basic AST structure
 - Trivial classifier example is now done
+- Iterators: creating slices
 
 # Next steps could be
 
-- Iterators: creating slices
+- Create Iterator which transforms iterator into other iterator using PNode vector
+- Iterator will call function which returns the Node and next iterator position
+
 
 - Think how node classifier should really work
 

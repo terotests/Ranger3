@@ -1,6 +1,50 @@
 
 operator type:void all { 
 
+  fn create_grammar:grammarCtx (myGrammar:RNode) {
+    let gCtx (new grammarCtx)
+
+    walk myGrammar {
+      case item keyword:RStringValue {
+        gCtx.keywords = (set gCtx.keywords keyword.value true)
+      }
+    }
+
+    case myGrammar mainBlock:RBlockNode {
+      def fc (at mainBlock.children 0)
+      case fc expr:RExpression {
+        let rootIter@(optional lives) = (node_iterator expr.children)
+        while(!null? rootIter) {
+          let nameNode = (rootIter.stepValue(0))
+          let eqNode = (rootIter.stepValue(1))
+          if( (!null? nameNode) && (!null? eqNode) ) {
+            case (unwrap nameNode) name:RVRefNode {
+              case (unwrap eqNode) eq:RVRefNode {
+                if(eq.vref == "=") {
+                  rootIter = (rootIter.step(2))
+                  let slice = (cut (unwrap rootIter) {
+                    let eqNode = (item.stepValue(1))
+                    if(!null? eqNode) {
+                      case (unwrap eqNode) eq:RVRefNode {
+                        if(eq.vref == "=") {
+                          return true
+                        }
+                      }                      
+                    }
+                    return false
+                  })                  
+                  gCtx.rules = (set gCtx.rules name.vref slice)           
+                }
+              }
+            }
+          }
+          rootIter = (rootIter.next())
+        }
+      }
+    }    
+    return gCtx
+  }
+
   fn test_expression@(optional):RNodeIterator (str:string) {
     let iter@(optional lives):RNodeIterator
     let test_ast (createAST str)
