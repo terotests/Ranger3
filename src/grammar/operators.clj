@@ -1,7 +1,43 @@
 
+
+class transformRes {
+  def node:RNode
+  def iter@(weak):RNodeIterator
+}
+
 operator type:void all { 
 
+  fn transform:RNodeIterator (inValue:RNodeIterator cb:(_:transformRes (iter:RNodeIterator) )) {
+    let rootIter@(optional lives weak) = inValue
+    let myVector:Vector@(RNode) (new Vector@(RNode))
+    while(!null? rootIter) {    
+      let oldIter (unwrap rootIter)
+      let iter (unwrap rootIter)
+      let res = (cb(iter))
+      if(!null? res.node) {
+        myVector = (push myVector (unwrap res.node))
+      } {
+        let v = (iter.value())
+        myVector = (push myVector (unwrap v))
+      }      
+      if(!null? res.iter) {
+        rootIter = res.iter
+      } {
+        rootIter = (iter.next())
+      }
+      if(!null? rootIter) {
+        let iterNow (unwrap rootIter)
+        if( iterNow == oldIter ) {
+          break
+        }
+      }
+    }
+    let res = (node_iterator myVector)
+    return res
+  }
+
   fn create_grammar:grammarCtx (myGrammar:RNode) {
+
     let gCtx (new grammarCtx)
 
     walk myGrammar {

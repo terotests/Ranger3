@@ -68,7 +68,7 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
     let kwdlist = (keys gCtx.keywords)
 
     forEach gCtx.rules {
-      let ruleIter@(optional) = item
+      let ruleIter@(optional) = item      
       ; try to walk the rule iterator
       print "--- rule " + index + " ----"
       while(!null? ruleIter) {
@@ -83,6 +83,38 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
           print " rule has subrule " + id1         
         }
         ruleIter = (ruleIter.next())
+      }
+
+      ; -- iterator transfrorm example
+      let tryTrans (transform item {
+        let r (new transformRes)
+        let iterValue (iter.value())
+        if(!null? iterValue) {
+          let vv = (unwrap iterValue)
+          let intV = (iter.stepValue(1))
+          case vv v:RVRefNode {
+            if(v.vref == 'P') {         
+              if(!null? intV) {
+                case (unwrap intV) pVal:RIntValue {
+                  let pp (new RVRefNode)
+                  pp.vref = ( 'Precedence with some val ' + pVal.value ) 
+                  r.node = pp
+                  r.iter = (iter.step(2))
+                } 
+              }                 
+            }
+          }
+        }
+        return r
+      })
+
+      walk_iter tryTrans {
+        case item v:RVRefNode {
+          print " VREF " + v.vref
+        }        
+        case item v:RIntValue {
+          print " INT " + v.value
+        }        
       }
 
     }
