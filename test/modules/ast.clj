@@ -67,58 +67,122 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
     let keys = (keys gCtx.rules)
     let kwdlist = (keys gCtx.keywords)
 
-    forEach gCtx.rules {
-      let ruleIter@(optional) = item      
-      ; try to walk the rule iterator
-      print "--- rule " + index + " ----"
-      while(!null? ruleIter) {
-        let id1 = (get_identifier gCtx (ruleIter.stepValue(0)))
-        let pred = (get_int gCtx (ruleIter.stepValue(1)))
-        if( (id1 == 'P') && (!null? pred) ) {
-          print " op " + index + " has P == " + (unwrap pred)
-          ruleIter = (ruleIter.step(2))
-          continue
-        }
-        if( has gCtx.rules id1 ) {
-          print " rule has subrule " + id1         
-        }
-        ruleIter = (ruleIter.next())
-      }
+;class RGrammarRule@(immutable) {
+;  def precedence 20
+;  def associativity 0
+;  def name ""
+;  def rules:RNodeIterator
+;}    
 
-      ; -- iterator transfrorm example
-      let tryTrans (transform item {
-        let r (new transformRes)
-        let iterValue (iter.value())
-        if(!null? iterValue) {
-          let vv = (unwrap iterValue)
-          let intV = (iter.stepValue(1))
-          case vv v:RVRefNode {
-            if(v.vref == 'P') {         
-              if(!null? intV) {
-                case (unwrap intV) pVal:RIntValue {
-                  let pp (new RVRefNode)
-                  pp.vref = ( 'Precedence with some val ' + pVal.value ) 
-                  r.node = pp
-                  r.iter = (iter.step(2))
-                } 
-              }                 
+    let next_ruleset:Map@(string RNode) (new Map@(string RNode))
+
+    forEach gCtx.rules {
+
+      let myRule (new RGrammarRule)
+      myRule.name = index
+
+      case item r:RNodeIterator {
+
+        let ruleIter@(optional) = r      
+        ; try to walk the rule iterator
+        print "--- rule " + index + " ----"
+        while(!null? ruleIter) {
+          let id1 = (get_identifier gCtx (ruleIter.stepValue(0)))
+          let pred = (get_int gCtx (ruleIter.stepValue(1)))
+          if( (id1 == 'P') && (!null? pred) ) {
+            print " op " + index + " has P == " + (unwrap pred)
+            
+            ruleIter = (ruleIter.step(2))
+            continue
+          }
+          if( has gCtx.rules id1 ) {
+            print " rule has subrule " + id1         
+          }
+          ruleIter = (ruleIter.next())
+        }
+
+        ; -- iterator transfrorm example
+        let tryTrans (transform r {
+          let r@(lives temp) (new transformRes)
+          let iterValue (iter.value())
+          if(!null? iterValue) {
+            let vv = (unwrap iterValue)
+            let second = (iter.stepValue(1))
+            let third = (iter.stepValue(2))
+            let fourth = (iter.stepValue(3))
+
+            case vv v:RStringValue { 
+              let n = (new RGrammarToken)
+              n.token = v.value
+              r.node = n
+              r.iter = (iter.step(1))
+              return r              
+            }
+
+            case vv v:RVRefNode {
+
+              ; RGrammarToken
+
+              ; vref -> somename
+              if( (!null? second) && (!null? third) && (!null? fourth)) {
+                case (unwrap second) arrowRef:RVRefNode {
+                  case (unwrap third) arrowRef2:RVRefNode {
+                    case (unwrap fourth) varName:RVRefNode {
+                      if(arrowRef.vref == "-" && arrowRef2.vref == ">" ) {
+                        let n = (new RGrammarTypeToVar)
+                        n.type_name = v.vref
+                        n.var_name = varName.vref
+                        r.node = n
+                        r.iter = (iter.step(4))
+                        return r
+                      }
+                    }
+                  }
+                }
+              }  
+              if(v.vref == 'P') {         
+                if(!null? second) {
+                  case (unwrap second) pVal:RIntValue {
+                    let pp (new RVRefNode)
+                    pp.vref = ( 'Precedence with some val ' + pVal.value ) 
+                    r.node = pp
+                    r.iter = (iter.step(2))
+                    myRule.precedence = pVal.value
+                  } 
+                }                 
+              }
             }
           }
+          return r
+        })
+        myRule.rules = tryTrans
+        next_ruleset = (set next_ruleset myRule.name myRule)
+        walk_iter tryTrans {
+          case item v:RVRefNode {
+            print " VREF " + v.vref
+          }        
+          case item v:RIntValue {
+            print " INT " + v.value
+          }        
         }
-        return r
-      })
-
-      walk_iter tryTrans {
-        case item v:RVRefNode {
-          print " VREF " + v.vref
-        }        
-        case item v:RIntValue {
-          print " INT " + v.value
-        }        
       }
-
     }
 
+    gCtx.rules = next_ruleset
+
+    forEach gCtx.rules { 
+      case item rule:RGrammarRule {
+        print " rule " + rule.name + " having precedence " +rule.precedence
+        walk_iter (unwrap rule.rules) { 
+          case item v:RGrammarTypeToVar {
+            print "  " + v.type_name + " -> " + v.var_name
+          }
+          case item v:RGrammarToken {
+            print "  token " + v.token 
+          }        
+        }
+      }
+    }
 
 
     ; this is the AST which we could start walking...

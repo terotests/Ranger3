@@ -989,6 +989,43 @@ class RGrammarRule  {
     return res;
   };
 }
+class RGrammarTypeToVar  {
+  constructor() {
+    this.type_name = "";
+    this.var_name = "";
+  }
+  __CopySelf () {
+    const res = new RGrammarTypeToVar();
+    res.type_name = this.type_name;
+    res.var_name = this.var_name;
+    return res;
+  };
+  set_type_name (new_value_of_type_name) {
+    const res = this.__CopySelf();
+    res.type_name = new_value_of_type_name;
+    return res;
+  };
+  set_var_name (new_value_of_var_name) {
+    const res = this.__CopySelf();
+    res.var_name = new_value_of_var_name;
+    return res;
+  };
+}
+class RGrammarToken  {
+  constructor() {
+    this.token = "";
+  }
+  __CopySelf () {
+    const res = new RGrammarToken();
+    res.token = this.token;
+    return res;
+  };
+  set_token (new_value_of_token) {
+    const res = this.__CopySelf();
+    res.token = new_value_of_token;
+    return res;
+  };
+}
 class VectorIterator  {
   constructor() {
     this.idx = 0;
@@ -1286,7 +1323,7 @@ class writerCtx  {
 }
 class grammarCtx  {
   constructor() {
-    this.rules = new Map_string_RNodeIterator();
+    this.rules = new Map_string_RNode();
     this.tokens = new Map_string_RNode();
     this.keywords = new Map_string_boolean();
   }
@@ -3027,55 +3064,110 @@ class BasicAST  {
     let gCtx = operatorsOfRNode_12.createc95grammar_13(myGrammar);
     const keys = operatorsOf_17.keys_23(gCtx.rules);
     /** unused:  const kwdlist = keysgCtx.keywords   **/ 
+    let next_ruleset = new Map_string_RNode();
     operatorsOf_17.forEach_24(gCtx.rules, ((item, index) => { 
-      let ruleIter = item;
-      console.log(("--- rule " + index) + " ----");
-      while ((typeof(ruleIter) !== "undefined" && ruleIter != null ) ) {
-        const id1 = operatorsOfgrammarCtx_25.getc95identifier_26(gCtx, ruleIter.stepValue(0));
-        const pred = operatorsOf_25.getc95int_26(gCtx, ruleIter.stepValue(1));
-        if ( (id1 == "P") && ((typeof(pred) !== "undefined" && pred != null ) ) ) {
-          console.log(((" op " + index) + " has P == ") + (pred));
-          ruleIter = ruleIter.step(2);
-          continue;
-        }
-        if ( operatorsOf_17.has_28(gCtx.rules, id1) ) {
-          console.log(" rule has subrule " + id1);
-        }
-        ruleIter = ruleIter.next();
-      };
-      const tryTrans = operatorsOf_20.transform_29(item, ((iter) => { 
-        const r = new transformRes();
-        const iterValue = iter.value();
-        if ( (typeof(iterValue) !== "undefined" && iterValue != null )  ) {
-          const vv = iterValue;
-          const intV = iter.stepValue(1);
-          if( vv instanceof RVRefNode ) /* union case */ {
-            var v = vv;
-            if ( v.vref == "P" ) {
-              if ( (typeof(intV) !== "undefined" && intV != null )  ) {
-                if( intV instanceof RIntValue ) /* union case */ {
-                  var pVal = intV;
-                  let pp = new RVRefNode();
-                  pp = (pp).set_vref(("Precedence with some val " + pVal.value));
-                  r.node = pp;
-                  r.iter = iter.step(2);
+      let myRule = new RGrammarRule();
+      myRule = (myRule).set_name(index);
+      if( item instanceof RNodeIterator ) /* union case */ {
+        var r = item;
+        let ruleIter = r;
+        console.log(("--- rule " + index) + " ----");
+        while ((typeof(ruleIter) !== "undefined" && ruleIter != null ) ) {
+          const id1 = operatorsOfgrammarCtx_25.getc95identifier_26(gCtx, ruleIter.stepValue(0));
+          const pred = operatorsOf_25.getc95int_26(gCtx, ruleIter.stepValue(1));
+          if ( (id1 == "P") && ((typeof(pred) !== "undefined" && pred != null ) ) ) {
+            console.log(((" op " + index) + " has P == ") + (pred));
+            ruleIter = ruleIter.step(2);
+            continue;
+          }
+          if ( operatorsOf_17.has_28(gCtx.rules, id1) ) {
+            console.log(" rule has subrule " + id1);
+          }
+          ruleIter = ruleIter.next();
+        };
+        const tryTrans = operatorsOf_20.transform_29(r, ((iter) => { 
+          const r_1 = new transformRes();
+          const iterValue = iter.value();
+          if ( (typeof(iterValue) !== "undefined" && iterValue != null )  ) {
+            const vv = iterValue;
+            const second = iter.stepValue(1);
+            const third = iter.stepValue(2);
+            const fourth = iter.stepValue(3);
+            if( vv instanceof RStringValue ) /* union case */ {
+              var v = vv;
+              let n = new RGrammarToken();
+              n = (n).set_token(v.value);
+              r_1.node = n;
+              r_1.iter = iter.step(1);
+              return r_1;
+            };
+            if( vv instanceof RVRefNode ) /* union case */ {
+              var v_1 = vv;
+              if ( (((typeof(second) !== "undefined" && second != null ) ) && ((typeof(third) !== "undefined" && third != null ) )) && ((typeof(fourth) !== "undefined" && fourth != null ) ) ) {
+                if( second instanceof RVRefNode ) /* union case */ {
+                  var arrowRef = second;
+                  if( third instanceof RVRefNode ) /* union case */ {
+                    var arrowRef2 = third;
+                    if( fourth instanceof RVRefNode ) /* union case */ {
+                      var varName = fourth;
+                      if ( (arrowRef.vref == "-") && (arrowRef2.vref == ">") ) {
+                        let n_1 = new RGrammarTypeToVar();
+                        n_1 = (n_1).set_type_name(v_1.vref);
+                        n_1 = (n_1).set_var_name(varName.vref);
+                        r_1.node = n_1;
+                        r_1.iter = iter.step(4);
+                        return r_1;
+                      }
+                    };
+                  };
                 };
               }
-            }
+              if ( v_1.vref == "P" ) {
+                if ( (typeof(second) !== "undefined" && second != null )  ) {
+                  if( second instanceof RIntValue ) /* union case */ {
+                    var pVal = second;
+                    let pp = new RVRefNode();
+                    pp = (pp).set_vref(("Precedence with some val " + pVal.value));
+                    r_1.node = pp;
+                    r_1.iter = iter.step(2);
+                    myRule = (myRule).set_precedence(pVal.value);
+                  };
+                }
+              }
+            };
+          }
+          return r_1;
+        }));
+        myRule = (myRule).set_rules(tryTrans);
+        next_ruleset = operatorsOf_17.set_22(next_ruleset, myRule.name, (myRule));
+        operatorsOf_20.walkc95iter_30(tryTrans, ((item) => { 
+          if( item instanceof RVRefNode ) /* union case */ {
+            var v_2 = item;
+            console.log(" VREF " + v_2.vref);
           };
-        }
-        return r;
-      }));
-      operatorsOf_20.walkc95iter_30(tryTrans, ((item) => { 
-        if( item instanceof RVRefNode ) /* union case */ {
-          var v_1 = item;
-          console.log(" VREF " + v_1.vref);
-        };
-        if( item instanceof RIntValue ) /* union case */ {
-          var v_2 = item;
-          console.log(" INT " + v_2.value);
-        };
-      }));
+          if( item instanceof RIntValue ) /* union case */ {
+            var v_3 = item;
+            console.log(" INT " + v_3.value);
+          };
+        }));
+      };
+    }));
+    gCtx = (gCtx).set_rules(next_ruleset);
+    operatorsOf_17.forEach_24(gCtx.rules, ((item, index) => { 
+      if( item instanceof RGrammarRule ) /* union case */ {
+        var rule = item;
+        console.log(((" rule " + rule.name) + " having precedence ") + rule.precedence);
+        operatorsOf_20.walkc95iter_30(rule.rules, ((item) => { 
+          if( item instanceof RGrammarTypeToVar ) /* union case */ {
+            var v_4 = item;
+            console.log((("  " + v_4.type_name) + " -> ") + v_4.var_name);
+          };
+          if( item instanceof RGrammarToken ) /* union case */ {
+            var v_5 = item;
+            console.log("  token " + v_5.token);
+          };
+        }));
+      };
     }));
     const test_iter = operatorsOf_5.testc95expression_6("x + y");
     gCtx = (gCtx).set_codevec(test_iter);
@@ -3097,17 +3189,17 @@ class BasicAST  {
         console.log("--> RExpr found!! children " + operatorsOf_3.size_19(node_1.children));
         const iter_3 = operatorsOf_3.nodec95iterator_19(node_1.children);
         const testN = iter_3.step(3);
-        const v_3 = testN.value();
-        if( v_3 instanceof RExpression ) /* union case */ {
-          var node_2 = v_3;
+        const v_6 = testN.value();
+        if( v_6 instanceof RExpression ) /* union case */ {
+          var node_2 = v_6;
           console.log("first of testN was expr");
         };
-        if( v_3 instanceof RVRefNode ) /* union case */ {
-          var node_3 = v_3;
+        if( v_6 instanceof RVRefNode ) /* union case */ {
+          var node_3 = v_6;
           console.log("first of testN was VREF " + node_3.vref);
         };
-        if( v_3 instanceof RStringValue ) /* union case */ {
-          var node_4 = v_3;
+        if( v_6 instanceof RStringValue ) /* union case */ {
+          var node_4 = v_6;
           console.log("first of testN was string " + node_4.value);
         };
       };
@@ -5149,14 +5241,9 @@ class Map_string_ROpNode  {
     this.elements = {};
   }
 }
-class Map_string_RNodeIterator  {
-  constructor() {
-    this.elements = {};
-  }
-}
 class Map_string_RNode  {
   constructor() {
-    this.elements = {};     /** note: unused */
+    this.elements = {};
   }
 }
 class Map_string_CodeOutput  {
@@ -5676,7 +5763,7 @@ operatorsOfRNode_12.createc95grammar_13 = function(myGrammar) {
                   }
                   return false;
                 }));
-                gCtx = (gCtx).set_rules(operatorsOf_17.set_22(gCtx.rules, name.vref, slice));
+                gCtx = (gCtx).set_rules(operatorsOf_17.set_22(gCtx.rules, name.vref, (slice)));
               }
             };
           };
@@ -5798,7 +5885,7 @@ class operatorsOf_17  {
   }
 }
 operatorsOf_17.set_22 = function(__self, key, value) {
-  const c_1 = new Map_string_RNodeIterator();
+  const c_1 = new Map_string_RNode();
   const keys_1 = Object.keys(__self.elements);
   for ( let i_3 = 0; i_3 < keys_1.length; i_3++) {
     var k_1 = keys_1[i_3];

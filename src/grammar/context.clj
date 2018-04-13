@@ -1,7 +1,7 @@
 
 class grammarCtx@(immutable) {
 
-  def rules:[string:RNodeIterator]
+  def rules:[string:RNode]
   def tokens:[string:RNode]
 
   ; keywords which can not be VREF values

@@ -1,6 +1,7 @@
 
 ; possible node types
 union RNode (
+  RNodeIterator
   RParsedNode
   RTextNode
   RBlockNode
@@ -18,7 +19,9 @@ union RNode (
   RNoOp
   RMaybeClass
   RMaybeSQL
-  RLanguageRule
+  RGrammarRule
+  RGrammarTypeToVar
+  RGrammarToken
 )
 
 union RValueType (
@@ -273,5 +276,14 @@ class RGrammarRule@(immutable) {
   def associativity 0
   def name ""
   def rules:RNodeIterator
+}
+
+class RGrammarTypeToVar@(immutable) {
+  def type_name ""
+  def var_name ""
+}
+
+class RGrammarToken@(immutable) {
+  def token ""
 }
 
