@@ -3075,7 +3075,7 @@ class BasicAST  {
     console.log("First value == " + iter.value());
     const iter_2 = iter.next();
     console.log("Second value == " + iter_2.value());
-    const myGrammar = operatorsOfstring_5.createAST_6("\nLiteral = int | string | boolean | double\nIdentifier = vref\n\nGroupedExpression = P 20 expression (childcount 1)\n\nExpression = Literal | Identifier | GroupedExpression | NewOperator | \n GetOperator | CallOperand | SumOperator | MulOperator\n\nKuha = Expression\nNumero = int | double\nMerkkijono = \"s\" string\n\nFunctionArguments = expression stream (separator ',') {\n  vref\n}\n\nCallArguments = expression stream (separator ',') {\n  Expression -> arg\n}\nNewArguments = expression stream (separator ',') {\n  Expression -> arg\n}\n\nNewOperatorWithArgs = P 19 'new' vref -> classname NewArguments -> args\nGetOperator = P 19 Expression -> left '.' Identifier -> right\n\nCallOperand = P 19 Expression -> left CallArguments -> right\n\nArrowFunctionExpression = P 19 FunctionArguments -> args '=' '>' Expression -> body\n\nMulOperator = P 14 Expression -> left '*' Expression -> right\nMinusOperator = P 13 Expression  -> left '-' Expression -> right\nSumOperator = P 13 Expression -> left '+' Expression -> right\n\nSimpleNew = 'new' vref\n\n");
+    const myGrammar = operatorsOfstring_5.createAST_6("\nLiteral = int | string | boolean | double\nIdentifier = vref\n\nGroupedExpression = P 20 expression (childcount 1)\n\nExpression = Literal | Identifier | GroupedExpression | NewOperator | \n GetOperator | CallOperand | SumOperator | MulOperator\n\nKuha = Expression\nNumero = int | double\nMerkkijono = \"s\" string\n\nFunctionArguments = expression stream (separator ',') {\n  vref\n}\n\nCallArguments = expression stream (separator ',') {\n  Expression -> arg\n}\nNewArguments = expression stream (separator ',') {\n  Expression -> arg\n}\n\nNewOperatorWithArgs = P 19 'new' vref -> classname NewArguments -> args\nGetOperator = P 19 Expression -> left '.' Identifier -> right\n\nCallOperand = P 19 Expression -> left CallArguments -> right\n\nArrowFunctionExpression = P 19 FunctionArguments -> args '=' '>' Expression -> body\n\nMulOperator = P 14 Expression -> left '*' Expression -> right\nMinusOperator = P 13 Expression  -> left '-' Expression -> right\nSumOperator = P 13 Expression -> left '+' Expression -> right\n\nNewArgs = expression\nClassName = vref\nSimpleNew = 'new' ClassName NewArgs\nTemplateName = vref\n\nGenericNew = 'new' vref '<' vref '>' expression\n\nGenericNew2 = 'new' ClassName '<' TemplateName '>' NewArgs\n\nSleepCommand = 'sleep' int\n\n");
     let gCtx = operatorsOfRNode_12.createc95grammar_13(myGrammar);
     const keys = operatorsOf_17.keys_23(gCtx.rules);
     /** unused:  const kwdlist = keysgCtx.keywords   **/ 
@@ -3187,6 +3187,10 @@ class BasicAST  {
                   };
                 }
               }
+              const tmp = v_1;
+              r_1.node = tmp;
+              r_1.iter = iter.step(1);
+              return r_1;
             };
           }
           return r_1;
@@ -3211,7 +3215,7 @@ class BasicAST  {
     const test_e = operatorsOf_5.astc95iterator_6("x + y");
     let second_1 = operatorsOf_5.astc95iterator_6("x + 3");
     let third_1 = operatorsOf_5.astc95iterator_6("x + s \"JOO\"");
-    const simple_new = operatorsOf_5.astc95iterator_6("new FooBar");
+    const simple_new = operatorsOf_5.astc95iterator_6("new FooBar ()");
     second_1 = second_1.step(2);
     third_1 = third_1.step(2);
     const fval = test_e.value();
@@ -3225,6 +3229,22 @@ class BasicAST  {
       }
     };
     const secondVal = second_1.value();
+    if ( operatorsOf_25.isc95match_32(gCtx, operatorsOf_5.astc95iterator_6("new MyFoo<T>()"), "GenericNew") ) {
+      console.log(" WAS GenericNew");
+    }
+    if ( operatorsOf_25.isc95match_32(gCtx, operatorsOf_5.astc95iterator_6("new MyFoo<T>()"), "Identifier") ) {
+      console.log(" INCORRECTLY WAS Identifier");
+    } else {
+      console.log(" CORRECTLY was NOT Identifier");
+    }
+    if ( operatorsOf_25.isc95match_32(gCtx, operatorsOf_5.astc95iterator_6("sleep 200"), "SleepCommand") ) {
+      console.log(" WAS SleepCommand");
+    }
+    if ( operatorsOf_25.isc95match_32(gCtx, operatorsOf_5.astc95iterator_6("sleep 4.55"), "SleepCommand") ) {
+      console.log(" ERROR SleepCommand :/");
+    } else {
+      console.log("Correctly NOT sleepcommand");
+    }
     if ( operatorsOf_25.isc95match_32(gCtx, simple_new, "SimpleNew") ) {
       console.log(" WAS SimpleNew");
     } else {
@@ -6310,15 +6330,33 @@ operatorsOf_25.isc95match_32 = function(gCtx, iter, ruleName) {
                 }
               };
             }
+            if ( v_5.vref == "expression" ) {
+              if( value_3 instanceof RExpression ) /* union case */ {
+                var vn_6 = value_3;
+                did_match_2 = true;
+              };
+            }
             if ( v_5.vref == "int" ) {
               if( value_3 instanceof RIntValue ) /* union case */ {
-                var vn_6 = value_3;
+                var vn_7 = value_3;
                 did_match_2 = true;
               };
             }
             if ( v_5.vref == "string" ) {
               if( value_3 instanceof RStringValue ) /* union case */ {
-                var vn_7 = value_3;
+                var vn_8 = value_3;
+                did_match_2 = true;
+              };
+            }
+            if ( v_5.vref == "double" ) {
+              if( value_3 instanceof RDoubleValue ) /* union case */ {
+                var vn_9 = value_3;
+                did_match_2 = true;
+              };
+            }
+            if ( v_5.vref == "boolean" ) {
+              if( value_3 instanceof RBooleanValue ) /* union case */ {
+                var vn_10 = value_3;
                 did_match_2 = true;
               };
             }

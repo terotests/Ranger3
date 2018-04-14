@@ -98,6 +98,11 @@ operator type:void all {
                   } 
                 }
               }
+              if( v.vref == 'expression' ) {
+                case value vn:RExpression {
+                  did_match = true
+                }
+              }               
               if( v.vref == 'int' ) {
                 case value vn:RIntValue {
                   did_match = true
@@ -107,7 +112,20 @@ operator type:void all {
                 case value vn:RStringValue {
                   did_match = true
                 }
-              }              
+              }
+              if( v.vref  == "double") {
+                case value vn:RDoubleValue {
+                  did_match = true
+                }                  
+              }
+              if( v.vref  == "boolean") {
+                case value vn:RBooleanValue {
+                  did_match = true
+                }                  
+              }    
+              ; TODO:
+              ; - expression
+              ; - block                         
               if did_match {
                 does_match = true
               } {

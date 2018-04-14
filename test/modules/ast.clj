@@ -63,7 +63,17 @@ MulOperator = P 14 Expression -> left '*' Expression -> right
 MinusOperator = P 13 Expression  -> left '-' Expression -> right
 SumOperator = P 13 Expression -> left '+' Expression -> right
 
-SimpleNew = 'new' vref
+
+SimpleNew = 'new' ClassName NewArgs
+
+TemplateArgs = vref
+ClassName = vref
+NewArgs = expression
+GenericNew = 'new' ClassName '<' TemplateArgs '>' NewArgs
+
+GenericNew2 = 'new' ClassName '<' TemplateName '>' NewArgs
+
+SleepCommand = 'sleep' int
 
 `)
 
@@ -192,7 +202,12 @@ SimpleNew = 'new' vref
                     myRule.precedence = pVal.value
                   } 
                 }                 
-              }
+              }              
+              let tmp@(temp lives) = v
+              r.node = tmp
+              r.iter = (iter.step(1))
+              return r
+                            
             }
           }
           return r
@@ -225,7 +240,7 @@ SimpleNew = 'new' vref
     def second@(optional) (ast_iterator `x + 3`)
     def third@(optional) (ast_iterator `x + s "JOO"`)
 
-    def simple_new (ast_iterator `new FooBar`)
+    def simple_new (ast_iterator `new FooBar ()`)
     
     second = (second.step(2))
     third = (third.step(2))
@@ -241,6 +256,27 @@ SimpleNew = 'new' vref
     }
 
     let secondVal = (second.value())
+
+    if(is_match gCtx (ast_iterator `new MyFoo<T>()`) 'GenericNew') {
+      print " WAS GenericNew"
+    }
+
+    if(is_match gCtx (ast_iterator `new MyFoo<T>()`) 'Identifier') {
+      print " INCORRECTLY WAS Identifier"
+    } {
+      print " CORRECTLY was NOT Identifier"
+    }    
+
+
+    if(is_match gCtx (ast_iterator `sleep 200`) 'SleepCommand') {
+      print " WAS SleepCommand"
+    }
+
+    if(is_match gCtx (ast_iterator `sleep 4.55`) 'SleepCommand') {
+      print " ERROR SleepCommand :/"
+    } {
+      print "Correctly NOT sleepcommand"
+    }     
 
     if(is_match gCtx simple_new 'SimpleNew') {
       print " WAS SimpleNew"
