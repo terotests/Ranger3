@@ -3075,7 +3075,7 @@ class BasicAST  {
     console.log("First value == " + iter.value());
     const iter_2 = iter.next();
     console.log("Second value == " + iter_2.value());
-    const myGrammar = operatorsOfstring_5.createAST_6("\nLiteral = int | string | boolean | double\nIdentifier = vref\n\nGroupedExpression = P 20 expression (childcount 1)\n\nExpression = Literal | Identifier | GroupedExpression | NewOperator | \n GetOperator | CallOperand | SumOperator | MulOperator\n\nKuha = Expression\nNumero = int | double\nMerkkijono = \"s\" string\n\nFunctionArguments = expression stream (separator ',') {\n  vref\n}\n\nCallArguments = expression stream (separator ',') {\n  Expression -> arg\n}\nNewArguments = expression stream (separator ',') {\n  Expression -> arg\n}\n\nNewOperatorWithArgs = P 19 'new' vref -> classname NewArguments -> args\nGetOperator = P 19 Expression -> left '.' Identifier -> right\n\nCallOperand = P 19 Expression -> left CallArguments -> right\n\nArrowFunctionExpression = P 19 FunctionArguments -> args '=' '>' Expression -> body\n\nMulOperator = P 14 Expression -> left '*' Expression -> right\nMinusOperator = P 13 Expression  -> left '-' Expression -> right\nSumOperator = P 13 Expression -> left '+' Expression -> right\n\nNewArgs = expression\nClassName = vref\nSimpleNew = 'new' ClassName NewArgs\nTemplateName = vref\n\nGenericNew = 'new' vref '<' vref '>' expression\n\nGenericNew2 = 'new' ClassName '<' TemplateName '>' NewArgs\n\nSleepCommand = 'sleep' int\n\n");
+    const myGrammar = operatorsOfstring_5.createAST_6("\nLiteral = int | string | boolean | double\nIdentifier = vref\n\nGroupedExpression = P 20 expression (childcount 1)\n\nExpression = Literal | Identifier | GroupedExpression | NewOperator | \n GetOperator | CallOperand | SumOperator | MulOperator\n\nKuha = Expression\nNumero = int | double\nMerkkijono = \"s\" string\n\nFunctionArguments = expression stream (separator ',') {\n  vref\n}\n\nCallArguments = expression stream (separator ',') {\n  Expression -> arg\n}\nNewArguments = expression stream (separator ',') {\n  Expression -> arg\n}\n\nNewOperatorWithArgs = P 19 'new' vref -> classname NewArguments -> args\nGetOperator = P 19 Expression -> left '.' Identifier -> right\n\nCallOperand = P 19 Expression -> left CallArguments -> right\n\nArrowFunctionExpression = P 19 FunctionArguments -> args '=' '>' Expression -> body\n\nMulOperator = P 14 Expression -> left '*' Expression -> right\nMinusOperator = P 13 Expression  -> left '-' Expression -> right\nSumOperator = P 13 Expression -> left '+' Expression -> right\n\n\nSimpleNew = 'new' ClassName NewArgs\n\nTemplateArgs = vref\nClassName = vref\nNewArgs = expression\nGenericNew = 'new' ClassName '<' TemplateArgs '>' NewArgs\n\nGenericNew2 = 'new' ClassName '<' TemplateName '>' NewArgs\n\nSleepCommand = 'sleep' int\n\n");
     let gCtx = operatorsOfRNode_12.createc95grammar_13(myGrammar);
     const keys = operatorsOf_17.keys_23(gCtx.rules);
     /** unused:  const kwdlist = keysgCtx.keywords   **/ 
@@ -3229,7 +3229,7 @@ class BasicAST  {
       }
     };
     const secondVal = second_1.value();
-    if ( operatorsOf_25.isc95match_32(gCtx, operatorsOf_5.astc95iterator_6("new MyFoo<T>()"), "GenericNew") ) {
+    if ( operatorsOf_25.isc95match_32(gCtx, operatorsOf_5.astc95iterator_6("new MyFoo<T>().x"), "GenericNew") ) {
       console.log(" WAS GenericNew");
     }
     if ( operatorsOf_25.isc95match_32(gCtx, operatorsOf_5.astc95iterator_6("new MyFoo<T>()"), "Identifier") ) {

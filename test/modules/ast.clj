@@ -257,7 +257,17 @@ SleepCommand = 'sleep' int
 
     let secondVal = (second.value())
 
-    if(is_match gCtx (ast_iterator `new MyFoo<T>()`) 'GenericNew') {
+    ; --> this part becomes a GenericNew
+    ; --> if it has been compiled then you can continue from here...
+    ; --> if there are more....
+    
+
+    ; Continue using (GenericNew '.' something)
+    ; --> The NODE is transformed into something else
+    ; --> THEN you can continue
+    ; --> BECAUSE GenericNew does not match itself anymore :)
+
+    if(is_match gCtx (ast_iterator `new MyFoo<T>().x`) 'GenericNew') {
       print " WAS GenericNew"
     }
 
