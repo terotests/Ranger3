@@ -22,6 +22,7 @@ union RNode (
   RGrammarRule
   RGrammarTypeToVar
   RGrammarToken
+  RGrammarOneOf
 )
 
 union RValueType (
@@ -285,5 +286,9 @@ class RGrammarTypeToVar@(immutable) {
 
 class RGrammarToken@(immutable) {
   def token ""
+}
+
+class RGrammarOneOf@(immutable) {
+  def option:[string:boolean]
 }
 

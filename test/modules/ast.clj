@@ -29,15 +29,17 @@ class BasicAST {
 
     ; TODO: keywords could eb collected from the grammar
     let myGrammar = (createAST `
-
 Literal = int | string | boolean | double
-
-Identifier = vref 
+Identifier = vref
 
 GroupedExpression = P 20 expression (childcount 1)
 
 Expression = Literal | Identifier | GroupedExpression | NewOperator | 
  GetOperator | CallOperand | SumOperator | MulOperator
+
+Kuha = Expression
+Numero = int | double
+Merkkijono = "s" string
 
 FunctionArguments = expression stream (separator ',') {
   vref
@@ -60,6 +62,8 @@ ArrowFunctionExpression = P 19 FunctionArguments -> args '=' '>' Expression -> b
 MulOperator = P 14 Expression -> left '*' Expression -> right
 MinusOperator = P 13 Expression  -> left '-' Expression -> right
 SumOperator = P 13 Expression -> left '+' Expression -> right
+
+SimpleNew = 'new' vref
 
 `)
 
@@ -119,9 +123,47 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
               return r              
             }
 
+
             case vv v:RVRefNode {
 
-              ; RGrammarToken
+              if(null? second) {
+                r.node = v
+                r.iter = (iter.step(1))
+                return r
+              }               
+              if( (!null? second) ) {
+                case (unwrap second) orRef:RVRefNode {
+                  if(orRef.vref == '|') {
+                    let oneOf = (new RGrammarOneOf)
+                    oneOf.option  = (set oneOf.option v.vref true)
+
+                    let optIter@(optional lives) = (iter.step(2))
+                    while(!null? optIter) {
+                      let ov = (optIter.value())
+                      if(!null? ov) {
+                        case (unwrap ov) m:RVRefNode {
+                          oneOf.option  = (set oneOf.option m.vref true)
+                        }
+                      }
+                      optIter = (optIter.next())
+                      if(!null? optIter) {
+                        let ov = (optIter.value())
+                        if(!null? ov) {
+                          case (unwrap ov) m:RVRefNode {
+                            if(m.vref == '|') {
+                              optIter = (optIter.next()) 
+                            }   
+                          }
+                        }                         
+                      }                   
+                    }
+                    r.node = oneOf
+                    r.iter = optIter
+                    return r
+                  }
+                
+                }
+              }
 
               ; vref -> somename
               if( (!null? second) && (!null? third) && (!null? fourth)) {
@@ -145,7 +187,7 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
                   case (unwrap second) pVal:RIntValue {
                     let pp (new RVRefNode)
                     pp.vref = ( 'Precedence with some val ' + pVal.value ) 
-                    r.node = pp
+                    ; r.node = pp
                     r.iter = (iter.step(2))
                     myRule.precedence = pVal.value
                   } 
@@ -170,19 +212,115 @@ SumOperator = P 13 Expression -> left '+' Expression -> right
 
     gCtx.rules = next_ruleset
 
+    print ""
+    print "---==== Rulez ===--- "
+
+    ; you have a RNode
+    ; you should check if it is matching first rule
+    ; each rule has its first node
+    ; sometimes the rule leads to subrules
+    ; 
+
+    def test_e (ast_iterator 'x + y')
+    def second@(optional) (ast_iterator `x + 3`)
+    def third@(optional) (ast_iterator `x + s "JOO"`)
+
+    def simple_new (ast_iterator `new FooBar`)
+    
+    second = (second.step(2))
+    third = (third.step(2))
+
+    let fval = (unwrap (test_e.value()))
+    case fval item:RVRefNode {
+      print " Expr x + y first elem is " + item.vref
+      if( is_keyword gCtx item.vref ) {
+        print " ^ is keyword " 
+      } {
+        print " ^ is not a keyword"
+      }
+    }
+
+    let secondVal = (second.value())
+
+    if(is_match gCtx simple_new 'SimpleNew') {
+      print " WAS SimpleNew"
+    } {
+      print " -- not SimpleNew :/"
+    }  
+
+    if(is_match gCtx simple_new 'Identifier') {
+      print " Incorreclty htinks SimpleNew is Identifier"
+    } {
+      print " -- YES SimpleNew is not Identifier :)"
+    }       
+
+    if(null? secondVal) {
+      print "Second value was null"
+    } {
+      case (unwrap secondVal) i:RIntValue {
+        print "Is integer value " + i.value
+      }
+    }
+
+    if(is_match gCtx test_e 'Identifier') {
+      print " WAS IDENTIFIER"
+    } {
+      print " -- not identified :/"
+    }
+
+    if(is_match gCtx (unwrap second) 'Literal') {
+      print " WAS Literal"
+    } {
+      print " -- not identified :/"
+    }  
+
+    if(is_match gCtx (unwrap second) 'Numero') {
+      print " WAS Numero"
+    } {
+      print " -- not Numero :/"
+    }  
+
+    if(is_match gCtx (unwrap third) 'Merkkijono') {
+      print " WAS Merkkijono"
+    } {
+      print " -- not Merkkijono :/"
+    }         
+
+    if(is_match gCtx (unwrap second) 'Kuha') {
+      print " WAS Kuha"
+    }     
+    if(is_match gCtx test_e 'Kuha') {
+      print " test_e WAS Kuha too "
+    }     
+
+
     forEach gCtx.rules { 
       case item rule:RGrammarRule {
         print " rule " + rule.name + " having precedence " +rule.precedence
-        walk_iter (unwrap rule.rules) { 
+        let firstRule = (rule.rules.value())
+        if(!null? firstRule) {
+          let item = (unwrap firstRule)
           case item v:RGrammarTypeToVar {
             print "  " + v.type_name + " -> " + v.var_name
+            if( has gCtx.rules v.type_name ) {
+              print "   => There is rule for " + v.type_name
+            }
           }
           case item v:RGrammarToken {
             print "  token " + v.token 
-          }        
+          }
+          case item v:RGrammarOneOf {
+            forEach v.option {
+              print "  * " + index
+            }
+          } 
+          case item v:RVRefNode {
+            print "  vref " + v.vref 
+          }                              
         }
       }
     }
+    print ""
 
 
     ; this is the AST which we could start walking...

@@ -8,6 +8,16 @@ operator type:void all {
     return (createAST root)
   }
 
+  fn ast_iterator:RNodeIterator (src:string) {
+    let op_ast = (createAST src)
+    case op_ast node:RBlockNode {
+      def fc (at node.children 0)
+      case fc node:RExpression {
+        return (node_iterator node.children)
+      }
+    }    
+  }
+
   fn createAST:RNode (item:CodeNode) {
     if(item.expression && (item.is_block_node == false)) {
       let block (new RExpression)
