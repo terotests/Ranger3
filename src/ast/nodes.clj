@@ -23,6 +23,7 @@ union RNode (
   RGrammarTypeToVar
   RGrammarToken
   RGrammarOneOf
+  RGrammarCompiled
 )
 
 union RValueType (
@@ -290,5 +291,14 @@ class RGrammarToken@(immutable) {
 
 class RGrammarOneOf@(immutable) {
   def option:[string:boolean]
+}
+
+; new Foo() -> NewExpression
+; --> NewExpression + 
+
+class RGrammarCompiled@(immutable) {
+  def type_name ""              ; for example NewExpression
+  def variables:[string:RNode]  ; left, right etc.
+  def original:RNode
 }
 

@@ -7,6 +7,7 @@ class NodeRange {
   def end@(weak):RNodeIterator
 }
 
+
 class BasicAST {
 
   fn testIterator ( testCtx:TestContext ) {
@@ -257,6 +258,27 @@ SleepCommand = 'sleep' int
 
     let secondVal = (second.value())
 
+    ; this value == X
+    ; skip from this == 5
+    ; --> the iterator is of course a bit different then...
+
+    ; new Vector.x + new Vector.y
+    ; 
+    ; HARD to keep this immutable now :/
+
+    ; iterator
+    ; a,b,c,d,e,f,g
+    ;   a,b,c,d,e ==> FOO
+    ; FOO,f,g
+
+    ; So, remove 5 itamd and create new vector ? 
+    
+
+
+    ; --> N steps is replaced
+    ; --> new iterator with replaced value, how to implement
+
+
     ; --> this part becomes a GenericNew
     ; --> if it has been compiled then you can continue from here...
     ; --> if there are more....
@@ -266,6 +288,10 @@ SleepCommand = 'sleep' int
     ; --> The NODE is transformed into something else
     ; --> THEN you can continue
     ; --> BECAUSE GenericNew does not match itself anymore :)
+
+    print " RULES = " + (join (m_keys gCtx.rules) ", ")
+    ; let list = (keys gCtx.rules.elements)
+    ; print "RULES == " + (join list ","))
 
     if(is_match gCtx (ast_iterator `new MyFoo<T>().x`) 'GenericNew') {
       print " WAS GenericNew"

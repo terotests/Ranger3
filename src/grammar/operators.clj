@@ -5,6 +5,12 @@ class transformRes {
   def iter@(weak):RNodeIterator
 }
 
+operator type:void all {
+  fn m_keys:[string] ( m:Map@(string RNode) ) {
+    return (keys m.elements)
+  } 
+}
+
 operator type:void all { 
 
   fn is_match:boolean (gCtx:grammarCtx iter:RNodeIterator ruleName:string) {

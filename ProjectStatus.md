@@ -22,6 +22,8 @@ This is a free-form memo of the Ranger3 Project and it's status and developments
 
 # Next steps could be
 
+- Iterator fast swap from ``new MyFoo<T>().x`` => `RGrammarCompiled`
+
 - Create Iterator which transforms iterator into other iterator using PNode vector
 - Iterator will call function which returns the Node and next iterator position
 
@@ -49,7 +51,54 @@ expression MinusOperator = P 13 Expression  -> left '-' Expression -> right;
 statement WhileStatement : 'while' ConditionalExpression -> condition block -> block
 ```
 
+## Problem with performance? Mapping immutable vector to smaller pieces?
 
+`[a,b,c,d,e,f,g]` => `[FOO,f,g]`
+
+The immutable Vector is like this:
+
+```javascript
+trait Vector @params( T S ) {
+
+    def start:int 0
+    def cardinality 3
+    def end:int 0
+    def elements@(weak):[T]
+    def parent@(weak):S
+```
+
+Changing either the beginning or the end will always be a bit slow here...
+
+If you have immutable iterator you really can not change it's values without creating totally
+new iterator at some point.
+
+However, you can re-use the `elements` array properties when you copy new array for chunks
+of vectors which are not modified, although you have to set the `start`, `index`, `end` and
+`parent` values again.
+
+So, there is certain range `7...12` which is changed to something else, you have to create
+certain amount of new `Vector` objects and few of them is going to have totally new values
+inside of them. 
+
+This will require some processing power and consumes some memory, but it will also make
+possible parallel processing and makes the processing more secure and perhaps reuces errors
+because you can start over if some evaluation branch fails quite easily.
+
+Think `x + y * z` => `SumExpression` and `MulExpression` or `x + MulExpression` will be
+temporary state of things.
+
+On the other hand, each change simplified the Vector and each iteration becomes faster.
+
+At beginning `RNodeIterator` starts at Zero but for the `Vector` elements the parent points
+to smaller index thus you have to create the whole new `Vector` because old Vectors do not
+have correct `index` values anymore and also `parent` becomes obsolete.
+
+However, in the end you can re-use the `parent` because `Vector` chunks with smaller index 
+are not modified at all.
+
+Positive thing is that blocks and expressions etc. make this reordering again a bit faster
+than it appears to be at first glance, because the tokenizer will collect expressions and
+blocks automatically.
 
 
 ### Example

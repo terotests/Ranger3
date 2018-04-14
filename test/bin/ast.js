@@ -1041,6 +1041,34 @@ class RGrammarOneOf  {
     return res;
   };
 }
+class RGrammarCompiled  {
+  constructor() {
+    this.type_name = "";
+    this.variables = new Map_string_RNode();
+  }
+  __CopySelf () {
+    const res = new RGrammarCompiled();
+    res.type_name = this.type_name;
+    res.variables = this.variables;
+    res.original = this.original;
+    return res;
+  };
+  set_type_name (new_value_of_type_name) {
+    const res = this.__CopySelf();
+    res.type_name = new_value_of_type_name;
+    return res;
+  };
+  set_variables (new_value_of_variables) {
+    const res = this.__CopySelf();
+    res.variables = new_value_of_variables;
+    return res;
+  };
+  set_original (new_value_of_original) {
+    const res = this.__CopySelf();
+    res.original = new_value_of_original;
+    return res;
+  };
+}
 class VectorIterator  {
   constructor() {
     this.idx = 0;
@@ -3229,6 +3257,7 @@ class BasicAST  {
       }
     };
     const secondVal = second_1.value();
+    console.log(" RULES = " + (operatorsOf_17.mc95keys_23(gCtx.rules).join(", ")));
     if ( operatorsOf_25.isc95match_32(gCtx, operatorsOf_5.astc95iterator_6("new MyFoo<T>().x"), "GenericNew") ) {
       console.log(" WAS GenericNew");
     }
@@ -5015,6 +5044,11 @@ class Map_string_boolean  {
     this.elements = {};
   }
 }
+class Map_string_RNode  {
+  constructor() {
+    this.elements = {};
+  }
+}
 class Vector_int  {
   constructor() {
     this.start = 0;
@@ -5389,11 +5423,6 @@ class Vector_RErrorType  {
   };
 }
 class Map_string_ROpNode  {
-  constructor() {
-    this.elements = {};
-  }
-}
-class Map_string_RNode  {
   constructor() {
     this.elements = {};
   }
@@ -6078,6 +6107,9 @@ operatorsOf_17.set_18 = function(__self, key, value) {
   };
   c_2.elements[key] = value;
   return c_2;
+};
+operatorsOf_17.mc95keys_23 = function(m) {
+  return Object.keys(m.elements);
 };
 operatorsOf_17.get_28 = function(__self, key) {
   return __self.elements[key];
